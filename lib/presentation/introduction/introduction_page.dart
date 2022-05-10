@@ -23,7 +23,7 @@ class IntroductionPage extends StatelessWidget {
             showSkipButton: true,
             back: const Icon(Icons.arrow_back),
             skip: const Text('skip'),
-            next: const Text('次へ'),
+            next: const Text('next'),
             done: const Text("ゲストで始める",
                 style: TextStyle(fontWeight: FontWeight.w600,fontSize: 12)),
             dotsDecorator: DotsDecorator(
