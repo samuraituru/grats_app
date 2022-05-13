@@ -45,6 +45,43 @@ class GroupPage extends StatelessWidget {
                 )
               ],
             ),
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: model.controller,
+                      onChanged: (String? value) {
+                        model.editText = value!;
+                      },
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            model.clearAdd();
+                          },
+                          icon: Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: model.fruits.length,
+                    itemBuilder: (BuildContext context, index) {
+                      return Card(
+                        child: ListTile(
+                          title: Text(
+                            model.fruits[index],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           );
         }),
       ),
