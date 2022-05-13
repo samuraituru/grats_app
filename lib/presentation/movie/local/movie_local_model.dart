@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Task {
-  Task(this.tasks);
-  String tasks;
-}
 class MovieLocalModel extends ChangeNotifier {
-  List<Task>? tasks;
-  String? task;
+  var controller = TextEditingController();
+  var actionText = '';
+  var action = <String>['例)反則数（長押しで削除）'];
 
-  Future addbook() async {
-    if (task == null || task == "") {
-      throw 'タイトルが入力されていません';
-    }
-    notifyListeners();
-  }
-  void fetchBookList() async {
-    this.tasks = tasks;
+  void actionClearAdd() {
+    this.action.add(actionText);
+    this.controller.clear();
     notifyListeners();
   }
 }
+

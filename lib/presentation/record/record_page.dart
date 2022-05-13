@@ -12,7 +12,8 @@ class RecordPage extends StatelessWidget {
         child: Consumer<RecordModel>(builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(''),
+             centerTitle: true,
+              title: Text('record'),
             ),
           );
         }),
