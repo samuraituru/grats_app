@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
+import 'package:grats_app/presentation/myself/myself_page.dart';
 import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +13,10 @@ class HomePage extends StatelessWidget {
     final _pageList = [
       SignPage(),
       GroupPage(),
-      RecordPage(),
-      MoviePage(),
       GroupPage(),
+      //RecordPage(),
+      MoviePage(),
+      MyselfPage(),
     ];
 
     final double deviceHeight = MediaQuery.of(context).size.height;

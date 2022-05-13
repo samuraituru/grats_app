@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/analysis/analysis_model.dart';
-import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:provider/provider.dart';
 
 class AnalysisPage extends StatelessWidget {
