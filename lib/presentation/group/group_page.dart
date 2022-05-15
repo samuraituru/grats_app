@@ -1,90 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/domain/groups.dart';
+import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
+import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';
 
 class GroupPage extends StatelessWidget {
+  const GroupPage({
+    Key? key,
+    this.controller,
+  }) : super(key: key);
+
+  final ScrollController? controller;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<GroupModel>(
-        create: (_) => GroupModel(),
+        create: (_) => GroupModel()..getGroups(),
         child: Consumer<GroupModel>(builder: (context, model, child) {
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text('Group'),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('タイトル'),
-                            content: TextField(
-                              decoration: InputDecoration(hintText: "ここに入力"),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('キャンセル'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text('OK'),
-                                onPressed: () {
-                                  //OKを押したあとの処理
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                )
-              ],
-            ),
-            body: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: model.controller,
-                      onChanged: (String? value) {
-                        model.editText = value!;
-                      },
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            model.clearAdd();
-                          },
-                          icon: Icon(Icons.add),
-                        ),
-                      ),
+          final List<Groups>? groups = model.groups;
+          if (groups == null) {
+            return CircularProgressIndicator();
+          }
+          final List<Widget> widgets = groups
+              .map(
+                (group) => ListTile(
+                 onTap: (){
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(builder: (context) => GroupFloderPage()),
+                   );
+                 },
+                  leading: Text(group.groupname),
+                  title: Text(group.groupDesc),
+                  trailing: Icon(Icons.edit),
+                ),
+              )
+              .toList();
+          return ScaffoldWrapper(
+            wrap: controller == null,
+            title: 'Groups',
+            dlgtitle: 'Groupを追加',
+            child: Center(
+              child: ListView(
+                  children: widgets,
+/*
+                children: ListTile.divideTiles(
+                  context: context,
+                  tiles: [
+                    ListTile(
+                      title: Text(''),
+                      onTap: () =>
+                          navigateTo(context, (context) => GroupFloderPage()),
                     ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: model.fruits.length,
-                    itemBuilder: (BuildContext context, index) {
-                      return Card(
-                        child: ListTile(
-                          title: Text(
-                            model.fruits[index],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  ],
+                ).toList(growable: false),
+*/
               ),
             ),
           );
         }),
       ),
     );
+  }
+
+  void navigateTo(BuildContext context, WidgetBuilder builder) {
+    Navigator.of(context).push(MaterialPageRoute(builder: builder));
   }
 }
