@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/group/item/group_item_model.dart';
 import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';

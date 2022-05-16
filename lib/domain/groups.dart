@@ -1,10 +1,11 @@
 class Groups {
-  Groups(this.groupDesc, this.groupname);
-  String groupDesc;
-  String groupname;
+  Groups(this.gDesc, this.gName);
+  String gDesc;
+  String gName;
 }
 
 class Folders {
-  Folders(this.foldername);
-  String foldername;
+  Folders(this.fName, this.fDesc);
+  String fName;
+  String fDesc;
 }

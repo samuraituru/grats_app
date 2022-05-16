@@ -12,34 +12,22 @@ class GroupFolderModel extends ChangeNotifier {
   List<Folders>? folders;
 
   Future getGroups() async {
-    final QuerySnapshot snapshot1 =
-        await FirebaseFirestore.instance.collection('Groups').get();
-
-    final List<Groups> groups = await snapshot1.docs.map((DocumentSnapshot document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String groupDesc = data['groupDesc'];
-      final String groupname = data['groupname'];
-      this.groupname = groupname;
-      return Groups(groupDesc, groupname);
-    }).toList();
-
-    this.groups = groups;
     notifyListeners();
   }
+
   Future getFolder() async {
     final QuerySnapshot snapshot2 = await FirebaseFirestore.instance
         .collection('Groups')
-        .doc('folders')
-        .collection('fldname')
+        .doc('Group')
+        .collection('Folders')
         .get();
 
     final List<Folders> folders = snapshot2.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String foldername = data['foldername'];
-      return Folders(foldername);
-
+      final String fName = data['fName'];
+      final String fDesc = data['fDesc'];
+      return Folders(fName,fDesc);
     }).toList();
-
     this.folders = folders;
     notifyListeners();
   }

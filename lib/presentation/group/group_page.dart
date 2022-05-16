@@ -18,32 +18,34 @@ class GroupPage extends StatelessWidget {
     return MaterialApp(
       home: ChangeNotifierProvider<GroupModel>(
         create: (_) => GroupModel()..getGroups(),
-        child: Consumer<GroupModel>(builder: (context, model, child) {
-          final List<Groups>? groups = model.groups;
-          if (groups == null) {
-            return CircularProgressIndicator();
-          }
-          final List<Widget> widgets = groups
-              .map(
-                (group) => ListTile(
-                 onTap: (){
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(builder: (context) => GroupFloderPage()),
-                   );
-                 },
-                  leading: Text(group.groupname),
-                  title: Text(group.groupDesc),
-                  trailing: Icon(Icons.edit),
-                ),
-              )
-              .toList();
-          return ScaffoldWrapper(
-            wrap: controller == null,
-            title: 'Groups',
-            dlgtitle: 'Groupを追加',
-            child: Center(
-              child: ListView(
+        child: Consumer<GroupModel>(
+          builder: (context, model, child) {
+            final List<Groups>? groups = model.groups;
+            if (groups == null) {
+              return CircularProgressIndicator();
+            }
+            final List<Widget> widgets = groups
+                .map(
+                  (group) => ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GroupFloderPage()),
+                      );
+                    },
+                    leading: Text(group.gName),
+                    title: Text(group.gDesc),
+                    trailing: Icon(Icons.edit),
+                  ),
+                )
+                .toList();
+            return ScaffoldWrapper(
+              wrap: controller == null,
+              title: 'Groups',
+              dlgtitle: 'Groupを追加',
+              child: Center(
+                child: ListView(
                   children: widgets,
 /*
                 children: ListTile.divideTiles(
@@ -57,10 +59,11 @@ class GroupPage extends StatelessWidget {
                   ],
                 ).toList(growable: false),
 */
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
     );
   }
