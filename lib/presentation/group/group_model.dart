@@ -29,12 +29,45 @@ class GroupModel extends ChangeNotifier {
 
     final List<Groups> groups = snapshot1.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String gDesc = data['gDesc'];
       final String gName = data['gName'];
-      return Groups(gDesc, gName);
+      final String gDesc = data['gDesc'];
+      return Groups(gName, gDesc);
     }).toList();
     this.groups = groups;
     notifyListeners();
+  }
+
+  String? gName;
+  String? gDesc;
+  bool isLoading = false;
+
+  void startLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  void endLoading() {
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future addBook() async {
+    if (gName == null || gName == "") {
+      throw 'グループ名が入力されていません';
+    }
+
+    if (gDesc == null || gDesc!.isEmpty) {
+      throw '説明が入力されていません';
+    }
+
+    final doc = FirebaseFirestore.instance.collection('books').doc();
+
+
+    // firestoreに追加
+    await doc.set({
+      'title': gName,
+      'author': gDesc,
+    });
   }
 
 }

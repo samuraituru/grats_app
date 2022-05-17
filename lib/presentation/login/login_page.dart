@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/login/login_page.dart';
-import 'package:grats_app/presentation/signup/sign_model.dart';
+import 'package:grats_app/presentation/login/login_model.dart';
+import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:provider/provider.dart';
 
-class SignUpPage extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChangeNotifierProvider<SignModel>(
-        create: (_) => SignModel(),
-        child: Consumer<SignModel>(builder: (context, model, child) {
+      home: ChangeNotifierProvider<LoginModel>(
+        create: (_) => LoginModel(),
+        child: Consumer<LoginModel>(builder: (context, model, child) {
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              title: Text('新規登録'),
+              title: Text('ログイン'),
             ),
             body: Column(
               children: [
@@ -60,11 +60,11 @@ class SignUpPage extends StatelessWidget {
                     model.startLoading();
                     // 追加の処理
                     try {
-                      await model.signUp();
+                      await model.login();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoginPage()));
+                              builder: (context) => RecordPage()));
                     } catch (e) {
                       final snackBar = SnackBar(
                         backgroundColor: Colors.red,
@@ -75,7 +75,7 @@ class SignUpPage extends StatelessWidget {
                       model.endLoading();
                     }
                   },
-                  child: Text('登録する'),
+                  child: Text('ログイン'),
                 ),
                 if (model.isLoading)
                   Container(
@@ -84,15 +84,6 @@ class SignUpPage extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     ),
                   ),
-                ElevatedButton(
-                  child: Text('ログイン画面へ'),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginPage()));
-                  },
-                ),
               ],
             ),
           );

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 
 class ScaffoldWrapper extends StatelessWidget {
-  const ScaffoldWrapper({
+  ScaffoldWrapper({
     Key? key,
     required this.title,
     required this.child,
     required this.dlgtitle,
     this.wrap = true,
+    this.tags,
   }) : super(key: key);
 
   final Widget child;
   final String title;
   final String dlgtitle;
   final bool wrap;
+  var tags;
 
   @override
   Widget build(BuildContext context) {
+
     if (wrap) {
       return Scaffold(
         appBar: PreferredSize(
@@ -46,7 +49,7 @@ class ScaffoldWrapper extends StatelessWidget {
                                   ),
                                 ),
                                 onChanged: (text) {
-
+                                  tags = text;
                                 },
                               ),
                               Padding(padding: EdgeInsets.all(10.0)),

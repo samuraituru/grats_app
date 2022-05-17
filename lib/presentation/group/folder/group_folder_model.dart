@@ -4,11 +4,8 @@ import 'package:grats_app/domain/groups.dart';
 
 class GroupFolderModel extends ChangeNotifier {
   final ScrollController? controller;
-
   GroupFolderModel(this.controller);
 
-  List<Groups>? groups;
-  String groupname = '';
   List<Folders>? folders;
 
   Future getGroups() async {

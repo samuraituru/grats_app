@@ -22,6 +22,8 @@ dependencies:
   sticky_headers: ^0.2.0
   cloud_firestore: ^3.1.15
   firebase_core: ^1.17.0
+  firebase_auth: ^3.3.18
+  firebase_storage: ^10.2.16
 
 dev_dependencies:
   flutter_test:

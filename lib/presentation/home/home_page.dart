@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _pageList = [
-      SignPage(),
+      SignUpPage(),
       GroupPage(),
       RecordPage(),
       MoviePage(),

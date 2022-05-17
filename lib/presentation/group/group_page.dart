@@ -36,7 +36,10 @@ class GroupPage extends StatelessWidget {
                     },
                     leading: Text(group.gName),
                     title: Text(group.gDesc),
-                    trailing: Icon(Icons.edit),
+                    trailing: IconButton(
+                        icon: Icon(Icons.edit),
+                      onPressed: (){},
+                    ),
                   ),
                 )
                 .toList();
@@ -44,6 +47,7 @@ class GroupPage extends StatelessWidget {
               wrap: controller == null,
               title: 'Groups',
               dlgtitle: 'Groupを追加',
+              tags:'ok',
               child: Center(
                 child: ListView(
                   children: widgets,

@@ -26,15 +26,19 @@ class GroupFloderPage extends StatelessWidget {
                 },
                 leading: Text(folder.fName),
                 title: Text(folder.fDesc),
-                trailing: Icon(Icons.edit),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: (){},
+                ),
               ),
             )
             .toList();
 
         return ScaffoldWrapper(
           wrap: model.controller == null,
-          title: model.groupname,
+          title: '',
           dlgtitle: 'Itemを追加',
+          tags:'ok',
           child: ListView(
             children: widgets,
 /*
