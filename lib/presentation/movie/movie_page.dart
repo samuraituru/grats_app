@@ -15,37 +15,6 @@ class MoviePage extends StatelessWidget {
             appBar: AppBar(
               centerTitle: true,
               title: Text('Movie'),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text('タイトル'),
-                            content: TextField(
-                              decoration: InputDecoration(hintText: "ここに入力"),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('キャンセル'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text('OK'),
-                                onPressed: () {
-                                  //OKを押したあとの処理
-                                },
-                              ),
-                            ],
-                          );
-                        });
-                  },
-                )
-              ],
             ),
             body: Column(
               children: [
