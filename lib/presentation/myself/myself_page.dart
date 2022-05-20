@@ -31,6 +31,7 @@ class MyselfPage extends StatelessWidget {
                               color: Colors.grey,
                             ),
                             child: Material(
+                              //ClipRRectの実装を検討
                               color: Colors.transparent,
                               child: InkWell(
                                 child: Icon(Icons.add,

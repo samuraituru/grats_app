@@ -1,50 +1,28 @@
 import 'package:flutter/material.dart';
 
-class StickyGroupListViewModel extends ChangeNotifier {
-  final double headerDefaultHeight;
-
-  final List<GlobalObjectKey> keys;
+class TestModel1 extends ChangeNotifier {
+  var action = <String>['例)反則数（長押しで削除）'];
+  Color mycolor1 = Colors.lightBlue;
+  void colorChanged1(color) {
+    this.mycolor1 = color;
+    notifyListeners();
+  }
+  void actionClearAdd() {
+    this.action.add(actionText1);
+    this.controller.clear();
+    notifyListeners();
+  }
+  late final List<GlobalObjectKey> keys;
+  var controller = TextEditingController();
+  var actionText1 = '';
 
   Map<GlobalObjectKey, double> _headerHeightMap = {};
 
   Map<GlobalObjectKey, double> get headerHeightMap => _headerHeightMap;
 
-  StickyGroupListViewModel(
-      {required this.headerDefaultHeight, required this.keys}) {
-    _headerHeightMap =
-        keys.fold(Map<GlobalObjectKey, double>(), (previousValue, element) {
-          previousValue[element] = headerDefaultHeight;
-          return previousValue;
-        });
   }
 
-  // 指定したkeyのヘッダーの高さを取得する
-  double getHeaderHeight(GlobalObjectKey? key) {
-    return _headerHeightMap[key] ?? 0;
-  }
-
-  // 指定したkeyのヘッダーの高さを更新する
-  void setHeaderHeight(GlobalObjectKey key, double height) {
-    if (height > headerDefaultHeight) {
-      if (getHeaderHeight(key) == headerDefaultHeight) {
-        return;
-      }
-      _headerHeightMap.update(key, (value) => headerDefaultHeight);
-    } else if (height < 0) {
-      if (getHeaderHeight(key) == 0) {
-        return;
-      }
-      _headerHeightMap.update(key, (value) => 0);
-    } else {
-      if (getHeaderHeight(key) == height) {
-        return;
-      }
-      _headerHeightMap.update(key, (value) => height);
-    }
-    notifyListeners();
-  }
-}
-class TestModel1 extends ChangeNotifier {
+class TestModel2 extends ChangeNotifier {
   var controller = TextEditingController();
   var editText = '';
   var fruits = <String>['例)反則数'];
