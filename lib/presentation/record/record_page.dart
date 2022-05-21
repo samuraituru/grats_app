@@ -13,7 +13,7 @@ class RecordPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
              centerTitle: true,
-              title: Text('record'),
+              title: Text('Record'),
             ),
           );
         }),

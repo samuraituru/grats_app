@@ -6,7 +6,7 @@ class MovieLocalModel extends ChangeNotifier {
   var actionText = '';
   var action = <String>['例)反則数'];
   Color mycolor = Colors.lightBlue;
-  var actcolor = <Color>[];
+  //var activecolor = <Color>[];
 
   void actionClearAdd() {
     this.action.add(actionText);
@@ -14,7 +14,8 @@ class MovieLocalModel extends ChangeNotifier {
     notifyListeners();
   }
   void colorChanged(color) {
-    this.actcolor = color.add(color);
+    //this.activecolor = color.add(color);
+    this.mycolor = color;
     notifyListeners();
   }
 
