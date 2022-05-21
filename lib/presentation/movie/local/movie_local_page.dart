@@ -116,7 +116,8 @@ class MovieLocalPage extends StatelessWidget {
                                     title: Text('Pick a color!'),
                                     content: SingleChildScrollView(
                                       child: BlockPicker(
-                                        pickerColor: model.actcolor[0],
+                                        pickerColor: model.mycolor,
+                                        //default color
                                         onColorChanged: (Color color) {
                                           model.colorChanged(color);
                                         },

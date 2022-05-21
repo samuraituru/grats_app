@@ -14,7 +14,8 @@ class MovieLocalModel extends ChangeNotifier {
     notifyListeners();
   }
   void colorChanged(color) {
-    this.actcolor = color.add(color);
+    this.mycolor = color;
+    //this.actcolor.add(color);
     notifyListeners();
   }
 
