@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_page.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
 import 'package:grats_app/presentation/movie/movie_model.dart';
+import 'package:grats_app/presentation/testpage/test_page4.dart';
 import 'package:provider/provider.dart';
 
 class MoviePage extends StatelessWidget {
@@ -43,7 +44,7 @@ class MoviePage extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MovieLocalPage()),
+                        MaterialPageRoute(builder: (context) => TestListview()),
                       );
                     }, // タップ
                   ),

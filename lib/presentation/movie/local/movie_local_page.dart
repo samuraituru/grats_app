@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:grats_app/presentation/movie/local/action_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class MovieLocalPage extends StatelessWidget {
                   height: 250,
                   child: Container(
                     child: Material(
-                      color: Colors.red,
+                      color: Colors.grey,
                       child: InkWell(
                         onTap: () async {},
                       ),
@@ -84,7 +85,8 @@ class MovieLocalPage extends StatelessWidget {
                 ),
               ),
             ),
-            ListView.builder(
+
+/*            ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: model.action.length,
@@ -116,7 +118,8 @@ class MovieLocalPage extends StatelessWidget {
                                     title: Text('Pick a color!'),
                                     content: SingleChildScrollView(
                                       child: BlockPicker(
-                                        pickerColor: model.actcolor[0],
+                                        //pickerColor: model.activecolor[0],
+                                        pickerColor: model.mycolor,
                                         onColorChanged: (Color color) {
                                           model.colorChanged(color);
                                         },
@@ -174,7 +177,7 @@ class MovieLocalPage extends StatelessWidget {
                   ),
                 );
               },
-            ),
+            ),*/
           ],
         ),
       );
