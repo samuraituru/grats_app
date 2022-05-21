@@ -38,7 +38,7 @@ class GroupFloderPage extends StatelessWidget {
           wrap: model.controller == null,
           title: '',
           dlgtitle: 'Itemを追加',
-          tags:'ok',
+          applyword:'ok',
           child: ListView(
             children: widgets,
 /*

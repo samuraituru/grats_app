@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
+import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +81,14 @@ class MyselfPage extends StatelessWidget {
                 ),
                 ElevatedButton(onPressed: () {}, child: Text('MyRecordへ')),
                 ElevatedButton(onPressed: () {}, child: Text('Groupへ')),
-                ElevatedButton(onPressed: () {}, child: Text('Movieへ')),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MovieLocalPage()),
+                      );
+                    },
+                    child: Text('Movieへ')),
               ],
             ),
           );

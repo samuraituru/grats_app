@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:grats_app/presentation/movie/local/action_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
@@ -67,117 +65,39 @@ class MovieLocalPage extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: model.controller,
-                onChanged: (String? value) {
-                  model.actionText = value!;
-                },
-                decoration: InputDecoration(
-                  hintText: 'カウントしたい項目を追加',
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      model.actionClearAdd();
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: model.controller,
+                    onChanged: (String? value) {
+                      model.inputText = value!;
                     },
-                    icon: Icon(Icons.add),
-                  ),
-                ),
-              ),
-            ),
-
-/*            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: model.action.length,
-              itemBuilder: (BuildContext context, index) {
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: DrawerMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (value) {},
-                        backgroundColor: Colors.red,
-                        icon: Icons.delete,
-                        label: '削除',
-                      ),
-                    ],
-                  ),
-                  child: Card(
-                    child: ListTile(
-                      leading: Container(
-                        width: 40,
-                        child: FloatingActionButton(
-                          heroTag: 'color',
-                          backgroundColor: model.mycolor,
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Pick a color!'),
-                                    content: SingleChildScrollView(
-                                      child: BlockPicker(
-                                        //pickerColor: model.activecolor[0],
-                                        pickerColor: model.mycolor,
-                                        onColorChanged: (Color color) {
-                                          model.colorChanged(color);
-                                        },
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      ElevatedButton(
-                                        child: const Text('DONE'),
-                                        onPressed: () {
-                                          Navigator.of(context)
-                                              .pop(); //dismiss the color picker
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                            child:
-                            Text("Block Color Picker");
-                          },
-                        ),
-                      ),
-                      onLongPress: () {
-                        print('longpress');
-                      },
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                            width: 40,
-                            child: FloatingActionButton(
-                              heroTag: 'plus',
-                              backgroundColor: Colors.pink,
-                              tooltip: 'Action!',
-                              child: Icon(Icons.add),
-                              // Text()でもOK
-                              onPressed: () {},
-                            ),
-                          ),
-                          Text('数'),
-                          Container(
-                            width: 40,
-                            child: FloatingActionButton(
-                              heroTag: 'minus',
-                              tooltip: 'Action!',
-                              child: Icon(Icons.remove), // Text()でもOK
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
-                      ),
-                      title: Text(
-                        model.action[index],
+                    decoration: InputDecoration(
+                      hintText: 'カウントしたい項目を追加',
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          model.actionClearAdd();
+                        },
+                        icon: Icon(Icons.add),
                       ),
                     ),
                   ),
-                );
-              },
-            ),*/
+                ),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.inputtextlist.length,
+                  itemBuilder: (BuildContext context, index) {
+                    var passindex = index;
+                    var passlist = model.inputtextlist;
+                    return ActionWidget(
+                        pullindex: passindex, pulllist: passlist);
+                  },
+                ),
+              ],
+            ),
           ],
         ),
       );

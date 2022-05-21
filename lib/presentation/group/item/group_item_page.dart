@@ -36,7 +36,7 @@ class GroupItemPage extends StatelessWidget {
             wrap: model.controller == null,
             title: 'Folder-name',
             dlgtitle: 'Folderを追加',
-            tags:'ok',
+            applyword:'ok',
             child: ListView.builder(
               primary: model.controller == null,
               controller: model.controller,

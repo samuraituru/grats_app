@@ -47,7 +47,7 @@ class GroupPage extends StatelessWidget {
               wrap: controller == null,
               title: 'Groups',
               dlgtitle: 'Groupを追加',
-              tags:'ok',
+              applyword:'ok',
               child: Center(
                 child: ListView(
                   children: widgets,

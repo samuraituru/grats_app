@@ -7,14 +7,14 @@ class ScaffoldWrapper extends StatelessWidget {
     required this.child,
     required this.dlgtitle,
     this.wrap = true,
-    this.tags,
+    this.applyword,
   }) : super(key: key);
 
   final Widget child;
   final String title;
   final String dlgtitle;
   final bool wrap;
-  var tags;
+  var applyword;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class ScaffoldWrapper extends StatelessWidget {
                                   ),
                                 ),
                                 onChanged: (text) {
-                                  tags = text;
+                                  applyword = text;
                                 },
                               ),
                               Padding(padding: EdgeInsets.all(10.0)),
