@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:grats_app/presentation/movie/local/action_widget_model.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +7,7 @@ class ActionWidget extends StatelessWidget {
   int pullindex = 0;
   List pulllist = [];
 
-  ActionWidget({required this.pullindex,required this.pulllist});
+  ActionWidget({required this.pullindex, required this.pulllist});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,11 @@ class ActionWidget extends StatelessWidget {
           return Dismissible(
             direction: DismissDirection.horizontal,
             onDismissed: (DismissDirection direction) async {
-              await pulllist.removeAt(pullindex);
+              if (direction == DismissDirection.horizontal) {
+                await pulllist.removeAt(pullindex);
+                model.counter = 0;
+                model.selectcolor = Colors.lightBlue;
+              }
             },
             key: UniqueKey(),
             child: Card(
@@ -39,7 +42,7 @@ class ActionWidget extends StatelessWidget {
                                 child: BlockPicker(
                                   pickerColor: model.selectcolor,
                                   onColorChanged: (Color color) {
-                                    model.colorChanged(color);
+                                    model.changeColor(color);
                                   },
                                 ),
                               ),
@@ -60,10 +63,11 @@ class ActionWidget extends StatelessWidget {
                 ),
                 title: Text(
                   model.completetextlist != null
-                      ? '${pulllist[pullindex]}'
+                      ? '${model.countWidget.countItemList}'
                       : '${model.completetextlist[pullindex]}',
                 ),
                 onLongPress: () {
+                  model.CollText();
                   print('押された');
                   showDialog(
                       context: context,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/domain/countitem.dart';
 
 class ActionWidgetModel extends ChangeNotifier {
+  CountWidget countWidget = CountWidget();
+
   int counter = 0;
 
   void increment(){
@@ -8,8 +11,16 @@ class ActionWidgetModel extends ChangeNotifier {
     notifyListeners();
   }
   void decrement(){
-    counter = --counter;
-    notifyListeners();
+    if (counter>0){
+      counter = --counter;
+      notifyListeners();
+    }
+  }
+  String changetext = '';
+
+  CollText(){
+    CountWidget countWidget = CountWidget();
+    print('actionは${countWidget.countTitle}');
   }
 
   var texteditingcontroller = TextEditingController();
@@ -18,11 +29,12 @@ class ActionWidgetModel extends ChangeNotifier {
   List<String> completetextlist = [];
   Color selectcolor = Colors.lightBlue;
 
-  colorChanged(color){
+  changeColor(color){
     //this.activecolor = color.add(color);
     this.selectcolor = color;
     notifyListeners();
   }
+
   updateList(){
     this.completetextlist = changetextlist;
     notifyListeners();
@@ -34,6 +46,9 @@ class ActionWidgetModel extends ChangeNotifier {
       print(color);
     };
   }
+  var outputlist = <String, String>{};
 
-  String createtext = '';
+  listOutput(){
+    this.outputlist = {'title': '24', 'index': '18', 'counter': '0'};
+  }
 }

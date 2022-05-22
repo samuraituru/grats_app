@@ -50,17 +50,58 @@ class MovieLocalPage extends StatelessWidget {
                   ),
                 ),
                 SafeArea(
-                  child: Container(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MoviePage()),
-                        );
-                      },
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MoviePage()),
+                            );
+                          },
+                        ),
+                      ),
+                      Container(
+                        child: IconButton(
+                          icon: Icon(Icons.addchart_outlined),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Recordへ記録しますか？'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(''),
+                                      Padding(padding: EdgeInsets.all(10.0)),
+                                      Text(''),
+                                    ],
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('キャンセル'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -78,7 +119,9 @@ class MovieLocalPage extends StatelessWidget {
                       hintText: 'カウントしたい項目を追加',
                       suffixIcon: IconButton(
                         onPressed: () {
-                          model.actionClearAdd();
+                          model.addItem();
+                          model.clearItem();
+                          model.addIndex();
                         },
                         icon: Icon(Icons.add),
                       ),
@@ -88,12 +131,15 @@ class MovieLocalPage extends StatelessWidget {
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: model.inputtextlist.length,
+                  itemCount: model.countWidget.countIndex,
+      //model.inputTextList.length,
                   itemBuilder: (BuildContext context, index) {
                     var passindex = index;
-                    var passlist = model.inputtextlist;
+                    var passlist = model.inputTextList;
                     return ActionWidget(
-                        pullindex: passindex, pulllist: passlist);
+                      pullindex: passindex,
+                      pulllist: passlist,
+                    );
                   },
                 ),
               ],

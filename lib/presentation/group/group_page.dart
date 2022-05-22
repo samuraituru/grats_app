@@ -22,7 +22,8 @@ class GroupPage extends StatelessWidget {
           builder: (context, model, child) {
             final List<Groups>? groups = model.groups;
             if (groups == null) {
-              return CircularProgressIndicator();
+              return SizedBox(
+                  height: 100, width: 100, child: CircularProgressIndicator());
             }
             final List<Widget> widgets = groups
                 .map(
@@ -37,8 +38,8 @@ class GroupPage extends StatelessWidget {
                     leading: Text(group.gName),
                     title: Text(group.gDesc),
                     trailing: IconButton(
-                        icon: Icon(Icons.edit),
-                      onPressed: (){},
+                      icon: Icon(Icons.edit),
+                      onPressed: () {},
                     ),
                   ),
                 )
@@ -47,7 +48,7 @@ class GroupPage extends StatelessWidget {
               wrap: controller == null,
               title: 'Groups',
               dlgtitle: 'Groupを追加',
-              applyword:'ok',
+              applyword: 'ok',
               child: Center(
                 child: ListView(
                   children: widgets,
