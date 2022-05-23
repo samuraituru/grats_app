@@ -124,6 +124,7 @@ class MovieLocalPage extends StatelessWidget {
                           model.addItem();
                           model.clearItem();
                           model.addIndex();
+
                         },
                         icon: Icon(Icons.add),
                       ),
