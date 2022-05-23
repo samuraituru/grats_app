@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:grats_app/presentation/movie/local/action_widget_model.dart';
+import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:provider/provider.dart';
 
 class ActionWidget extends StatelessWidget {
   int pullindex = 0;
-  List pulllist = [];
+  String pulltext = '';
 
-  ActionWidget({required this.pullindex, required this.pulllist});
+  ActionWidget({required this.pullindex, required this.pulltext});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ActionWidgetModel>(
-      create: (_) => ActionWidgetModel(),
-      child: Consumer<ActionWidgetModel>(
+    return ChangeNotifierProvider<MovieLocalModel>(
+      create: (_) => MovieLocalModel(),
+      child: Consumer<MovieLocalModel>(
         builder: (context, model, child) {
           return Dismissible(
             direction: DismissDirection.horizontal,
             onDismissed: (DismissDirection direction) async {
               if (direction == DismissDirection.horizontal) {
-                await pulllist.removeAt(pullindex);
-                model.counter = 0;
-                model.selectcolor = Colors.lightBlue;
+                //await pulllist.removeAt(pullindex);
+
+                model.colorReset();
               }
             },
             key: UniqueKey(),
@@ -31,7 +32,7 @@ class ActionWidget extends StatelessWidget {
                   width: 40,
                   child: FloatingActionButton(
                     heroTag: 'color',
-                    backgroundColor: model.selectcolor,
+                    backgroundColor: model.selectColor,
                     onPressed: () {
                       showDialog(
                           context: context,
@@ -40,7 +41,7 @@ class ActionWidget extends StatelessWidget {
                               title: Text('Pick a color!'),
                               content: SingleChildScrollView(
                                 child: BlockPicker(
-                                  pickerColor: model.selectcolor,
+                                  pickerColor: model.selectColor,
                                   onColorChanged: (Color color) {
                                     model.changeColor(color);
                                   },
@@ -62,9 +63,10 @@ class ActionWidget extends StatelessWidget {
                   ),
                 ),
                 title: Text(
-                  model.completetextlist != null
-                      ? '${model.countWidget.countItemList}'
-                      : '${model.completetextlist[pullindex]}',
+                      '${pulltext}'
+                  /*model.completetextlist == null
+                      ? '${model.countItemList[model.countItemList.length]}'
+                      : '${model.completetextlist[pullindex]}',*/
                 ),
                 onLongPress: () {
                   model.CollText();
@@ -76,7 +78,7 @@ class ActionWidget extends StatelessWidget {
                           title: Text('項目名を編集'),
                           content: TextField(
                             controller: TextEditingController(
-                              text: pulllist[pullindex],
+                              text: pulltext,//pulllist[pullindex],
                             ), //初期値
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
@@ -84,7 +86,7 @@ class ActionWidget extends StatelessWidget {
                               ),
                             ),
                             onChanged: (text) {
-                              pulllist[pullindex] = text;
+                              pulltext = text;
                             },
                           ),
                           actions: <Widget>[
@@ -100,7 +102,7 @@ class ActionWidget extends StatelessWidget {
                                 //model.updateText();
                                 //pulltext = model.completetext;
                                 model.updateList();
-                                pulllist = model.completetextlist;
+                                pulltext = model.completetext;
                                 Navigator.pop(context);
                               },
                             ),
@@ -120,10 +122,13 @@ class ActionWidget extends StatelessWidget {
                         child: Icon(Icons.add),
                         onPressed: () {
                           model.increment();
+                          model.incrementList();
                         },
                       ),
                     ),
-                    Text('${model.counter}'),
+                    Text(
+                        //'${model.counter}'),
+                        '${model.counterList[pullindex]}'),
                     Container(
                       width: 40,
                       child: FloatingActionButton(

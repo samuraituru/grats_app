@@ -2,38 +2,113 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/domain/countitem.dart';
 
 class MovieLocalModel extends ChangeNotifier {
-  var controller = TextEditingController();
+  var texteditingcontroller = TextEditingController();
   var scrollController = ScrollController();
-  var inputText = '';
-  var inputTextList = <String>['例)'];
-  int index = 0;
-  CountWidget countWidget = CountWidget();
 
-  Future addItem() async {
+  var inputText = '';
+  var countItem = '例)';
+  int index = 0;
+  var inputTextList = <String>[''];
+  List<String> countItemList = [];
+
+  //CountWidget countWidget = CountWidget();
+
+  void addItem() {
     //this.inputTextList.add(inputText);
-    countWidget.setList = await inputText;
-    //countWidget.setTitle = await inputText;
+    countItemList.add(inputText);
+    //this.countItem = inputText;
     notifyListeners();
   }
+
   void addIndex() {
-    countWidget.countIndex = ++countWidget.countIndex;
+    index++;
     notifyListeners();
   }
 
   void clearItem() {
-    this.controller.clear();
+    this.texteditingcontroller.clear();
     this.inputText = '';
     notifyListeners();
   }
-  CollText(){
+
+  CollText() {
     CountWidget countWidget = CountWidget();
     print('localは${countWidget.countTitle}');
   }
 
-  void outputMap(){
+  void outputMap() {
     Map<String, String> outputMap = {};
-    outputMap['item'] = '${countWidget.countItemList}';
-    outputMap['counter'] = '${countWidget.counter}';
-    outputMap['index'] = '0';
+    //outputMap['item'] = '${countWidget.countItemList}';
+    //outputMap['counter'] = '${countWidget.counter}';
+    //outputMap['index'] = '0';
+  }
+
+  List<int> counterList = [0];
+   incrementList() async {
+     counterList[index] = await counter;
+      notifyListeners();
+  }
+  void decrementList() {
+    if (counter > 0) {
+      counterList[index] = --counter;
+      notifyListeners();
+    }
+  }
+
+  int counter = 0;
+
+  void increment() {
+    counter = ++counter;
+    notifyListeners();
+  }
+
+  void decrement() {
+    if (counter > 0) {
+      counter = --counter;
+      notifyListeners();
+    }
+  }
+
+  String changetext = '';
+
+  //List<String> changetextlist = [];
+  String completetext = '';
+  Color selectColor = Colors.lightBlue;
+
+  changeColor(color) {
+    //this.activecolor = color.add(color);
+    this.selectColor = color;
+    notifyListeners();
+  }
+
+  updateList() {
+    this.completetext = changetext;
+    notifyListeners();
+  }
+
+  colorPicker() {
+    pickerColor:
+    Colors.red; //default color
+    onColorChanged:
+    (Color color) {
+      //on color picked
+      print(color);
+    };
+  }
+
+  colorReset() {
+    this.counter = 0;
+    this.selectColor = Colors.lightBlue;
+  }
+
+  var countMap = <String, String>{};
+
+  listOutput() {
+    for (int i = 0; i < countItemList.length; i++) {
+      countMap = {
+        '${countItemList[i]}': '${counterList[i]}',
+      };
+    }
+    notifyListeners();
   }
 }

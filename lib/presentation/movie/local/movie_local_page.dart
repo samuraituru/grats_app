@@ -92,7 +92,9 @@ class MovieLocalPage extends StatelessWidget {
                                     ),
                                     TextButton(
                                       child: Text('OK'),
-                                      onPressed: () {},
+                                      onPressed: () {
+
+                                      },
                                     ),
                                   ],
                                 );
@@ -111,7 +113,7 @@ class MovieLocalPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextField(
-                    controller: model.controller,
+                    controller: model.texteditingcontroller,
                     onChanged: (String? value) {
                       model.inputText = value!;
                     },
@@ -131,14 +133,15 @@ class MovieLocalPage extends StatelessWidget {
                 ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: model.countWidget.countIndex,
+                  itemCount: model.index,
       //model.inputTextList.length,
                   itemBuilder: (BuildContext context, index) {
+                    var passtext = model.countItemList[index];
                     var passindex = index;
-                    var passlist = model.inputTextList;
+                    //var passtext = model.countItem;
                     return ActionWidget(
                       pullindex: passindex,
-                      pulllist: passlist,
+                      pulltext: passtext,
                     );
                   },
                 ),
