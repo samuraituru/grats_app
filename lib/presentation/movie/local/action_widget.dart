@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:grats_app/presentation/movie/local/action_widget_model.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:provider/provider.dart';
 
-class ActionWidget extends StatelessWidget {
+class CountItemWidget extends StatelessWidget {
   int pullindex = 0;
   String pulltext = '';
 
-  ActionWidget({required this.pullindex, required this.pulltext});
+  CountItemWidget({required this.pullindex, required this.pulltext});
 
   @override
   Widget build(BuildContext context) {
@@ -127,8 +126,8 @@ class ActionWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                        //'${model.counter}'),
-                        '${model.counterList[pullindex]}'),
+                        '${model.counter}'),
+                        //'${model.counterList[pullindex]}'),
                     Container(
                       width: 40,
                       child: FloatingActionButton(
@@ -137,6 +136,7 @@ class ActionWidget extends StatelessWidget {
                         child: Icon(Icons.remove),
                         onPressed: () {
                           model.decrement();
+                          model.decrementList();
                         },
                       ),
                     ),

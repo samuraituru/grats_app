@@ -43,14 +43,16 @@ class MovieLocalModel extends ChangeNotifier {
     //outputMap['index'] = '0';
   }
 
-  List<int> counterList = [0];
-   incrementList() async {
-     counterList[index] = await counter;
-      notifyListeners();
+  List<int> counterList = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  incrementList() async {
+    counterList[index] = await counter;
+    notifyListeners();
   }
+
   void decrementList() {
-    if (counter > 0) {
-      counterList[index] = --counter;
+    if (counter >= 0) {
+      counterList[index] = counter;
       notifyListeners();
     }
   }
@@ -101,9 +103,13 @@ class MovieLocalModel extends ChangeNotifier {
     this.selectColor = Colors.lightBlue;
   }
 
+  mapGet() {
+    return countMap;
+  }
+
   var countMap = <String, String>{};
 
-  listOutput() {
+ Future listOutput() async {
     for (int i = 0; i < countItemList.length; i++) {
       countMap = {
         '${countItemList[i]}': '${counterList[i]}',
