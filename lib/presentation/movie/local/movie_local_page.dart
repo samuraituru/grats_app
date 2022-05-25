@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/movie/local/action_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:grats_app/presentation/movie/local/scrollview_widget.dart';
 import 'package:grats_app/presentation/movie/local/watch_widget.dart';
@@ -39,7 +38,17 @@ class MovieLocalPage extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(child: WatchWidget()),
+              Container(
+                child:
+                  WatchWidget(),
+         /*       Container(
+                  color: Colors.grey,
+                 child: SizedBox(
+                    width: double.infinity,
+                    height: 250,
+                  ),
+                ),*/
+              ),
               SafeArea(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,8 +93,7 @@ class MovieLocalPage extends StatelessWidget {
                                   ),
                                   TextButton(
                                     child: Text('OK'),
-                                    onPressed: () {
-                                    },
+                                    onPressed: () {},
                                   ),
                                 ],
                               );
