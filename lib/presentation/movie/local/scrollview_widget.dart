@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/movie/local/action_widget.dart';
+import 'package:grats_app/presentation/movie/local/countItem_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +13,7 @@ class ScrollviewWidget extends StatelessWidget {
           builder: (context, model, child) {
             var maps = model.mapGet();
             return Container(
-              height: 385.0,
+              //height: 380.0,
               child: SingleChildScrollView(
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),

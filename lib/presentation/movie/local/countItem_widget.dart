@@ -8,7 +8,6 @@ class CountItemWidget extends StatelessWidget {
   String pulltext = '';
 
   CountItemWidget({required this.pullindex, required this.pulltext});
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MovieLocalModel>(
@@ -20,7 +19,6 @@ class CountItemWidget extends StatelessWidget {
             onDismissed: (DismissDirection direction) async {
               if (direction == DismissDirection.horizontal) {
                 //await pulllist.removeAt(pullindex);
-
                 model.colorReset();
               }
             },
@@ -61,53 +59,53 @@ class CountItemWidget extends StatelessWidget {
                     },
                   ),
                 ),
-                title: Text(
-                      '${pulltext}'
-                  /*model.completetextlist == null
+                title: Text('${pulltext}'
+                    /*model.completetextlist == null
                       ? '${model.countItemList[model.countItemList.length]}'
                       : '${model.completetextlist[pullindex]}',*/
-                ),
+                    ),
                 onLongPress: () {
                   model.CollText();
                   print('押された');
                   showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('項目名を編集'),
-                          content: TextField(
-                            controller: TextEditingController(
-                              text: pulltext,//pulllist[pullindex],
-                            ), //初期値
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 20,
-                              ),
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('項目名を編集'),
+                        content: TextField(
+                          controller: TextEditingController(
+                            text: pulltext, //pulllist[pullindex],
+                          ), //初期値
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 20,
                             ),
-                            onChanged: (text) {
-                              pulltext = text;
+                          ),
+                          onChanged: (text) {
+                            pulltext = text;
+                          },
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('キャンセル'),
+                            onPressed: () {
+                              Navigator.pop(context);
                             },
                           ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('キャンセル'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            TextButton(
-                              child: Text('更新'),
-                              onPressed: () {
-                                //model.updateText();
-                                //pulltext = model.completetext;
-                                model.updateList();
-                                pulltext = model.completetext;
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        );
-                      });
+                          TextButton(
+                            child: Text('更新'),
+                            onPressed: () {
+                              //model.updateText();
+                              //pulltext = model.completetext;
+                              model.updateList();
+                              pulltext = model.completetext;
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -125,9 +123,8 @@ class CountItemWidget extends StatelessWidget {
                         },
                       ),
                     ),
-                    Text(
-                        '${model.counter}'),
-                        //'${model.counterList[pullindex]}'),
+                    Text('${model.counter}'),
+                    //'${model.counterList[pullindex]}'),
                     Container(
                       width: 40,
                       child: FloatingActionButton(
