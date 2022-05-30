@@ -1,120 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/countitem.dart';
+import 'package:grats_app/domain/item.dart';
 
 class MovieLocalModel extends ChangeNotifier {
-  var texteditingcontroller = TextEditingController();
-  var scrollController = ScrollController();
+  final texteditingcontroller = TextEditingController();
+  final scrollController = ScrollController();
+  String title = '';
+  String editTitle = '';
+  int counter = 0;
+  Color selectColor = Colors.lightBlue;
 
-  var inputText = '';
-  var countItem = '例)';
-  int index = 0;
-  var inputTextList = <String>[''];
-  List<String> countItemList = [];
+  var countItems = <Item>[];
 
   //CountWidget countWidget = CountWidget();
 
-  void addItem() {
-    //this.inputTextList.add(inputText);
-    countItemList.add(inputText);
-    //this.countItem = inputText;
-    notifyListeners();
-  }
-
-  void addIndex() {
-    index++;
-    notifyListeners();
-  }
-
-  void clearItem() {
-    this.texteditingcontroller.clear();
-    this.inputText = '';
-    notifyListeners();
-  }
-
-  CollText() {
-    CountWidget countWidget = CountWidget();
-    print('localは${countWidget.countTitle}');
-  }
-
-  void outputMap() {
-    Map<String, String> outputMap = {};
-    //outputMap['item'] = '${countWidget.countItemList}';
-    //outputMap['counter'] = '${countWidget.counter}';
-    //outputMap['index'] = '0';
-  }
-
-  List<int> counterList = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-  incrementList() async {
-    counterList[index] = await counter;
-    notifyListeners();
-  }
-
-  void decrementList() {
-    if (counter >= 0) {
-      counterList[index] = counter;
+  void CountItemCreate() {
+    if (title != null) {
+      countItems.add(Item(title: title));
+      this.texteditingcontroller.clear();
       notifyListeners();
     }
   }
 
-  int counter = 0;
-
-  void increment() {
-    counter = ++counter;
+  void increment(Item countItem) {
+    countItem.counter += 1;
     notifyListeners();
   }
 
-  void decrement() {
-    if (counter > 0) {
-      counter = --counter;
-      notifyListeners();
-    }
-  }
-
-  String changetext = '';
-
-  //List<String> changetextlist = [];
-  String completetext = '';
-  Color selectColor = Colors.lightBlue;
-
-  changeColor(color) {
-    //this.activecolor = color.add(color);
-    this.selectColor = color;
+  void decrement(Item countItem) {
+    if (countItem.counter > 0)
+      countItem.counter -= 1;
     notifyListeners();
   }
 
-  updateList() {
-    this.completetext = changetext;
+  void changeColor(Item countItem) {
+    countItem.color = selectColor;
     notifyListeners();
   }
 
-  colorPicker() {
+  void updateText(Item countItem) {
+    countItem.title = editTitle;
+  }
+
+  void colorPicker() {
     pickerColor:
     Colors.red; //default color
     onColorChanged:
-    (Color color) {
+        (Color color) {
       //on color picked
       print(color);
     };
   }
 
-  colorReset() {
-    this.counter = 0;
-    this.selectColor = Colors.lightBlue;
-  }
+/*  Widget outPutText() {
+    if (!countItems.isEmpty) {
+      {
+        for (var i = 0; i < countItems.length; i++)
+        return Text(
+            '${countItems[0]}\n${counter}');
+      }
+    } else {
+      return const Text('項目なし');
+    }
+  }*/
 
-  mapGet() {
-    return countMap;
-  }
-
-  var countMap = <String, String>{};
-
- Future listOutput() async {
+/*Future listOutput() async {
     for (int i = 0; i < countItemList.length; i++) {
       countMap = {
         '${countItemList[i]}': '${counterList[i]}',
       };
     }
     notifyListeners();
-  }
+  }*/
 }

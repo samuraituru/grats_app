@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/presentation/movie/local/countItem_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
-import 'package:grats_app/presentation/movie/local/scrollview_widget.dart';
 import 'package:grats_app/presentation/movie/local/watch_widget.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
 import 'package:provider/provider.dart';
 
 class MovieLocalPage extends StatelessWidget {
-  bool _validate = false;
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,21 +31,12 @@ class MovieLocalPage extends StatelessWidget {
   // 縦向きの場合
   Widget _buildHorizontal(BuildContext context) {
     return Consumer<MovieLocalModel>(builder: (context, model, child) {
-      var maps = model.mapGet();
       return Column(
         children: [
           Stack(
             children: [
               Container(
-                child:
-                  WatchWidget(),
-         /*       Container(
-                  color: Colors.grey,
-                 child: SizedBox(
-                    width: double.infinity,
-                    height: 250,
-                  ),
-                ),*/
+                child: WatchWidget(),
               ),
               SafeArea(
                 child: Row(
@@ -70,7 +59,6 @@ class MovieLocalPage extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.addchart_outlined),
                         onPressed: () async {
-                          await model.listOutput();
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -79,9 +67,14 @@ class MovieLocalPage extends StatelessWidget {
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text('$maps'),
+                                    for (int i = 0;
+                                    i < model.countItems.length;
+                                    i++) ...{
+                                      Text('${model.countItems[i].title}'),
+                                      Text('${model.countItems[i].counter}'),
+                                    },
+                                    //model.outPutText(),
                                     Padding(padding: EdgeInsets.all(10.0)),
-                                    Text(''),
                                   ],
                                 ),
                                 actions: <Widget>[
@@ -112,32 +105,44 @@ class MovieLocalPage extends StatelessWidget {
             child: TextField(
               controller: model.texteditingcontroller,
               onChanged: (String? value) {
-                model.inputText = value!;
+                model.title = value!;
               },
               decoration: InputDecoration(
                 hintText: 'カウントしたい項目を追加',
                 suffixIcon: IconButton(
                   onPressed: () {
-                    model.addItem();
-                    model.clearItem();
-                    model.addIndex();
+                    model.CountItemCreate();
                   },
                   icon: Icon(Icons.add),
                 ),
               ),
             ),
           ),
-          ScrollviewWidget(),
+          Container(
+            child: SingleChildScrollView(
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: model.countItems.length,
+                itemBuilder: (BuildContext context, index) {
+                  var countItem = model.countItems[index];
+                  return CountItemWidget(countItem: countItem);
+                },
+              ),
+            ),
+          ),
         ],
       );
     });
   }
 
   Widget _buildVertical(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      color: Colors.pink,
-      child: Text("ヨコ", style: TextStyle(fontSize: 32)),
-    );
+    return Consumer<MovieLocalModel>(builder: (context, model, child) {
+      return Container(
+        alignment: Alignment.center,
+        color: Colors.pink,
+        child: Text("ヨコ", style: TextStyle(fontSize: 32)),
+      );
+    });
   }
 }

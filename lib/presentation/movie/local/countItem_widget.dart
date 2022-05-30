@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:grats_app/domain/item.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:provider/provider.dart';
 
 class CountItemWidget extends StatelessWidget {
-  int pullindex = 0;
-  String pulltext = '';
+  Item countItem;
 
-  CountItemWidget({required this.pullindex, required this.pulltext});
+  CountItemWidget({required this.countItem});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MovieLocalModel>(
@@ -18,8 +19,8 @@ class CountItemWidget extends StatelessWidget {
             direction: DismissDirection.horizontal,
             onDismissed: (DismissDirection direction) async {
               if (direction == DismissDirection.horizontal) {
-                //await pulllist.removeAt(pullindex);
-                model.colorReset();
+                //Widgetの削除方法が未確定のため未実装
+                //model.countItems.remove(child);
               }
             },
             key: UniqueKey(),
@@ -29,7 +30,7 @@ class CountItemWidget extends StatelessWidget {
                   width: 40,
                   child: FloatingActionButton(
                     heroTag: 'color',
-                    backgroundColor: model.selectColor,
+                    backgroundColor: countItem.color,
                     onPressed: () {
                       showDialog(
                           context: context,
@@ -40,7 +41,8 @@ class CountItemWidget extends StatelessWidget {
                                 child: BlockPicker(
                                   pickerColor: model.selectColor,
                                   onColorChanged: (Color color) {
-                                    model.changeColor(color);
+                                    model.selectColor = color;
+                                    model.changeColor(countItem);
                                   },
                                 ),
                               ),
@@ -59,13 +61,11 @@ class CountItemWidget extends StatelessWidget {
                     },
                   ),
                 ),
-                title: Text('${pulltext}'
+                title: Text('${countItem.title}'),
                     /*model.completetextlist == null
                       ? '${model.countItemList[model.countItemList.length]}'
                       : '${model.completetextlist[pullindex]}',*/
-                    ),
                 onLongPress: () {
-                  model.CollText();
                   print('押された');
                   showDialog(
                     context: context,
@@ -74,7 +74,7 @@ class CountItemWidget extends StatelessWidget {
                         title: Text('項目名を編集'),
                         content: TextField(
                           controller: TextEditingController(
-                            text: pulltext, //pulllist[pullindex],
+                            text: countItem.title,
                           ), //初期値
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -82,7 +82,7 @@ class CountItemWidget extends StatelessWidget {
                             ),
                           ),
                           onChanged: (text) {
-                            pulltext = text;
+                            model.editTitle = text;
                           },
                         ),
                         actions: <Widget>[
@@ -95,10 +95,7 @@ class CountItemWidget extends StatelessWidget {
                           TextButton(
                             child: Text('更新'),
                             onPressed: () {
-                              //model.updateText();
-                              //pulltext = model.completetext;
-                              model.updateList();
-                              pulltext = model.completetext;
+                              model.updateText(countItem);
                               Navigator.pop(context);
                             },
                           ),
@@ -118,12 +115,11 @@ class CountItemWidget extends StatelessWidget {
                         tooltip: 'Action!',
                         child: Icon(Icons.add),
                         onPressed: () {
-                          model.increment();
-                          model.incrementList();
+                          model.increment(countItem);
                         },
                       ),
                     ),
-                    Text('${model.counter}'),
+                    Text('${countItem.counter}'),
                     //'${model.counterList[pullindex]}'),
                     Container(
                       width: 40,
@@ -132,8 +128,7 @@ class CountItemWidget extends StatelessWidget {
                         tooltip: 'Action!',
                         child: Icon(Icons.remove),
                         onPressed: () {
-                          model.decrement();
-                          model.decrementList();
+                          model.decrement(countItem);
                         },
                       ),
                     ),
