@@ -7,34 +7,25 @@ class ScrollviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MovieLocalModel>(
-      create: (_) => MovieLocalModel(),
-      builder: (context, snapshot) {
-        return Consumer<MovieLocalModel>(
+        create: (_) => MovieLocalModel(),
+        child: Consumer<MovieLocalModel>(
           builder: (context, model, child) {
-            var maps = model.mapGet();
             return Container(
               //height: 380.0,
               child: SingleChildScrollView(
                 child: ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: model.index,
-                  //model.inputTextList.length,
+                  itemCount: model.countItems.length,
                   itemBuilder: (BuildContext context, index) {
-                    var passtext = model.countItemList[index];
-                    var passindex = index;
-                    //var passtext = model.countItem;
-                    return CountItemWidget(
-                      pullindex: passindex,
-                      pulltext: passtext,
-                    );
+                    final countItem = model.countItems[index];
+                    return CountItemWidget(countItem: countItem);
                   },
                 ),
               ),
             );
           },
-        );
-      },
+        ),
     );
   }
 }
