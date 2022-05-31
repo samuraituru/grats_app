@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
@@ -15,20 +16,26 @@ class IntroductionPage extends StatelessWidget {
           return IntroductionScreen(
             pages: model.listPagesViewModel,
             onDone: () {
-              // When done button is press
-            },
-            onSkip: () {
-              // You can also override onSkip callback
+              model.setFirstIntro();
             },
             showSkipButton: true,
             back: const Icon(Icons.arrow_back),
             skip: const Text('skip'),
             next: const Text('next'),
-            done: const Text("ゲストで始める",
-                style: TextStyle(fontWeight: FontWeight.w600,fontSize: 12)),
+            done: TextButton(
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomePage()),
+                );
+              },
+              child: const Text("ゲストで始める",
+                  style: TextStyle(fontWeight: FontWeight.w600,fontSize: 12)),
+            ),
             dotsDecorator: DotsDecorator(
                 size: const Size.square(10.0),
-                activeSize: const Size(20.0, 10.0),
+                activeSize: const Size(15.0, 10.0),
                 color: Colors.black26,
                 spacing: const EdgeInsets.symmetric(horizontal: 3.0),
                 activeShape: RoundedRectangleBorder(

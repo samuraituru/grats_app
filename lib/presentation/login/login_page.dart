@@ -40,8 +40,8 @@ class LoginPage extends StatelessWidget {
                   child: TextField(
                     obscureText: true, // パスワードが見えないようにする
                     maxLength: 20, // 入力可能な文字数
-                    onChanged: (inputpass) {
-                      model.setPassword(inputpass);
+                    onChanged: (text) {
+                      model.setPassword(text);
                     },
                     controller: model.authorController,
                     decoration: InputDecoration(

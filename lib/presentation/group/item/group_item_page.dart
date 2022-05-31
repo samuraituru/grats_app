@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/groups.dart';
+
+import 'package:grats_app/domain/record.dart';
 import 'package:grats_app/presentation/group/item/group_item_model.dart';
 import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';
@@ -9,24 +10,25 @@ class GroupItemPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupItemModel>(
-      create: (_) => GroupItemModel(null)..getItems(),
+      create: (_) => GroupItemModel(null)..getRecord(),
       child: Consumer<GroupItemModel>(
         builder: (context, model, child) {
-          final List<Items>? headers = model.items;
-          if (headers == null) {
+          final List<Record>? records = model.records;
+
+          if (records == null) {
             return CircularProgressIndicator();
           }
-          final List<Widget> widgets = headers
+          final List<Widget> widgets = records
               .map(
-                (header) => ListTile(
+                (record) => ListTile(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => GroupItemPage()),
                     );
                   },
-                  leading: Text(header.iName1),
-                  title: Text(header.iName2),
+                  leading: Text('${record.title}'),
+                  title: Text('${record.contents}'),
                   trailing: Icon(Icons.edit),
                 ),
               )
@@ -56,7 +58,7 @@ class GroupItemPage extends StatelessWidget {
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Header #$index',
+                            '${records[index].headerName}${index}',
                             style: const TextStyle(color: Colors.white),
                           ),
                         ),

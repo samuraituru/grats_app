@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
+import 'package:grats_app/presentation/introduction/Introduction_model.dart';
+import 'package:grats_app/presentation/introduction/introduction_page.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +16,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Grats App',
+      home: ChangeNotifierProvider<IntroductionModel>(
+          create: (_) => IntroductionModel(),
+          child: Consumer<IntroductionModel>(builder: (context, model, child) {
+              return model.firstIntro == true ? IntroductionPage() : HomePage();
+            }
+          ),
+      ),
     );
   }
 }
