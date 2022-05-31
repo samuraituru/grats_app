@@ -10,17 +10,8 @@ import 'package:provider/provider.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _pageList = [
-      SignUpPage(),
-      GroupPage(),
-      RecordPage(),
-      MoviePage(),
-      MyselfPage(),
-    ];
-
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
-
 
     return MaterialApp(
       home: ChangeNotifierProvider<HomeModel>(
@@ -49,18 +40,59 @@ class HomePage extends StatelessWidget {
             ),
           ];
           return Scaffold(
-            body: _pageList[model.currentIndex],
+            body: _homePageBody(context, model),
             bottomNavigationBar: BottomNavigationBar(
-              currentIndex: model.currentIndex,
               onTap: (index) {
-                model.currentIndex = index;
+                model.onTabTapped(index);
               },
+              currentIndex: model.currentIndex,
               items: tabItems,
               type: BottomNavigationBarType.fixed,
             ),
           );
         }),
       ),
+    );
+  }
+
+  Widget _homePageBody(BuildContext context, HomeModel model) {
+    final currentIndex = model.currentIndex;
+    return Stack(
+      children: <Widget>[
+        _tabPage(
+          currentIndex,
+          0,
+          SignUpPage(),
+        ),
+        _tabPage(
+          currentIndex,
+          1,
+          GroupPage(),
+        ),
+        _tabPage(
+          currentIndex,
+          2,
+          RecordPage(),
+        ),
+        _tabPage(
+          currentIndex,
+          3,
+          MoviePage(),
+        ),
+        _tabPage(
+          currentIndex,
+          4,
+          MyselfPage(),
+        ),
+      ],
+    );
+  }
+
+  Widget _tabPage(int currentIndex, int tabIndex, StatelessWidget page) {
+    return Visibility(
+      visible: currentIndex == tabIndex,
+      maintainState: true,
+      child: page,
     );
   }
 }

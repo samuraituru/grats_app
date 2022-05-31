@@ -17,13 +17,16 @@ class GroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<GroupModel>(
-        create: (_) => GroupModel()..getGroups(),
+        create: (_) => GroupModel()..getGroup(),
         child: Consumer<GroupModel>(
           builder: (context, model, child) {
-            final List<Groups>? groups = model.groups;
+            final List<Group>? groups = model.groups;
+
             if (groups == null) {
-              return SizedBox(
-                  height: 100, width: 100, child: CircularProgressIndicator());
+              return Container(
+                child: SizedBox(
+                    height: 100, width: 100, child: CircularProgressIndicator()),
+              );
             }
             final List<Widget> widgets = groups
                 .map(
@@ -32,11 +35,11 @@ class GroupPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => GroupFloderPage()),
+                            builder: (context) => GroupFloderPage(groups)),
                       );
                     },
                     leading: Text(group.gName),
-                    title: Text(group.gDesc),
+                    title: Text(group.gDesc!),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () {},

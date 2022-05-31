@@ -20,13 +20,13 @@ class SignModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEmail(String email) {
-    this.email = email;
+  void setEmail(String text) {
+    this.email = text;
     notifyListeners();
   }
 
-  void setPassword(String password) {
-    this.password = password;
+  void setPassword(String text) {
+    this.password = text;
     notifyListeners();
   }
   Future signUp() async {

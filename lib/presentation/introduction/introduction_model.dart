@@ -3,18 +3,18 @@ import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroductionModel extends ChangeNotifier {
-  bool intro = false;
+  bool firstIntro = false;
 
   getPrefIntro() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // 以下の「intro」がキー名。見つからなければtrueを返す
-    intro = prefs.getBool('intro') ?? true;
+    firstIntro = prefs.getBool('firstIntro') ?? true;
     notifyListeners();
   }
 
-  setIntro() async {
+  setFirstIntro() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("intro", false);
+    await prefs.setBool("firstIntro", false);
     notifyListeners();
   }
   var listPagesViewModel = [
