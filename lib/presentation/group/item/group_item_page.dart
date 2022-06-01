@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:grats_app/domain/record.dart';
 import 'package:grats_app/presentation/group/item/group_item_model.dart';
 import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
@@ -21,7 +20,7 @@ class GroupItemPage extends StatelessWidget {
           final List<Widget> widgets = records
               .map(
                 (record) => ListTile(
-                  onTap: () {
+                  onTap: (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => GroupItemPage()),

@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grats_app/domain/folder.dart';
 import 'package:grats_app/domain/groups.dart';
+import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/domain/record.dart';
 
 class GroupModel extends ChangeNotifier {
@@ -11,10 +13,44 @@ class GroupModel extends ChangeNotifier {
   var foloders = <Folder>[];
   var records = <Record>[];
   var groups = <Group>[];
-  //final groups = <Group>[];
+  String addgName = '';
+  MyUser myuser = MyUser();
 
+  //final groups = <Group>[];
+  String? uid;
+  String? docID;
   String? addgroup;
   QuerySnapshot? snapshot;
+  DocumentSnapshot? docsnapshot;
+
+  Future getMyuser() async {
+    final docsnapshot =
+    await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+    this.docsnapshot = docsnapshot;
+
+    final Map<String, dynamic>? data = docsnapshot.data();
+    myuser.gID = data!['gID'];
+    notifyListeners();
+  }
+
+  Future getGroupList() async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.uid = currentuser?.uid.toString();
+
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('Groups').get();
+    this.snapshot = snapshot;
+
+    final List<Group> groups = snapshot.docs.map((DocumentSnapshot document) {
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+      final String gName = data['gName'];
+      final String gDesc = data['gDesc'];
+      final String gID = data['gID'];
+      return Group(gName: gName, gDesc: gDesc, gID: gID);
+    }).toList();
+    this.groups = groups;
+    notifyListeners();
+  }
 
   Future getGroup() async {
     final QuerySnapshot snapshot =
@@ -26,7 +62,7 @@ class GroupModel extends ChangeNotifier {
       final String gName = data['gName'];
       final String gDesc = data['gDesc'];
       final String gID = data['gID'];
-      return Group(gName:gName, gDesc:gDesc, gID:gID);
+      return Group(gName: gName, gDesc: gDesc, gID: gID);
     }).toList();
     this.groups = groups;
     notifyListeners();
@@ -56,11 +92,17 @@ class GroupModel extends ChangeNotifier {
     final doc = FirebaseFirestore.instance.collection('Groups').doc();
 
     // firestoreに追加
-    await doc.set({
-      'name': group.gName,
-      'description': group.gDesc,
-    });
+    await doc.set(
+      {
+        'name': group.gName,
+        'description': group.gDesc,
+        'gID': group.gID,
+        'menberID': group.menberID,
+      },
+    );
+    notifyListeners();
   }
+
   Future addRecord(Record record) async {
     if (record.title == null || record.title == "") {
       throw 'レコード名が入力されていません';
@@ -72,9 +114,6 @@ class GroupModel extends ChangeNotifier {
     await doc.set({
       'title': record.title,
       'contents': record.contents,
-
     });
   }
-
 }
-

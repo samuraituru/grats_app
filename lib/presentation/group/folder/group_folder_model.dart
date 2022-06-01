@@ -19,6 +19,7 @@ class GroupFolderModel extends ChangeNotifier {
         .doc('Group')
         .collection('Folders')
         .get();
+    snapshot.docs;
 
     final List<Folder> folders = snapshot.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
