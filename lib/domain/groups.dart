@@ -4,7 +4,9 @@ class Group {
   String gID;
   String? menberID;
 
-  Group({required this.gName, required this.gDesc, required this.gID, this.menberID});
+  Group(
+      {required this.gName,
+      required this.gDesc,
+      required this.gID,
+      this.menberID});
 }
-
-

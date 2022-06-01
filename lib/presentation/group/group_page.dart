@@ -35,7 +35,7 @@ class GroupPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => GroupFloderPage(groups)),
+                            builder: (context) => GroupFloderPage(group)),
                       );
                     },
                     leading: Text(group.gName),
@@ -47,14 +47,76 @@ class GroupPage extends StatelessWidget {
                   ),
                 )
                 .toList();
-            return ScaffoldWrapper(
-              wrap: controller == null,
-              title: 'Groups',
-              dlgtitle: 'Groupを追加',
-              applyword: 'ok',
-              child: Center(
+            return Scaffold(
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(kToolbarHeight),
+                child: AppBar(
+                  centerTitle: true,
+                  title: Text('Groups'),
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Groupを追加'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      hintText: " 追加",
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 20,
+                                      ),
+                                    ),
+                                    onChanged: (text) {
+                                      model.addgName = text;
+                                    },
+                                  ),
+                                  Padding(padding: EdgeInsets.all(10.0)),
+                                  TextField(
+                                    decoration: InputDecoration(
+                                      hintText: " 説明",
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 50,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('キャンセル'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('OK'),
+                                  onPressed: () {
+
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    )
+                  ],
+                  elevation: 0.0,
+                ),
+              ),
+              body: Center(
                 child: ListView(
-                  children: widgets,
+                children: widgets,
+            ),
+
 /*
                 children: ListTile.divideTiles(
                   context: context,
@@ -67,7 +129,6 @@ class GroupPage extends StatelessWidget {
                   ],
                 ).toList(growable: false),
 */
-                ),
               ),
             );
           },

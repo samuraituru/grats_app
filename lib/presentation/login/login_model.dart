@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/user.dart';
+import 'package:grats_app/domain/myuser.dart';
 
 class LoginModel extends ChangeNotifier {
   final titleController = TextEditingController();

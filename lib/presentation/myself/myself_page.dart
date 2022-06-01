@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/group/group_model.dart';
-import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
+import 'package:grats_app/domain/myuser.dart';
+import 'package:grats_app/presentation/myself/myself_account_page.dart';
+
 import 'package:grats_app/presentation/myself/myself_model.dart';
+import 'package:grats_app/presentation/testpage/stool_page.dart';
 import 'package:provider/provider.dart';
 
 class MyselfPage extends StatelessWidget {
@@ -9,11 +11,23 @@ class MyselfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<MyselfModel>(
-        create: (_) => MyselfModel(),
+        create: (_) => MyselfModel()..getMyuser(),
         child: Consumer<MyselfModel>(builder: (context, model, child) {
+          MyUser myuser = model.myuser;
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyselfAccount()),
+                      );
+                    }),
+              ],
               title: Text('Myself'),
             ),
             body: Column(
@@ -56,8 +70,13 @@ class MyselfPage extends StatelessWidget {
                           child: Container(
                             color: Colors.grey,
                             child: TextField(
-                              decoration: const InputDecoration(
-                                hintText: '   プロフィール名',
+                              onChanged: (text){
+                                myuser.userName = text;
+                              },
+                              decoration: InputDecoration(
+                                hintText: myuser.userName != null
+                                    ? '${myuser.userName}'
+                                    : 'プロフィール名',
                               ),
                             ),
                           ),
@@ -69,14 +88,21 @@ class MyselfPage extends StatelessWidget {
                 Container(
                   color: Colors.grey,
                   child: TextField(
-                    decoration: const InputDecoration(
+                    onChanged: (text){
+                      myuser.target = text;
+                    },
+                    decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(30),
-                      hintText: '目標・ひとことコメント',
+                      hintText: myuser.target != null
+                          ? '${myuser.target}'
+                          : '目標・ひとことコメント',
                     ),
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    model.updateMyselfInfo(myuser);
+                  },
                   child: Text('プロフィールを更新'),
                 ),
                 ElevatedButton(onPressed: () {}, child: Text('MyRecordへ')),
@@ -85,7 +111,7 @@ class MyselfPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MovieLocalPage()),
+                        MaterialPageRoute(builder: (context) => StoolPage()),
                       );
                     },
                     child: Text('Movieへ')),

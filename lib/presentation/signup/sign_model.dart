@@ -40,13 +40,13 @@ class SignModel extends ChangeNotifier {
       final user = userCredential.user;
 
       if (user != null) {
-        final uid = user.uid;
+        final uID = user.uid;
 
         // firestoreに追加
 
-        final doc = FirebaseFirestore.instance.collection('Users').doc(uid);
+        final doc = FirebaseFirestore.instance.collection('Users').doc(uID);
         await doc.set({
-          'uid': uid,
+          'uID': uID,
           'email': email,
         });
 

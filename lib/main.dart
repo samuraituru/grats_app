@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
 import 'package:grats_app/presentation/introduction/introduction_page.dart';
+import 'package:grats_app/presentation/testpage/stool_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       home: ChangeNotifierProvider<IntroductionModel>(
           create: (_) => IntroductionModel(),
           child: Consumer<IntroductionModel>(builder: (context, model, child) {
-              return model.firstIntro == true ? IntroductionPage() : HomePage();
+              return model.firstIntro == true ? IntroductionPage() : StoolPage();
             }
           ),
       ),

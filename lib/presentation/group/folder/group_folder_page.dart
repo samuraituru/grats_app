@@ -7,8 +7,8 @@ import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';
 
 class GroupFloderPage extends StatelessWidget {
-  List<Group> groups;
-  GroupFloderPage(this.groups);
+  Group group;
+  GroupFloderPage(this.group);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class GroupFloderPage extends StatelessWidget {
 
         return ScaffoldWrapper(
           wrap: model.controller == null,
-          title: '',
+          title: group.gName,
           dlgtitle: 'Itemを追加',
           applyword:'ok',
           child: ListView(
