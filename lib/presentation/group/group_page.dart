@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/domain/groups.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
-import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';
 
 class GroupPage extends StatelessWidget {
@@ -17,7 +16,7 @@ class GroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<GroupModel>(
-        create: (_) => GroupModel()..getGroup(),
+        create: (_) => GroupModel()..initAction(),
         child: Consumer<GroupModel>(
           builder: (context, model, child) {
             final List<Group>? groups = model.groups;
@@ -38,7 +37,7 @@ class GroupPage extends StatelessWidget {
                             builder: (context) => GroupFloderPage(group)),
                       );
                     },
-                    leading: Text(group.gName),
+                    leading: Text('${group.gName}'),
                     title: Text(group.gDesc!),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),
@@ -57,7 +56,8 @@ class GroupPage extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.add),
                       onPressed: () {
-                        showDialog(
+                        model.initlist();
+                        /*showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
@@ -105,7 +105,7 @@ class GroupPage extends StatelessWidget {
                               ],
                             );
                           },
-                        );
+                        );*/
                       },
                     )
                   ],

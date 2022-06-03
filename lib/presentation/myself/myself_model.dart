@@ -20,11 +20,9 @@ class MyselfModel extends ChangeNotifier {
     this.snapshot = snapshot;
 
     final Map<String, dynamic>? data = snapshot.data();
-    print(data);
     myuser.userName = data!['userName'];
     myuser.target = data['target'];
     myuser.gID = data['gID'];
-    print(myuser.userName);
     notifyListeners();
   }
 

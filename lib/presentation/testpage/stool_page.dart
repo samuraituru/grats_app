@@ -8,9 +8,6 @@ class StoolPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Object>(
-      stream: null,
-      builder: (context, snapshot) {
         return MaterialApp(
           home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),
@@ -28,7 +25,5 @@ class StoolPage extends StatelessWidget {
             },
           ),
         );
-      }
-    );
   }
 }
