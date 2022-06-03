@@ -3,6 +3,7 @@ class MyUser {
   String? target;
   String? uID;
   String? gID;
+  List<dynamic>? gIDList;
   String? email;
   String? imageURL;
 
@@ -12,5 +13,6 @@ class MyUser {
       this.uID,
       this.email,
       this.gID,
-      this.imageURL});
+      this.imageURL,
+      this.gIDList});
 }

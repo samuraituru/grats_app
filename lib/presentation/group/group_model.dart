@@ -15,17 +15,60 @@ class GroupModel extends ChangeNotifier {
   var groups = <Group>[];
   String addgName = '';
   MyUser myuser = MyUser();
+ var gIDList;
 
   //final groups = <Group>[];
-  String? uid;
-  String? docID;
+  String? uID;
+  String? currentUID;
+  String? gID;
   String? addgroup;
   QuerySnapshot? snapshot;
   DocumentSnapshot? docsnapshot;
+  var menberIDMap = <String, String>{};
+  var getgIDList;
+
+  Future initAction() async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.currentUID = currentuser?.uid.toString();
+    //ログイン中かつグループMAPを持っている場合、UsersのDocを取得
+    if (currentUID != null) {
+      print('currentUIDは${currentUID}');
+      final DocumentSnapshot userDocSnapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(currentUID)
+          .get();
+
+      final Map<String, dynamic>? data =
+          userDocSnapshot.data() as Map<String, dynamic>?;
+      this.gIDList = data!['gIDList'];
+      print('gIDListは${this.gIDList}');
+
+      getgIDList = await gIDList?.map((gID) async {
+        print(gID);
+        var doc = await FirebaseFirestore.instance.collection('Groups').doc('$gID').get();
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        final String menberID = data['uID'];
+        print(menberID);
+      }).toList();
+      notifyListeners();
+    }
+  }
+  Future initlist()async{
+    getgIDList =  myuser.gIDList?.map((e) async {
+      print(e);
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('Groups').doc(e).get();
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      final String menberID = data['uID'];
+      print(menberID);
+      //return Group(menberID: menberID);
+    }).toList();
+  }
 
   Future getMyuser() async {
-    final docsnapshot =
-    await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+    final docsnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUID)
+        .get();
     this.docsnapshot = docsnapshot;
 
     final Map<String, dynamic>? data = docsnapshot.data();
@@ -34,9 +77,6 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future getGroupList() async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.uid = currentuser?.uid.toString();
-
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('Groups').get();
     this.snapshot = snapshot;
@@ -53,9 +93,13 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future getGroup() async {
+    //ログインしている場合、グループを作成できる
+    //
+
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('Groups').get();
     this.snapshot = snapshot;
+    //this.gID = snapshot.id;
 
     final List<Group> groups = snapshot.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -89,7 +133,7 @@ class GroupModel extends ChangeNotifier {
       throw '説明が入力されていません';
     }
 
-    final doc = FirebaseFirestore.instance.collection('Groups').doc();
+    final doc = FirebaseFirestore.instance.collection('Groups').doc(gID);
 
     // firestoreに追加
     await doc.set(

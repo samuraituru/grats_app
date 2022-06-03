@@ -40,7 +40,7 @@ class GroupFloderPage extends StatelessWidget {
 
         return ScaffoldWrapper(
           wrap: model.controller == null,
-          title: group.gName,
+          title: '${group.gName}',
           dlgtitle: 'Itemを追加',
           applyword:'ok',
           child: ListView(

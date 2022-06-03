@@ -1,12 +1,13 @@
 class Group {
   String? gDesc;
-  String gName;
-  String gID;
+  String? gName;
+  String? gID;
   String? menberID;
 
+
   Group(
-      {required this.gName,
-      required this.gDesc,
-      required this.gID,
+      {this.gName,
+       this.gDesc,
+      this.gID,
       this.menberID});
 }
