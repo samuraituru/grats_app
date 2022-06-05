@@ -29,4 +29,19 @@ class GroupItemModel extends ChangeNotifier {
     this.records = records;
     notifyListeners();
   }
+
+
+  Future addRecord(Record record) async {
+    if (record.title == null || record.title == "") {
+      throw 'レコード名が入力されていません';
+    }
+
+    final doc = FirebaseFirestore.instance.collection('Records').doc();
+
+    // firestoreにrecordを追加
+    await doc.set({
+      'title': record.title,
+      'contents': record.contents,
+    });
+  }
 }

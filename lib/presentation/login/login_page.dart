@@ -66,6 +66,7 @@ class LoginPage extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => RecordPage()));
                     } catch (e) {
+                      print(e);
                       final snackBar = SnackBar(
                         backgroundColor: Colors.red,
                         content: Text(e.toString()),
