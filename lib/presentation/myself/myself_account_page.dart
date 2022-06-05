@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
@@ -34,7 +35,9 @@ class MyselfAccount extends StatelessWidget {
                     ),
                     ListTile(
                       title: Text('ログアウト'),
-                      onTap: () {},
+                      onTap: ()async {
+                       await FirebaseAuth.instance.signOut();
+                      },
                     ),
                   ],
                 ),

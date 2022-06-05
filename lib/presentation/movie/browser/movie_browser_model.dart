@@ -9,6 +9,24 @@ class MovieBrowserModel extends ChangeNotifier {
     'Japanese Vocabulary'
   ];
   List<int> searchIndexList = [];
+  var position = Offset(10, 10);
+  final widgets = [];
+  var dragUpdateDetails;
+  Widget? wid;
+
+  addWidget(){
+    this.widgets.add(wid);
+    notifyListeners();
+  }
+
+  dragUpdate(dragUpdateDetails){
+    widgets.add(dragUpdateDetails);
+  }
+
+  movePosition(localPosition){
+    this.position = localPosition;
+    notifyListeners();
+  }
 
   void searchPush() {
     this.searchBoolean = true;

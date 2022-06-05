@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/groups.dart';
+import 'package:grats_app/domain/group.dart';
+import 'package:grats_app/domain/joingrouplist.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:provider/provider.dart';
@@ -16,36 +17,37 @@ class GroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<GroupModel>(
-        create: (_) => GroupModel()..initAction(),
+        create: (_) => GroupModel()..newfetchGroup(),
         child: Consumer<GroupModel>(
           builder: (context, model, child) {
-            final List<Group>? groups = model.groups;
+            final List<JoinGroup> joinGroups = model.joinGroups;
 
-            if (groups == null) {
+            if (joinGroups == null) {
               return Container(
                 child: SizedBox(
-                    height: 100, width: 100, child: CircularProgressIndicator()),
+                    height: 100,
+                    width: 100,
+                    child: CircularProgressIndicator()),
               );
             }
-            final List<Widget> widgets = groups
-                .map(
-                  (group) => ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => GroupFloderPage(group)),
-                      );
-                    },
-                    leading: Text('${group.gName}'),
-                    title: Text(group.gDesc!),
-                    trailing: IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {},
-                    ),
-                  ),
-                )
-                .toList();
+            final List<Widget> widgets = joinGroups.map((joinGroup) {
+              return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            GroupFloderPage(joinGroup: joinGroup)),
+                  );
+                },
+                leading: Text('${joinGroup.groupName}'),
+                title: Text('${joinGroup.groupDescription}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {},
+                ),
+              );
+            }).toList();
             return Scaffold(
               appBar: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight),
@@ -56,8 +58,7 @@ class GroupPage extends StatelessWidget {
                     IconButton(
                       icon: Icon(Icons.add),
                       onPressed: () {
-                        model.initlist();
-                        /*showDialog(
+                        showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
@@ -67,20 +68,23 @@ class GroupPage extends StatelessWidget {
                                 children: [
                                   TextField(
                                     decoration: InputDecoration(
-                                      hintText: " 追加",
+                                      hintText: " group名を記載",
                                       border: OutlineInputBorder(),
                                       contentPadding: EdgeInsets.symmetric(
                                         vertical: 20,
                                       ),
                                     ),
                                     onChanged: (text) {
-                                      model.addgName = text;
+                                      model.addGroupName = text;
                                     },
                                   ),
                                   Padding(padding: EdgeInsets.all(10.0)),
                                   TextField(
+                                    onChanged: (text) {
+                                      model.addGroupDescription = text;
+                                    },
                                     decoration: InputDecoration(
-                                      hintText: " 説明",
+                                      hintText: " 説明を記載",
                                       border: OutlineInputBorder(),
                                       contentPadding: EdgeInsets.symmetric(
                                         vertical: 50,
@@ -99,13 +103,13 @@ class GroupPage extends StatelessWidget {
                                 TextButton(
                                   child: Text('OK'),
                                   onPressed: () {
-
+                                    model.addGroup();
                                   },
                                 ),
                               ],
                             );
                           },
-                        );*/
+                        );
                       },
                     )
                   ],
@@ -114,21 +118,8 @@ class GroupPage extends StatelessWidget {
               ),
               body: Center(
                 child: ListView(
-                children: widgets,
-            ),
-
-/*
-                children: ListTile.divideTiles(
-                  context: context,
-                  tiles: [
-                    ListTile(
-                      title: Text(''),
-                      onTap: () =>
-                          navigateTo(context, (context) => GroupFloderPage()),
-                    ),
-                  ],
-                ).toList(growable: false),
-*/
+                  children: widgets,
+                ),
               ),
             );
           },
@@ -141,3 +132,4 @@ class GroupPage extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute(builder: builder));
   }
 }
+

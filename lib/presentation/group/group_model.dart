@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grats_app/domain/folder.dart';
-import 'package:grats_app/domain/groups.dart';
+import 'package:grats_app/domain/group.dart';
+import 'package:grats_app/domain/joingrouplist.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/domain/record.dart';
 
@@ -12,10 +13,13 @@ class GroupModel extends ChangeNotifier {
   var fruits = <String>['例)反則数'];
   var foloders = <Folder>[];
   var records = <Record>[];
-  var groups = <Group>[];
-  String addgName = '';
+  Group? groups;
+  List<JoinGroup> joinGroups = [];
+  String addGroupName = '';
+  String addGroupDescription = '';
   MyUser myuser = MyUser();
- var gIDList;
+  List<String> gIDList = [];
+  String addGroupID = '';
 
   //final groups = <Group>[];
   String? uID;
@@ -24,10 +28,37 @@ class GroupModel extends ChangeNotifier {
   String? addgroup;
   QuerySnapshot? snapshot;
   DocumentSnapshot? docsnapshot;
-  var menberIDMap = <String, String>{};
-  var getgIDList;
 
-  Future initAction() async {
+  Future<void> newfetchGroup() async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.currentUID = currentuser?.uid.toString();
+
+    final QuerySnapshot joinGroupsDoc = await FirebaseFirestore.instance
+        .collection('AllJoinGroups')
+        .where("joinUserID", isEqualTo: currentUID)
+        .get();
+
+    final List<JoinGroup> joins =
+        await joinGroupsDoc.docs.map((DocumentSnapshot document) {
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+      final String joinUserID = data['joinUserID'];
+      final String groupID = data['groupID'];
+      final String groupName = data['groupName'];
+      final String groupDescription = data['groupDescription'];
+      final String memberCounter = data['memberCounter'];
+      return JoinGroup(
+          joinUserID: joinUserID,
+          groupID: groupID,
+          groupName: groupName,
+          groupDescription: groupDescription,
+          memberCounter: memberCounter);
+    }).toList();
+    this.joinGroups = joins;
+    print('joinGroupsの中身は${joinGroups}');
+    notifyListeners();
+  }
+
+  Future<void> fetchGroup() async {
     User? currentuser = await FirebaseAuth.instance.currentUser;
     this.currentUID = currentuser?.uid.toString();
     //ログイン中かつグループMAPを持っている場合、UsersのDocを取得
@@ -38,30 +69,31 @@ class GroupModel extends ChangeNotifier {
           .doc(currentUID)
           .get();
 
+      //UsersのDocからgIDListを取得
       final Map<String, dynamic>? data =
           userDocSnapshot.data() as Map<String, dynamic>?;
-      this.gIDList = data!['gIDList'];
+      final a = (data!['gIDList'] as List<dynamic>).map((e) => '$e').toList();
+      this.gIDList = a;
       print('gIDListは${this.gIDList}');
 
+      //gIDListの要素毎に、DocumentSnapshotを取得する
+/*
       getgIDList = await gIDList?.map((gID) async {
-        print(gID);
         var doc = await FirebaseFirestore.instance.collection('Groups').doc('$gID').get();
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         final String menberID = data['uID'];
-        print(menberID);
       }).toList();
+*/
+      for (final gID in gIDList) {
+        print(gID);
+/*
+        var doc = await FirebaseFirestore.instance.collection('Groups').doc('$gID').get();
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        final String menberID = data['uID'];
+*/
+      }
       notifyListeners();
     }
-  }
-  Future initlist()async{
-    getgIDList =  myuser.gIDList?.map((e) async {
-      print(e);
-      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('Groups').doc(e).get();
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-      final String menberID = data['uID'];
-      print(menberID);
-      //return Group(menberID: menberID);
-    }).toList();
   }
 
   Future getMyuser() async {
@@ -76,21 +108,6 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getGroupList() async {
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('Groups').get();
-    this.snapshot = snapshot;
-
-    final List<Group> groups = snapshot.docs.map((DocumentSnapshot document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String gName = data['gName'];
-      final String gDesc = data['gDesc'];
-      final String gID = data['gID'];
-      return Group(gName: gName, gDesc: gDesc, gID: gID);
-    }).toList();
-    this.groups = groups;
-    notifyListeners();
-  }
 
   Future getGroup() async {
     //ログインしている場合、グループを作成できる
@@ -106,9 +123,9 @@ class GroupModel extends ChangeNotifier {
       final String gName = data['gName'];
       final String gDesc = data['gDesc'];
       final String gID = data['gID'];
-      return Group(gName: gName, gDesc: gDesc, gID: gID);
+      return Group();
     }).toList();
-    this.groups = groups;
+    //this.groups = groups;
     notifyListeners();
   }
 
@@ -124,40 +141,25 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addGroup(Group group) async {
-    if (group.gName == null || group.gName == "") {
+  Future addGroup() async {
+    if (addGroupName == null || addGroupName == "") {
       throw 'グループ名が入力されていません';
     }
-
-    if (group.gDesc == null || group.gDesc!.isEmpty) {
+    if (addGroupDescription == null || addGroupDescription.isEmpty) {
       throw '説明が入力されていません';
     }
-
-    final doc = FirebaseFirestore.instance.collection('Groups').doc(gID);
+    final doc = FirebaseFirestore.instance.collection('Groups').doc();
+    this.addGroupID = doc.id;
 
     // firestoreに追加
     await doc.set(
       {
-        'name': group.gName,
-        'description': group.gDesc,
-        'gID': group.gID,
-        'menberID': group.menberID,
+        'groupName': addGroupName,
+        'groupDescription': addGroupDescription,
+        'groupID': addGroupID,
+        'menberID': [currentUID],
       },
     );
     notifyListeners();
-  }
-
-  Future addRecord(Record record) async {
-    if (record.title == null || record.title == "") {
-      throw 'レコード名が入力されていません';
-    }
-
-    final doc = FirebaseFirestore.instance.collection('Records').doc();
-
-    // firestoreにrecordを追加
-    await doc.set({
-      'title': record.title,
-      'contents': record.contents,
-    });
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
@@ -14,75 +15,53 @@ class MovieBrowserPage extends StatelessWidget {
         create: (_) => MovieBrowserModel(),
         child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
           return Scaffold(
-              resizeToAvoidBottomInset: true,
-              appBar: AppBar(
-                centerTitle: true,
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MoviePage()),
-                    );
-                  },
-                ),
-                title:
-                !model.searchBoolean ? Text('Browser') : model
-                    .searchTextField(),
-/*
-              SizedBox(
-                width: 150,
-                height: 30,
-                child: TextField(
-                  decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      )),
-                ),
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MoviePage()),
+                  );
+                },
               ),
-*/
-                actions: !model.searchBoolean
-                    ? [
-                  IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        model.searchPush();
-                        model.searchIndexList = [];
-                      }),
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: () {
-                      //webViewController?.reload();
-                    },
-                  ),
-                ]
-                    : [
-                  IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        model.searchPull();
-                      }),
-                ],
-              ),
-              body: !model.searchBoolean ? BroserView() : model
-                  .searchListView(),
-              floatingActionButton: !model.searchBoolean
-                  ? FloatingView(context)
-                  : null,
+              title: !model.searchBoolean
+                  ? Text('Browser')
+                  : model.searchTextField(),
+              actions: !model.searchBoolean
+                  ? [
+                      IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () {
+                            model.searchPush();
+                            model.searchIndexList = [];
+                          }),
+                      IconButton(
+                        icon: Icon(Icons.refresh),
+                        onPressed: () {
+                          //webViewController?.reload();
+                        },
+                      ),
+                    ]
+                  : [
+                      IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            model.searchPull();
+                          }),
+                    ],
+            ),
+            body: !model.searchBoolean ? BroserView() : model.searchListView(),
+            floatingActionButton:
+                !model.searchBoolean ? FloatingView(context) : null,
           );
         }),
       ),
     );
   }
 
-  Widget BroserView() {
-    return WebView(
-      initialUrl: 'https://youtube.com',
-      javascriptMode: JavascriptMode.unrestricted,
-    );
-  }
   FloatingView(context) {
     var actionText = '';
     var action = <String>['例)反則数（長押しで削除）'];
@@ -92,7 +71,7 @@ class MovieBrowserPage extends StatelessWidget {
       child: Icon(Icons.arrow_upward),
       onPressed: () {
         showModalBottomSheet(
-          //backgroundColor: Colors.transparent,
+            //backgroundColor: Colors.transparent,
             context: context,
             isScrollControlled: true,
             //trueにしないと、Containerのheightが反映されない
@@ -159,9 +138,51 @@ class MovieBrowserPage extends StatelessWidget {
                   ],
                 ),
               );
-            });
+            }).whenComplete(() {
+          print('Hey there, I\'m calling after hide bottomSheet');
+        });
       },
     );
   }
+}
 
+class BroserView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MovieBrowserModel>(
+      create: (_) => MovieBrowserModel(),
+      child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
+        model.wid = Positioned(
+          left: model.position.dx,
+          top: model.position.dy,
+          child: FlutterLogo(
+            size: 80,
+          ),
+        );
+        return Stack(children: [
+          BroserWibView(),
+          Stack(
+            children: [
+              ...model.widgets,
+            ],
+          ),
+          FloatingActionButton(
+            tooltip: 'Action!',
+            child: Icon(Icons.add),
+            // Text()でもOK
+            onPressed: () {
+              model.addWidget();
+            },
+          ),
+        ]);
+      }),
+    );
+  }
+}
+
+Widget BroserWibView() {
+  return WebView(
+    initialUrl: 'https://youtube.com',
+    javascriptMode: JavascriptMode.unrestricted,
+  );
 }

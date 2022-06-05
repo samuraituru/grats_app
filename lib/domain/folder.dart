@@ -1,7 +1,8 @@
 class Folder {
-  String fName;
-  String fDesc;
+  String? floderName;
+  String? floderDescription;
+  String? folderID;
+  String? groupID;
 
-  Folder(this.fName, this.fDesc);
-
+  Folder({this.floderName, this.floderDescription, this.folderID,this.groupID});
 }

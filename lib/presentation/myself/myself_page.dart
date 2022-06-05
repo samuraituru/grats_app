@@ -4,6 +4,7 @@ import 'package:grats_app/presentation/myself/myself_account_page.dart';
 
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/testpage/stool_page.dart';
+import 'package:grats_app/presentation/testpage/testpage5.dart';
 import 'package:provider/provider.dart';
 
 class MyselfPage extends StatelessWidget {
@@ -111,7 +112,7 @@ class MyselfPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => StoolPage()),
+                        MaterialPageRoute(builder: (context) => TestPage5()),
                       );
                     },
                     child: Text('Movieへ')),
