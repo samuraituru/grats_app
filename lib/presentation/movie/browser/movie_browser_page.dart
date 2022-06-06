@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/domain/cursor.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
 import 'package:provider/provider.dart';
@@ -152,30 +153,47 @@ class BroserView extends StatelessWidget {
     return ChangeNotifierProvider<MovieBrowserModel>(
       create: (_) => MovieBrowserModel(),
       child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
-        model.wid = Positioned(
-          left: model.position.dx,
-          top: model.position.dy,
-          child: FlutterLogo(
-            size: 80,
-          ),
-        );
+        final widget = movingCursor(model, model.cursorRed1, Colors.red);
+        model.contentWidgets = createList(model);
         return Stack(children: [
           BroserWibView(),
-          Stack(
-            children: [
-              ...model.widgets,
-            ],
-          ),
+          //movingCursor(model, model.cursorRed1, Colors.red),
           FloatingActionButton(
             tooltip: 'Action!',
             child: Icon(Icons.add),
             // Text()でもOK
             onPressed: () {
-              model.addWidget();
+              model.widgetsAdd();
             },
           ),
+          Stack(
+              children: model.contentWidgets
+                  ),
         ]);
       }),
+    );
+  }
+  List<Widget> createList(model) {
+    model.listshot = <Widget>[movingCursor(model, model.cursorRed2, Colors.red)];
+    return model.listshot;
+  }
+  Widget movingCursor(MovieBrowserModel model, Cursor cursor, Color color) {
+    return Positioned(
+      top: cursor.y,
+      left: cursor.x,
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          model.changePoint(cursor, details.delta.dx, details.delta.dy);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          height: 30,
+          width: 30,
+        ),
+      ),
     );
   }
 }
