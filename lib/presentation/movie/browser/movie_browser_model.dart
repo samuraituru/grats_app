@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/domain/cursor.dart';
 
 class MovieBrowserModel extends ChangeNotifier {
   bool searchBoolean = false;
@@ -10,12 +11,20 @@ class MovieBrowserModel extends ChangeNotifier {
   ];
   List<int> searchIndexList = [];
   var position = Offset(10, 10);
-  final widgets = [];
   var dragUpdateDetails;
-  Widget? wid;
+  Cursor cursorRed1 = Cursor(x:30, y:100);
+  Cursor cursorRed2 = Cursor(x:80, y:100);
+  final List<Widget> widgets  = [];
+  var contentWidgets;
+  List<Widget>? listshot;
 
-  addWidget(){
-    this.widgets.add(wid);
+  void changePoint(Cursor cursor, double dx, double dy) {
+    cursor.x += dx;
+    cursor.y += dy;
+    notifyListeners();
+  }
+  widgetsAdd(){
+    this.contentWidgets.add(movingCursor(cursor: cursorRed2, color:Colors.red));
     notifyListeners();
   }
 
@@ -76,6 +85,28 @@ class MovieBrowserModel extends ChangeNotifier {
         hintStyle: TextStyle(
           color: Colors.white60,
           fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+
+
+  Widget movingCursor({MovieBrowserModel? model, Cursor? cursor, Color? color}) {
+    return Positioned(
+      top: cursor?.y,
+      left: cursor?.x,
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          changePoint(cursor!, details.delta.dx, details.delta.dy);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          height: 30,
+          width: 30,
         ),
       ),
     );

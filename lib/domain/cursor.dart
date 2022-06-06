@@ -1,6 +1,6 @@
 class Cursor {
-  double? x = 0.0;
-  double? y = 0.0;
+  double x = 0.0;
+  double y = 0.0;
 
-  Cursor({this.x, this.y});
+  Cursor({required this.x, required this.y});
 }
