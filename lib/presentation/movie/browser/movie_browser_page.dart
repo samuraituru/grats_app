@@ -160,23 +160,32 @@ class BroserView extends StatelessWidget {
           //movingCursor(model, model.cursorRed1, Colors.red),
           FloatingActionButton(
             tooltip: 'Action!',
+            heroTag: 'add',
             child: Icon(Icons.add),
             // Text()でもOK
             onPressed: () {
-              model.widgetsAdd();
+              model.contentWidgets.add(createListwid(model));
+              //model.widgetsAdd();
             },
           ),
-          Stack(
-              children: model.contentWidgets
-                  ),
+          Stack(children: model.contentWidgets),
         ]);
       }),
     );
   }
+
+  Widget createListwid(model) {
+    model.widiwid = movingCursor(model, model.cursorRed2, Colors.red);
+    return model.widiwid;
+  }
+
   List<Widget> createList(model) {
-    model.listshot = <Widget>[movingCursor(model, model.cursorRed2, Colors.red)];
+    model.listshot = <Widget>[
+      movingCursor(model, model.cursorRed2, Colors.red)
+    ];
     return model.listshot;
   }
+
   Widget movingCursor(MovieBrowserModel model, Cursor cursor, Color color) {
     return Positioned(
       top: cursor.y,
