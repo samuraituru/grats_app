@@ -17,6 +17,7 @@ class MovieBrowserModel extends ChangeNotifier {
   final List<Widget> widgets  = [];
   var contentWidgets;
   List<Widget>? listshot;
+  Widget? widiwid;
 
   void changePoint(Cursor cursor, double dx, double dy) {
     cursor.x += dx;
