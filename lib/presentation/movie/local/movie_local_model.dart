@@ -12,9 +12,7 @@ class MovieLocalModel extends ChangeNotifier {
 
   var countItems = <Item>[];
 
-  //CountWidget countWidget = CountWidget();
-
-  void CountItemCreate() {
+  void countItemCreate() {
     if (title != null) {
       countItems.add(Item(title: title));
       this.texteditingcontroller.clear();

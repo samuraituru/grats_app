@@ -112,7 +112,7 @@ class MyselfPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => TestPage5()),
+                        MaterialPageRoute(builder: (context) => Home()),
                       );
                     },
                     child: Text('Movieへ')),

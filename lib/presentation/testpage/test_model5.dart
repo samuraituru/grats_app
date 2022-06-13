@@ -1,27 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/joingrouplist.dart';
+import 'package:grats_app/domain/cursor.dart';
+import 'package:grats_app/presentation/testpage/testpage5.dart';
 
 class TestModel5 extends ChangeNotifier {
-  final joinGroupInfo = <String, dynamic>{
-    "joinUserID": "11111",
-    "groupName": 'Flutter大学'
-  };
+  //final bodyWidget = Body();
+  List<Body> bodyList = [];
 
-  JoinGroup? joinGroups;
+  createWidget() {
+    //bodyList.add(bodyWidget);
+    notifyListeners();
+  }
+  Cursor cursorRed1 = Cursor(x:30, y:100);
+  var counterWidgets;
+  List<Widget>? cursorList;
+
+  TestModel5(){
+    counterWidgets = createList();
+  }
+  void createWidget2(){
+    counterWidgets.add(createListwidget);
+    notifyListeners();
+  }
+
+
+  void changePoint(Cursor cursor, double dx, double dy) {
+    cursor.x += dx;
+    cursor.y += dy;
+    notifyListeners();
+  }
+
+  List<Widget> createList() {
+    final cursorList = <Widget>[
+      movingCursor(cursorRed1, Colors.red)
+    ];
+    return cursorList;
+  }
   QuerySnapshot? allJoinGroupsDoc;
+  Widget movingCursor(Cursor cursor, Color color) {
+    return Positioned(
+      top: cursor.y,
+      left: cursor.x,
+      child: GestureDetector(
+        onPanUpdate: (DragUpdateDetails details) {
+          changePoint(cursor, details.delta.dx, details.delta.dy);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          height: 30,
+          width: 30,
+        ),
+      ),
+    );
+  }
 
-  Future<void> TestWhere() async {
-/*final GroupsDoc =
-    FirebaseFirestore.instance
-        .collection('AllJoinGroups');
-GroupsDoc.doc("joinGroupInfo").set(joinGroupInfo);*/
-
-    final QuerySnapshot allJoinGroupsDoc = await FirebaseFirestore.instance
-        .collection('AllJoinGroups')
-        .where("joinUserID", isEqualTo: "00000")
-        .get();
-    this.allJoinGroupsDoc = allJoinGroupsDoc;
-    print('allJoin中身は${allJoinGroupsDoc.docs}');
+  Widget createListwidget() {
+    final cursor = movingCursor(cursorRed1, Colors.red);
+    return cursor;
   }
 }

@@ -68,8 +68,8 @@ class MovieLocalPage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     for (int i = 0;
-                                    i < model.countItems.length;
-                                    i++) ...{
+                                        i < model.countItems.length;
+                                        i++) ...{
                                       Text('${model.countItems[i].title}'),
                                       Text('${model.countItems[i].counter}'),
                                     },
@@ -111,7 +111,7 @@ class MovieLocalPage extends StatelessWidget {
                 hintText: 'カウントしたい項目を追加',
                 suffixIcon: IconButton(
                   onPressed: () {
-                    model.CountItemCreate();
+                    model.countItemCreate();
                   },
                   icon: Icon(Icons.add),
                 ),
@@ -119,14 +119,20 @@ class MovieLocalPage extends StatelessWidget {
             ),
           ),
           Container(
+            height: 375,
             child: SingleChildScrollView(
+              controller: model.scrollController,
               child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: model.countItems.length,
                 itemBuilder: (BuildContext context, index) {
-                  var countItem = model.countItems[index];
-                  return CountItemWidget(countItem: countItem);
+                  final countItem = model.countItems[index];
+                  final countItems = model.countItems;
+                  return CountItemWidget(
+                      countItem: countItem,
+                      countItems: countItems,
+                      itemIndex: index);
                 },
               ),
             ),
