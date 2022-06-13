@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroductionModel extends ChangeNotifier {
-  bool firstIntro = true;
+  bool firstIntro = false;
 
 
   getPrefIntro() async {

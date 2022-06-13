@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
+import 'package:grats_app/domain/item.dart';
 
 class MovieBrowserModel extends ChangeNotifier {
   bool searchBoolean = false;
@@ -9,24 +10,27 @@ class MovieBrowserModel extends ChangeNotifier {
     'English Vocabulary',
     'Japanese Vocabulary'
   ];
+  final texteditingcontroller = TextEditingController();
+  final scrollController = ScrollController();
+  var countItems = <Item>[];
+
   List<int> searchIndexList = [];
   var position = Offset(10, 10);
   var dragUpdateDetails;
-  Cursor cursorRed1 = Cursor(x:30, y:100);
-  Cursor cursorRed2 = Cursor(x:80, y:100);
+
   final List<Widget> widgets  = [];
   var contentWidgets;
   List<Widget>? listshot;
   Widget? widiwid;
+  String title = '';
+  String editTitle = '';
 
-  void changePoint(Cursor cursor, double dx, double dy) {
-    cursor.x += dx;
-    cursor.y += dy;
-    notifyListeners();
-  }
-  widgetsAdd(){
-    this.contentWidgets.add(movingCursor(cursor: cursorRed2, color:Colors.red));
-    notifyListeners();
+  void countItemCreate() {
+    if (title != null) {
+      countItems.add(Item(title: title));
+      this.texteditingcontroller.clear();
+      notifyListeners();
+    }
   }
 
   dragUpdate(dragUpdateDetails){
@@ -92,26 +96,6 @@ class MovieBrowserModel extends ChangeNotifier {
   }
 
 
-
-  Widget movingCursor({MovieBrowserModel? model, Cursor? cursor, Color? color}) {
-    return Positioned(
-      top: cursor?.y,
-      left: cursor?.x,
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          changePoint(cursor!, details.delta.dx, details.delta.dy);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          height: 30,
-          width: 30,
-        ),
-      ),
-    );
-  }
 
   Widget searchListView() {
     return ListView.builder(

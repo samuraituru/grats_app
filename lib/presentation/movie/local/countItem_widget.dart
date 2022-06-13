@@ -6,8 +6,14 @@ import 'package:provider/provider.dart';
 
 class CountItemWidget extends StatelessWidget {
   Item countItem;
+  List<Item> countItems;
+  int itemIndex;
 
-  CountItemWidget({required this.countItem});
+  CountItemWidget({
+    required this.countItem,
+    required this.countItems,
+    required this.itemIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +24,9 @@ class CountItemWidget extends StatelessWidget {
           return Dismissible(
             direction: DismissDirection.horizontal,
             onDismissed: (DismissDirection direction) async {
-              if (direction == DismissDirection.horizontal) {
-                //Widgetの削除方法が未確定のため未実装
-                //model.countItems.remove(child);
+              if (direction == DismissDirection.endToStart ||
+                  direction == DismissDirection.startToEnd) {
+                countItems.removeAt(itemIndex);
               }
             },
             key: UniqueKey(),
@@ -62,7 +68,7 @@ class CountItemWidget extends StatelessWidget {
                   ),
                 ),
                 title: Text('${countItem.title}'),
-                    /*model.completetextlist == null
+                /*model.completetextlist == null
                       ? '${model.countItemList[model.countItemList.length]}'
                       : '${model.completetextlist[pullindex]}',*/
                 onLongPress: () {

@@ -19,7 +19,7 @@ class ScrollviewWidget extends StatelessWidget {
                   itemCount: model.countItems.length,
                   itemBuilder: (BuildContext context, index) {
                     final countItem = model.countItems[index];
-                    return CountItemWidget(countItem: countItem);
+                    return Text('');//CountItemWidget(countItem: countItem);
                   },
                 ),
               ),

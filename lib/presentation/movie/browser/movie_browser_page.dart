@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
+import 'package:grats_app/presentation/movie/local/countItem_widget.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -64,84 +65,91 @@ class MovieBrowserPage extends StatelessWidget {
   }
 
   FloatingView(context) {
-    var actionText = '';
-    var action = <String>['例)反則数（長押しで削除）'];
-    var controller = TextEditingController();
-
-    return FloatingActionButton(
-      child: Icon(Icons.arrow_upward),
-      onPressed: () {
-        showModalBottomSheet(
-            //backgroundColor: Colors.transparent,
-            context: context,
-            isScrollControlled: true,
-            //trueにしないと、Containerのheightが反映されない
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            ),
-            builder: (BuildContext context) {
-              return Container(
-                height: 540,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: controller,
-                        onChanged: (String? value) {
-                          actionText = value!;
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'カウントしたい項目を追加',
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              //actionClearAdd();
+    return Consumer<MovieBrowserModel>(
+      builder: (context, model, child) {
+        return FloatingActionButton(
+          child: Icon(Icons.arrow_upward),
+          onPressed: () {
+            showModalBottomSheet(
+                enableDrag: true,
+                isDismissible: false,
+                //backgroundColor: Colors.transparent,
+                context: context,
+                isScrollControlled: true,
+                //trueにしないと、Containerのheightが反映されない
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                ),
+                builder: (BuildContext context) {
+                  return Container(
+                    height: 540,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: model.texteditingcontroller,
+                            onChanged: (String? value) {
+                              model.title = value!;
                             },
-                            icon: Icon(Icons.add),
+                            decoration: InputDecoration(
+                              hintText: 'カウントしたい項目を追加',
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  model.countItemCreate();
+                                },
+                                icon: Icon(Icons.add),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: action.length,
-                      itemBuilder: (BuildContext context, index) {
-                        return Card(
-                          child: ListTile(
-                            onLongPress: () {
-                              print('longpress');
+                        SingleChildScrollView(
+                          child: ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: model.countItems.length,
+                            itemBuilder: (BuildContext context, index) {
+                              final countItem = model.countItems[index];
+                              final countItems = model.countItems;
+                              return Card(
+                                child: ListTile(
+                                  onLongPress: () {
+                                    print('longpress');
+                                  },
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      FloatingActionButton(
+                                        tooltip: 'Action!',
+                                        child: Icon(Icons.add),
+                                        // Text()でもOK
+                                        onPressed: () {},
+                                      ),
+                                      Text('数'),
+                                      FloatingActionButton(
+                                        tooltip: 'Action!',
+                                        child: Icon(Icons.remove),
+                                        // Text()でもOK
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                  title: Text(
+                                    '$countItem'
+                                  ),
+                                ),
+                              );
                             },
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                FloatingActionButton(
-                                  tooltip: 'Action!',
-                                  child: Icon(Icons.add),
-                                  // Text()でもOK
-                                  onPressed: () {},
-                                ),
-                                Text('数'),
-                                FloatingActionButton(
-                                  tooltip: 'Action!',
-                                  child: Icon(Icons.remove),
-                                  // Text()でもOK
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                            title: Text(
-                              action[index],
-                            ),
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }).whenComplete(() {
-          print('Hey there, I\'m calling after hide bottomSheet');
-        });
+                  );
+                }).whenComplete(() {
+              print('showModalBottomSheetが閉じた！');
+            });
+          },
+        );
       },
     );
   }
@@ -153,56 +161,17 @@ class BroserView extends StatelessWidget {
     return ChangeNotifierProvider<MovieBrowserModel>(
       create: (_) => MovieBrowserModel(),
       child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
-        final widget = movingCursor(model, model.cursorRed1, Colors.red);
-        model.contentWidgets = createList(model);
         return Stack(children: [
           BroserWibView(),
-          //movingCursor(model, model.cursorRed1, Colors.red),
           FloatingActionButton(
             tooltip: 'Action!',
             heroTag: 'add',
             child: Icon(Icons.add),
             // Text()でもOK
-            onPressed: () {
-              model.contentWidgets.add(createListwid(model));
-              //model.widgetsAdd();
-            },
+            onPressed: () {},
           ),
-          Stack(children: model.contentWidgets),
         ]);
       }),
-    );
-  }
-
-  Widget createListwid(model) {
-    model.widiwid = movingCursor(model, model.cursorRed2, Colors.red);
-    return model.widiwid;
-  }
-
-  List<Widget> createList(model) {
-    model.listshot = <Widget>[
-      movingCursor(model, model.cursorRed2, Colors.red)
-    ];
-    return model.listshot;
-  }
-
-  Widget movingCursor(MovieBrowserModel model, Cursor cursor, Color color) {
-    return Positioned(
-      top: cursor.y,
-      left: cursor.x,
-      child: GestureDetector(
-        onPanUpdate: (DragUpdateDetails details) {
-          model.changePoint(cursor, details.delta.dx, details.delta.dy);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          height: 30,
-          width: 30,
-        ),
-      ),
     );
   }
 }
