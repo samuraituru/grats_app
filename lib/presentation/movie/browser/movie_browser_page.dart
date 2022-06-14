@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
+import 'package:grats_app/domain/item.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
 import 'package:grats_app/presentation/movie/local/countItem_widget.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
@@ -57,31 +58,31 @@ class MovieBrowserPage extends StatelessWidget {
             ),
             body: !model.searchBoolean ? BroserView() : model.searchListView(),
             floatingActionButton:
-                !model.searchBoolean ? FloatingView(context) : null,
+                !model.searchBoolean ? FloatingView() : null,
           );
         }),
       ),
     );
   }
 
-  FloatingView(context) {
+  /*FloatingView(context) {
     return Consumer<MovieBrowserModel>(
       builder: (context, model, child) {
         return FloatingActionButton(
           child: Icon(Icons.arrow_upward),
           onPressed: () {
             showModalBottomSheet(
-                enableDrag: true,
-                isDismissible: false,
-                //backgroundColor: Colors.transparent,
-                context: context,
-                isScrollControlled: true,
-                //trueにしないと、Containerのheightが反映されない
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                ),
-                builder: (BuildContext context) {
-                  return Container(
+              enableDrag: true,
+              isDismissible: false,
+              //backgroundColor: Colors.transparent,
+              context: context,
+              isScrollControlled: true,
+              //trueにしないと、Containerのheightが反映されない
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              ),
+              builder: (BuildContext context) {
+                *//*return Container(
                     height: 540,
                     child: Column(
                       children: [
@@ -103,56 +104,103 @@ class MovieBrowserPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SingleChildScrollView(
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: model.countItems.length,
+                              itemBuilder: (BuildContext context, index) {
+                                final countItem = model.countItems[index];
+                                final countItems = model.countItems;
+                                return Card(
+                                  child: ListTile(
+                                    onLongPress: () {
+                                      print('longpress');
+                                    },
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        FloatingActionButton(
+                                          tooltip: 'Action!',
+                                          child: Icon(Icons.add),
+                                          // Text()でもOK
+                                          onPressed: () {},
+                                        ),
+                                        Text('数'),
+                                        FloatingActionButton(
+                                          tooltip: 'Action!',
+                                          child: Icon(Icons.remove),
+                                          // Text()でもOK
+                                          onPressed: () {},
+                                        ),
+                                      ],
+                                    ),
+                                    title: Text(
+                                      '$countItem'
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );*//*
+                return SizedBox(
+                  height: 400,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: model.texteditingcontroller,
+                          onChanged: (String? value) {
+                            model.title = value!;
+                          },
+                          decoration: InputDecoration(
+                            hintText: 'カウントしたい項目を追加',
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                model.countItemCreate();
+                              },
+                              icon: Icon(Icons.add),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 335,
+                        color: Colors.white,
+                        child: SingleChildScrollView(
                           child: ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
+                            //physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: model.countItems.length,
                             itemBuilder: (BuildContext context, index) {
                               final countItem = model.countItems[index];
                               final countItems = model.countItems;
-                              return Card(
-                                child: ListTile(
-                                  onLongPress: () {
-                                    print('longpress');
-                                  },
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      FloatingActionButton(
-                                        tooltip: 'Action!',
-                                        child: Icon(Icons.add),
-                                        // Text()でもOK
-                                        onPressed: () {},
-                                      ),
-                                      Text('数'),
-                                      FloatingActionButton(
-                                        tooltip: 'Action!',
-                                        child: Icon(Icons.remove),
-                                        // Text()でもOK
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                  title: Text(
-                                    '$countItem'
-                                  ),
-                                ),
-                              );
+                              return CountItemWidget(
+                                  countItem: countItem,
+                                  countItems: countItems,
+                                  itemIndex: index);
                             },
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                }).whenComplete(() {
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ).whenComplete(() {
               print('showModalBottomSheetが閉じた！');
             });
           },
         );
       },
     );
-  }
+  }*/
 }
 
 class BroserView extends StatelessWidget {
@@ -163,13 +211,6 @@ class BroserView extends StatelessWidget {
       child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
         return Stack(children: [
           BroserWibView(),
-          FloatingActionButton(
-            tooltip: 'Action!',
-            heroTag: 'add',
-            child: Icon(Icons.add),
-            // Text()でもOK
-            onPressed: () {},
-          ),
         ]);
       }),
     );
@@ -181,4 +222,82 @@ Widget BroserWibView() {
     initialUrl: 'https://youtube.com',
     javascriptMode: JavascriptMode.unrestricted,
   );
+}
+
+class FloatingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<MovieBrowserModel>(
+      create: (_) => MovieBrowserModel(),
+          child: Consumer<MovieBrowserModel>(
+            builder: (context, model, child) {
+              return FloatingActionButton(
+                child: Icon(Icons.arrow_upward),
+                onPressed: () {
+                  showModalBottomSheet(
+                    enableDrag: true,
+                    isDismissible: false,
+                    //backgroundColor: Colors.transparent,
+                    context: context,
+                    isScrollControlled: true,
+                    //trueにしないと、Containerのheightが反映されない
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(15)),
+                    ),
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: 400,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextField(
+                                controller: model.texteditingcontroller,
+                                onChanged: (String? value) {
+                                  model.title = value!;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'カウントしたい項目を追加',
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      model.countItemCreate();
+                                    },
+                                    icon: Icon(Icons.add),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 335,
+                              color: Colors.white,
+                              child: SingleChildScrollView(
+                                child: ListView.builder(
+                                  //physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: model.countItems.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    final countItem = model.countItems[index];
+                                    final countItems = model.countItems;
+                                    return CountItemWidget(
+                                        countItem: countItem,
+                                        countItems: countItems,
+                                        itemIndex: index);
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ).whenComplete(() {
+                    print('showModalBottomSheetが閉じた！');
+                  });
+                },
+              );
+            },
+      ),
+    );
+  }
 }

@@ -15,10 +15,10 @@ class GroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ChangeNotifierProvider<GroupModel>(
-        create: (_) => GroupModel()..newfetchGroup(),
-        child: Consumer<GroupModel>(
+    return ChangeNotifierProvider<GroupModel>(
+      create: (_) => GroupModel()..fetchAllJoinGroups(),
+      child: MaterialApp(
+        home: Consumer<GroupModel>(
           builder: (context, model, child) {
             final List<JoinGroup> joinGroups = model.joinGroups;
 
@@ -32,13 +32,16 @@ class GroupPage extends StatelessWidget {
             }
             final List<Widget> widgets = joinGroups.map((joinGroup) {
               return ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            GroupFloderPage(joinGroup: joinGroup)),
-                  );
+                onTap: () async{
+                await model.fetchGroups(joinGroup);
+                  showModalBottomSheet(
+                      enableDrag: true,
+                      isDismissible: false,
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return ModalAction(joinGroup: joinGroup);
+                      });
                 },
                 leading: Text('${joinGroup.groupName}'),
                 title: Text('${joinGroup.groupDescription}'),
@@ -133,3 +136,54 @@ class GroupPage extends StatelessWidget {
   }
 }
 
+class ModalAction extends StatelessWidget {
+  JoinGroup? joinGroup;
+
+  ModalAction({required this.joinGroup, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GroupModel>(
+      create: (_) => GroupModel()..fetchAllJoinGroups(),
+      child: Consumer<GroupModel>(builder: (context, model, child) {
+        return Container(
+          height: double.infinity,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(100.0),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blue,
+                ),
+                height: 100,
+                width: 100,
+              ),
+              Text('${model.groups?.groupID}'),
+              Card(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(onPressed: () {}, icon: Icon(Icons.accessibility)),
+                  IconButton(
+                      onPressed: () {}, icon: Icon(Icons.note_add_outlined)),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    GroupFloderPage(joinGroup: joinGroup!)));
+                      },
+                      icon: Icon(Icons.folder)),
+                ],
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+}

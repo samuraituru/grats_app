@@ -70,8 +70,8 @@ class MovieLocalPage extends StatelessWidget {
                                     for (int i = 0;
                                         i < model.countItems.length;
                                         i++) ...{
-                                      Text('${model.countItems[i].title}'),
-                                      Text('${model.countItems[i].counter}'),
+                                      Text('${model.countItems[i].title}: ${model.countItems[i].counter}'),
+                                      //Text('${model.countItems[i].counter}'),
                                     },
                                     //model.outPutText(),
                                     Padding(padding: EdgeInsets.all(10.0)),
@@ -86,7 +86,9 @@ class MovieLocalPage extends StatelessWidget {
                                   ),
                                   TextButton(
                                     child: Text('OK'),
-                                    onPressed: () {},
+                                    onPressed: () {
+
+                                    },
                                   ),
                                 ],
                               );
