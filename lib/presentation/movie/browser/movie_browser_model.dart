@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/cursor.dart';
 import 'package:grats_app/domain/item.dart';
 
 class MovieBrowserModel extends ChangeNotifier {
@@ -12,7 +11,7 @@ class MovieBrowserModel extends ChangeNotifier {
   ];
   final texteditingcontroller = TextEditingController();
   final scrollController = ScrollController();
-  var countItems = <Item>[];
+  final countItems = <Item>[];
 
   List<int> searchIndexList = [];
   var position = Offset(10, 10);
@@ -25,23 +24,13 @@ class MovieBrowserModel extends ChangeNotifier {
   String title = '';
   String editTitle = '';
 
-  void countItemCreate() {
+ void countItemCreate() {
     if (title != null) {
-      countItems.add(Item(title: title));
-      this.texteditingcontroller.clear();
+     countItems.add(Item(title: title));
+      texteditingcontroller.clear();
       notifyListeners();
     }
   }
-
-  dragUpdate(dragUpdateDetails){
-    widgets.add(dragUpdateDetails);
-  }
-
-  movePosition(localPosition){
-    this.position = localPosition;
-    notifyListeners();
-  }
-
   void searchPush() {
     this.searchBoolean = true;
     notifyListeners();
@@ -60,12 +49,6 @@ class MovieBrowserModel extends ChangeNotifier {
   var controller = TextEditingController();
   var actionText = '';
   var action = <String>['例)反則数（長押しで削除）'];
-
-  void actionClearAdd() {
-    this.action.add(actionText);
-    this.controller.clear();
-    notifyListeners();
-  }
 
   Widget searchTextField() {
     return TextField(
@@ -94,8 +77,6 @@ class MovieBrowserModel extends ChangeNotifier {
       ),
     );
   }
-
-
 
   Widget searchListView() {
     return ListView.builder(

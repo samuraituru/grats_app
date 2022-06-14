@@ -15,6 +15,7 @@ class GroupModel extends ChangeNotifier {
   var records = <Record>[];
   Group? groups;
   List<JoinGroup> joinGroups = [];
+  List<Group> Groups = [];
   String addGroupName = '';
   String addGroupDescription = '';
   MyUser myuser = MyUser();
@@ -24,37 +25,52 @@ class GroupModel extends ChangeNotifier {
   //final groups = <Group>[];
   String? uID;
   String? currentUID;
-  String? gID;
+  String? groupID;
   String? addgroup;
   QuerySnapshot? snapshot;
   DocumentSnapshot? docsnapshot;
+  DocumentSnapshot? groupsSnapshot;
 
-  Future<void> newfetchGroup() async {
+  Future<void> fetchAllJoinGroups() async {
     User? currentuser = await FirebaseAuth.instance.currentUser;
     this.currentUID = currentuser?.uid.toString();
 
-    final QuerySnapshot joinGroupsDoc = await FirebaseFirestore.instance
-        .collection('AllJoinGroups')
-        .where("joinUserID", isEqualTo: currentUID)
+    if (currentUID != null) {
+      final QuerySnapshot joinGroupsDoc = await FirebaseFirestore.instance
+          .collection('AllJoinGroups')
+          .where("joinUserID", isEqualTo: currentUID)
+          .get();
+
+      final List<JoinGroup> joins =
+      await joinGroupsDoc.docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+        final String joinUserID = data['joinUserID'];
+        final String groupID = data['groupID'];
+        final String groupName = data['groupName'];
+        final String groupDescription = data['groupDescription'];
+        final String memberCounter = data['memberCounter'];
+        return JoinGroup(
+            joinUserID: joinUserID,
+            groupID: groupID,
+            groupName: groupName,
+            groupDescription: groupDescription,
+            memberCounter: memberCounter);
+      }).toList();
+      this.joinGroups = joins;
+      print('joinGroupsの中身は${joinGroups}');
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchGroups(JoinGroup joinGroup) async {
+    final DocumentSnapshot GroupsSnapshot = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(joinGroup.groupID)
         .get();
 
-    final List<JoinGroup> joins =
-        await joinGroupsDoc.docs.map((DocumentSnapshot document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String joinUserID = data['joinUserID'];
-      final String groupID = data['groupID'];
-      final String groupName = data['groupName'];
-      final String groupDescription = data['groupDescription'];
-      final String memberCounter = data['memberCounter'];
-      return JoinGroup(
-          joinUserID: joinUserID,
-          groupID: groupID,
-          groupName: groupName,
-          groupDescription: groupDescription,
-          memberCounter: memberCounter);
-    }).toList();
-    this.joinGroups = joins;
-    print('joinGroupsの中身は${joinGroups}');
+    Map<String, dynamic> data = GroupsSnapshot.data() as Map<String, dynamic>;
+    final String groupID = data['groupID'];
+    groups = Group(groupID:groupID);
     notifyListeners();
   }
 
@@ -107,7 +123,6 @@ class GroupModel extends ChangeNotifier {
     myuser.gID = data!['gID'];
     notifyListeners();
   }
-
 
   Future getGroup() async {
     //ログインしている場合、グループを作成できる
