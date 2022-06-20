@@ -19,7 +19,6 @@ class MovieLocalModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
   void increment(Item countItem) {
     countItem.counter += 1;
     notifyListeners();

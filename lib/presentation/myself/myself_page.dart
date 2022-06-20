@@ -3,7 +3,8 @@ import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/presentation/myself/myself_account_page.dart';
 
 import 'package:grats_app/presentation/myself/myself_model.dart';
-import 'package:grats_app/presentation/testpage/stool_page.dart';
+import 'package:grats_app/presentation/testpage/test_page2.dart';
+import 'package:grats_app/presentation/testpage/test_widget7.dart';
 import 'package:grats_app/presentation/testpage/testpage5.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class MyselfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ChangeNotifierProvider<MyselfModel>(
-        create: (_) => MyselfModel()..getMyuser(),
+        create: (_) => MyselfModel(),
         child: Consumer<MyselfModel>(builder: (context, model, child) {
           MyUser myuser = model.myuser;
           return Scaffold(
@@ -106,8 +107,18 @@ class MyselfPage extends StatelessWidget {
                   },
                   child: Text('プロフィールを更新'),
                 ),
-                ElevatedButton(onPressed: () {}, child: Text('MyRecordへ')),
-                ElevatedButton(onPressed: () {}, child: Text('Groupへ')),
+                ElevatedButton(onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TestPage2()),
+                  );
+                }, child: Text('MyRecordへ')),
+                ElevatedButton(onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TestMovieBrowserPage()),
+                  );
+                }, child: Text('TestPage7へ')),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.push(

@@ -92,13 +92,8 @@ class _TweetContent extends StatelessWidget {
 class Body extends StatefulWidget {
   final corsor = Cursor(x: 30, y: 100);
 
-  //double x = 0.0;
-  //double y = 0.0;
-  Cursor? cursorRed1;
+  Body({Key? key}) : super(key: key);
 
-  Body({Cursor? cursorRed1, Key? key}) : super(key: key);
-
-  //Cursor? cursorRed1;
   @override
   BodyState createState() => BodyState();
 }
@@ -207,7 +202,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    final bodyWidget = Body(cursorRed1: cursorRed1);
+                    final bodyWidget = Body();
                     bodyList.add(bodyWidget);
                     //cursorList.add(moveCorsor);
                   });

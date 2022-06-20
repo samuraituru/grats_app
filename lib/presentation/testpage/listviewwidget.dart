@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/movie/local/countItem_widget.dart';
+import 'package:grats_app/presentation/movie/local/local_countItem_widget.dart';
 
 class ListviewWidget extends StatelessWidget {
   const ListviewWidget({Key? key}) : super(key: key);

@@ -1,13 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/objectbox.g.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
 import 'package:grats_app/presentation/introduction/introduction_page.dart';
 import 'package:grats_app/presentation/testpage/stool_page.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+
+late Store store;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  store = await openStore();
   runApp(MyApp());
 }
 

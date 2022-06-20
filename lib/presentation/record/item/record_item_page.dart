@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/presentation/record/record_model.dart';
+import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
 import 'package:provider/provider.dart';
 
-class RecordPage extends StatelessWidget {
+class RecordItemPage extends StatelessWidget {
+  int folderID;
+
+  RecordItemPage({required this.folderID});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChangeNotifierProvider<RecordModel>(
-        create: (_) => RecordModel(),
-        child: Consumer<RecordModel>(builder: (context, model, child) {
+      home: ChangeNotifierProvider<RecordItemModel>(
+        create: (_) => RecordItemModel()..initAction(folderID),
+        child: Consumer<RecordItemModel>(builder: (context, model, child) {
+          List<Widget> itemsWidget = model.items
+              ?.map(
+                (item) => ListTile(
+                  leading: Text(item.itemName ?? '名前無し'),
+                  title: Text(item.itemDescription?? ''),
+                ),
+              )
+              .toList() as List<Widget>;
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
@@ -30,7 +42,7 @@ class RecordPage extends StatelessWidget {
                                 TextField(
                                   controller: model.nameController,
                                   decoration: const InputDecoration(
-                                    hintText: " フォルダー名を記載",
+                                    hintText: " アイテム名を記載",
                                     border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
                                       vertical: 20,
@@ -59,7 +71,7 @@ class RecordPage extends StatelessWidget {
                               TextButton(
                                 child: Text('OK'),
                                 onPressed: () {
-                                  model.putFolder();
+                                  model.putItem();
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -75,8 +87,7 @@ class RecordPage extends StatelessWidget {
             ),
             body: Center(
               child: ListView(
-                children:
-                model.fetchBox(context),
+                children: itemsWidget,
               ),
             ),
           );
