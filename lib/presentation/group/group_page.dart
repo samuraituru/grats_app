@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/group.dart';
 import 'package:grats_app/domain/joingrouplist.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../domain/group.dart';
+
 class GroupPage extends StatelessWidget {
   const GroupPage({
     Key? key,
-    this.controller,
   }) : super(key: key);
-
-  final ScrollController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +30,16 @@ class GroupPage extends StatelessWidget {
             }
             final List<Widget> widgets = joinGroups.map((joinGroup) {
               return ListTile(
-                onTap: () async{
-                await model.fetchGroups(joinGroup);
+                onTap: () async {
+                  final groups = await model.fetchGroups(joinGroup);
                   showModalBottomSheet(
                       enableDrag: true,
                       isDismissible: false,
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return ModalAction(joinGroup: joinGroup);
+                        return ModalAction(
+                            joinGroup: joinGroup, groups: groups);
                       });
                 },
                 leading: Text('${joinGroup.groupName}'),
@@ -138,18 +137,27 @@ class GroupPage extends StatelessWidget {
 
 class ModalAction extends StatelessWidget {
   JoinGroup? joinGroup;
+  Group groups;
 
-  ModalAction({required this.joinGroup, Key? key}) : super(key: key);
+  ModalAction({required this.joinGroup, required this.groups, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupModel>(
-      create: (_) => GroupModel()..fetchAllJoinGroups(),
+      create: (_) => GroupModel(),
       child: Consumer<GroupModel>(builder: (context, model, child) {
         return Container(
           height: double.infinity,
           child: Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.block)),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(100.0),
               ),
@@ -161,7 +169,7 @@ class ModalAction extends StatelessWidget {
                 height: 100,
                 width: 100,
               ),
-              Text('${model.groups?.groupID}'),
+              Text('${groups.groupName}'),
               Card(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

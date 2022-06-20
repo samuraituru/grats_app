@@ -68,13 +68,13 @@ class GroupFloderPage extends StatelessWidget {
                                   ),
                                 ),
                                 onChanged: (text) {
-                                  model.addFloderName = text;
+                                  model.folderName = text;
                                 },
                               ),
                               Padding(padding: EdgeInsets.all(10.0)),
                               TextField(
                                 onChanged: (text) {
-                                  model.addFloderDescription = text;
+                                  model.folderDescription = text;
                                 },
                                 decoration: InputDecoration(
                                   hintText: " 説明を記載",

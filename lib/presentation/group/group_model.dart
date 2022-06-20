@@ -10,7 +10,6 @@ import 'package:grats_app/domain/record.dart';
 class GroupModel extends ChangeNotifier {
   var controller = TextEditingController();
   var editText = '';
-  var fruits = <String>['例)反則数'];
   var foloders = <Folder>[];
   var records = <Record>[];
   Group? groups;
@@ -22,7 +21,6 @@ class GroupModel extends ChangeNotifier {
   List<String> gIDList = [];
   String addGroupID = '';
 
-  //final groups = <Group>[];
   String? uID;
   String? currentUID;
   String? groupID;
@@ -42,7 +40,7 @@ class GroupModel extends ChangeNotifier {
           .get();
 
       final List<JoinGroup> joins =
-      await joinGroupsDoc.docs.map((DocumentSnapshot document) {
+          await joinGroupsDoc.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
         final String joinUserID = data['joinUserID'];
         final String groupID = data['groupID'];
@@ -62,7 +60,7 @@ class GroupModel extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchGroups(JoinGroup joinGroup) async {
+  Future<Group> fetchGroups(JoinGroup joinGroup) async {
     final DocumentSnapshot GroupsSnapshot = await FirebaseFirestore.instance
         .collection('Groups')
         .doc(joinGroup.groupID)
@@ -70,7 +68,11 @@ class GroupModel extends ChangeNotifier {
 
     Map<String, dynamic> data = GroupsSnapshot.data() as Map<String, dynamic>;
     final String groupID = data['groupID'];
-    groups = Group(groupID:groupID);
+    final String groupName = data['groupName'];
+    final String folderID = data['folderID'];
+
+    return groups =
+        Group(groupID: groupID, groupName: groupName);
     notifyListeners();
   }
 
@@ -92,21 +94,8 @@ class GroupModel extends ChangeNotifier {
       this.gIDList = a;
       print('gIDListは${this.gIDList}');
 
-      //gIDListの要素毎に、DocumentSnapshotを取得する
-/*
-      getgIDList = await gIDList?.map((gID) async {
-        var doc = await FirebaseFirestore.instance.collection('Groups').doc('$gID').get();
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        final String menberID = data['uID'];
-      }).toList();
-*/
       for (final gID in gIDList) {
         print(gID);
-/*
-        var doc = await FirebaseFirestore.instance.collection('Groups').doc('$gID').get();
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        final String menberID = data['uID'];
-*/
       }
       notifyListeners();
     }
@@ -121,26 +110,6 @@ class GroupModel extends ChangeNotifier {
 
     final Map<String, dynamic>? data = docsnapshot.data();
     myuser.gID = data!['gID'];
-    notifyListeners();
-  }
-
-  Future getGroup() async {
-    //ログインしている場合、グループを作成できる
-    //
-
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('Groups').get();
-    this.snapshot = snapshot;
-    //this.gID = snapshot.id;
-
-    final List<Group> groups = snapshot.docs.map((DocumentSnapshot document) {
-      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String gName = data['gName'];
-      final String gDesc = data['gDesc'];
-      final String gID = data['gID'];
-      return Group();
-    }).toList();
-    //this.groups = groups;
     notifyListeners();
   }
 

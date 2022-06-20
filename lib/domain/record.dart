@@ -11,9 +11,6 @@ class Record {
       this.contents,
       required this.folderID,
       required this.groupID});
-  getRecord() {
-    return this.title;
-  }
 }
 
 

@@ -10,24 +10,24 @@ class GroupFolderModel extends ChangeNotifier {
 
   List<Folder>? folders;
   JoinGroup? joinGroup;
-  String addFloderName = '';
-  String addFloderDescription = '';
-  String addFolderID = '';
+  String folderName = '';
+  String folderDescription = '';
 
   Future addFolder() async {
-    if (addFloderName == null || addFloderName == "") {
+    if (folderName == null || folderName == "") {
       throw 'フォルダ名が入力されていません';
     }
-    if (addFloderDescription == null || addFloderDescription.isEmpty) {
+    if (folderDescription == null || folderDescription.isEmpty) {
       throw '説明が入力されていません';
     }
     final doc = FirebaseFirestore.instance.collection('Folders').doc();
-    this.addFolderID = doc.id;
-    // firestoreに追加
+    //Folder-IDを取得
+    var addFolderID = doc.id;
+    // Firestoreに追加
     await doc.set(
       {
-        'floderName': addFloderName,
-        'floderDescription': addFloderDescription,
+        'folderName': folderName,
+        'folderDescription': folderDescription,
         'folderID': addFolderID,
         'groupID': joinGroup?.groupID,
       },

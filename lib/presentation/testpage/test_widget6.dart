@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:grats_app/domain/item.dart';
-import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
+import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
+import 'package:grats_app/presentation/movie/browser/movingwidget.dart';
 import 'package:provider/provider.dart';
 
-class CountItemWidget extends StatelessWidget {
+class TestWidget6 extends StatelessWidget {
   Item countItem;
   List<Item> countItems;
   int itemIndex;
+  List<MovingWidget> bodyList;
 
-  CountItemWidget({
+  TestWidget6({
     required this.countItem,
     required this.countItems,
     required this.itemIndex,
+    required this.bodyList,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MovieLocalModel>(
-      create: (_) => MovieLocalModel(),
-      child: Consumer<MovieLocalModel>(
+    return ChangeNotifierProvider<MovieBrowserModel>(
+      create: (_) => MovieBrowserModel(),
+      child: Consumer<MovieBrowserModel>(
         builder: (context, model, child) {
           return Dismissible(
             direction: DismissDirection.horizontal,
             onDismissed: (DismissDirection direction) async {
               if (direction == DismissDirection.endToStart ||
                   direction == DismissDirection.startToEnd) {
-                countItems.removeAt(itemIndex);
+                await countItems.removeAt(itemIndex);
+                await bodyList.removeAt(itemIndex);
+                //await model.countItemdelete();
               }
             },
             key: UniqueKey(),
@@ -57,7 +62,7 @@ class CountItemWidget extends StatelessWidget {
                                   child: const Text('DONE'),
                                   onPressed: () {
                                     Navigator.of(context)
-                                        .pop(); //dismiss the color picker
+                                        .pop();
                                   },
                                 ),
                               ],
@@ -121,7 +126,7 @@ class CountItemWidget extends StatelessWidget {
                         tooltip: 'Action!',
                         child: Icon(Icons.add),
                         onPressed: () {
-                          model.increment(countItem);
+                          model.itemCountIncrement(countItem);
                         },
                       ),
                     ),
@@ -134,7 +139,7 @@ class CountItemWidget extends StatelessWidget {
                         tooltip: 'Action!',
                         child: Icon(Icons.remove),
                         onPressed: () {
-                          model.decrement(countItem);
+                          //model.decrement(countItem);
                         },
                       ),
                     ),

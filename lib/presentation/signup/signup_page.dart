@@ -56,6 +56,10 @@ class SignUpPage extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green, // background
+                    onPrimary: Colors.white, // foreground
+                  ),
                   onPressed: () async {
                     model.startLoading();
                     // 追加の処理
