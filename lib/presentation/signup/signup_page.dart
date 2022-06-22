@@ -7,6 +7,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<SignModel>(
         create: (_) => SignModel(),
         child: Consumer<SignModel>(builder: (context, model, child) {

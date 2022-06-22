@@ -7,6 +7,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<LoginModel>(
         create: (_) => LoginModel(),
         child: Consumer<LoginModel>(builder: (context, model, child) {

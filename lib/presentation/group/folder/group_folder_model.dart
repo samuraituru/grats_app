@@ -6,10 +6,11 @@ import 'package:grats_app/domain/joingrouplist.dart';
 
 class GroupFolderModel extends ChangeNotifier {
   final ScrollController? controller;
+
   GroupFolderModel(this.controller);
 
   List<Folder>? folders;
-  JoinGroup? joinGroup;
+  Group? group;
   String folderName = '';
   String folderDescription = '';
 
@@ -22,32 +23,32 @@ class GroupFolderModel extends ChangeNotifier {
     }
     final doc = FirebaseFirestore.instance.collection('Folders').doc();
     //Folder-IDを取得
-    var addFolderID = doc.id;
+    String folderID = doc.id;
     // Firestoreに追加
     await doc.set(
       {
         'folderName': folderName,
         'folderDescription': folderDescription,
-        'folderID': addFolderID,
-        'groupID': joinGroup?.groupID,
+        'folderID': folderID,
+        'groupID': group?.groupID,
       },
     );
     notifyListeners();
   }
 
-  Future getFolder(JoinGroup joinGroup) async {
-    final  snapshot = await FirebaseFirestore.instance
+  Future<void> getFolder(Group group) async {
+    final snapshot = await FirebaseFirestore.instance
         .collection('Folders')
-        .doc('${joinGroup.joinUserID}')
-        .collection('Folders')
+        .where("groupID", isEqualTo: group.groupID)
         .get();
     snapshot.docs;
 
     final List<Folder> folders = snapshot.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String fName = data['fName'];
-      final String fDesc = data['fDesc'];
-      return Folder();
+      final String folderName = data['folderName'];
+      final String folderDescription = data['folderDescription'];
+      return Folder(
+          folderName: folderName, folderDescription: folderDescription);
     }).toList();
     this.folders = folders;
     notifyListeners();

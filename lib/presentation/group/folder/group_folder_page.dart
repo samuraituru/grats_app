@@ -8,19 +8,23 @@ import 'package:grats_app/presentation/group/scaffoldwrapper_page.dart';
 import 'package:provider/provider.dart';
 
 class GroupFloderPage extends StatelessWidget {
-  JoinGroup joinGroup;
-  GroupFloderPage({required this.joinGroup});
+  Group group;
+
+  GroupFloderPage({required this.group});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupFolderModel>(
-      create: (_) => GroupFolderModel(null)..getFolder(joinGroup),
+      create: (_) => GroupFolderModel(null)..getFolder(group),
       child: Consumer<GroupFolderModel>(builder: (context, model, child) {
         final List<Folder>? folders = model.folders;
-        model.joinGroup = joinGroup;
+        model.group = group;
 
         if (folders == null) {
-          return CircularProgressIndicator();
+          return const SizedBox(
+              width: 100,
+              height: 100,
+              child: Center(child: CircularProgressIndicator()));
         }
         final List<Widget> widgets = folders
             .map(
@@ -28,14 +32,15 @@ class GroupFloderPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => GroupItemPage()),
+                    MaterialPageRoute(
+                        builder: (context) => GroupItemPage(folder: folder)),
                   );
                 },
-                leading: Text(''),
-                title: Text(''),
+                title: Text('${folder.folderName}'),
+                subtitle: Text('${folder.folderDescription}'),
                 trailing: IconButton(
                   icon: Icon(Icons.edit),
-                  onPressed: (){},
+                  onPressed: () {},
                 ),
               ),
             )
@@ -46,7 +51,7 @@ class GroupFloderPage extends StatelessWidget {
             preferredSize: Size.fromHeight(kToolbarHeight),
             child: AppBar(
               centerTitle: true,
-              title: Text('${joinGroup.groupName}'),
+              title: Text('${group.groupName}'),
               actions: [
                 IconButton(
                   icon: Icon(Icons.add),
@@ -55,13 +60,13 @@ class GroupFloderPage extends StatelessWidget {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text('Floderを追加'),
+                          title: const Text('Folderを追加'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextField(
-                                decoration: InputDecoration(
-                                  hintText: " Floder名を記載",
+                                decoration: const InputDecoration(
+                                  hintText: " Folder名を記載",
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.symmetric(
                                     vertical: 20,
@@ -76,7 +81,7 @@ class GroupFloderPage extends StatelessWidget {
                                 onChanged: (text) {
                                   model.folderDescription = text;
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: " 説明を記載",
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.symmetric(
@@ -88,15 +93,17 @@ class GroupFloderPage extends StatelessWidget {
                           ),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('キャンセル'),
+                              child: const Text('キャンセル'),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
                             ),
                             TextButton(
                               child: Text('OK'),
-                              onPressed: () {
-                                model.addFolder();
+                              onPressed: () async{
+                               await model.addFolder();
+                                await model.getFolder(group);
+                                Navigator.pop(context);
                               },
                             ),
                           ],
