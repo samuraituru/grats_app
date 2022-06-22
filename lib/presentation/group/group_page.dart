@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/joingrouplist.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:provider/provider.dart';
@@ -16,34 +15,46 @@ class GroupPage extends StatelessWidget {
     return ChangeNotifierProvider<GroupModel>(
       create: (_) => GroupModel()..fetchAllJoinGroups(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Consumer<GroupModel>(
           builder: (context, model, child) {
-            final List<JoinGroup> joinGroups = model.joinGroups;
+            final List<Group> groups = model.groups;
 
-            if (joinGroups == null) {
-              return Container(
-                child: SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: CircularProgressIndicator()),
-              );
+            if (groups == null) {
+              return const SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()));
             }
-            final List<Widget> widgets = joinGroups.map((joinGroup) {
+            final List<Widget> widgets = groups.map((group) {
               return ListTile(
-                onTap: () async {
-                  final groups = await model.fetchGroups(joinGroup);
+                onTap: () {
+                  final groups = model.group;
                   showModalBottomSheet(
+                      backgroundColor: Colors.white.withOpacity(0.8),
                       enableDrag: true,
                       isDismissible: false,
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return ModalAction(
-                            joinGroup: joinGroup, groups: groups);
-                      });
+                        return GroupModal(group: group);
+                      }).whenComplete(() => model.fetchAllJoinGroups());
                 },
-                leading: Text('${joinGroup.groupName}'),
-                title: Text('${joinGroup.groupDescription}'),
+                leading: group.imgURL != ''
+                    ? CircleAvatar(
+                        radius: 30,
+                        child: ClipOval(
+                          child: Image.network(
+                            group.imgURL,
+                          ),
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                      ),
+                title: Text('${group.groupName}'),
+                subtitle: Text('${group.groupDescription}'),
                 trailing: IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {},
@@ -64,12 +75,12 @@ class GroupPage extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: Text('Groupを追加'),
+                              title: const Text('Groupを追加'),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   TextField(
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: " group名を記載",
                                       border: OutlineInputBorder(),
                                       contentPadding: EdgeInsets.symmetric(
@@ -77,15 +88,15 @@ class GroupPage extends StatelessWidget {
                                       ),
                                     ),
                                     onChanged: (text) {
-                                      model.addGroupName = text;
+                                      model.groupName = text;
                                     },
                                   ),
                                   Padding(padding: EdgeInsets.all(10.0)),
                                   TextField(
                                     onChanged: (text) {
-                                      model.addGroupDescription = text;
+                                      model.groupDescription = text;
                                     },
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: " 説明を記載",
                                       border: OutlineInputBorder(),
                                       contentPadding: EdgeInsets.symmetric(
@@ -93,19 +104,26 @@ class GroupPage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  TextButton(
+                                      onPressed: () {
+                                        model.pickImage();
+                                      },
+                                      child: const Text('画像を追加'))
                                 ],
                               ),
                               actions: <Widget>[
                                 TextButton(
-                                  child: Text('キャンセル'),
+                                  child: const Text('キャンセル'),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
                                 ),
                                 TextButton(
-                                  child: Text('OK'),
-                                  onPressed: () {
-                                    model.addGroup();
+                                  child: const Text('OK'),
+                                  onPressed: () async {
+                                    await model.addGroup();
+                                    await model.fetchAllJoinGroups();
+                                    Navigator.pop(context);
                                   },
                                 ),
                               ],
@@ -135,57 +153,110 @@ class GroupPage extends StatelessWidget {
   }
 }
 
-class ModalAction extends StatelessWidget {
-  JoinGroup? joinGroup;
-  Group groups;
+class GroupModal extends StatelessWidget {
+  Group group;
 
-  ModalAction({required this.joinGroup, required this.groups, Key? key})
-      : super(key: key);
+  GroupModal({required this.group, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupModel>(
       create: (_) => GroupModel(),
       child: Consumer<GroupModel>(builder: (context, model, child) {
-        return Container(
+        return SizedBox(
           height: double.infinity,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.favorite)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.block)),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(iconSize: 30,onPressed: () {}, icon: Icon(Icons.star)),
+                    IconButton(iconSize: 30,onPressed: () {}, icon: Icon(Icons.block)),
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(100.0),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.blue,
+              GestureDetector(
+                onTap: () async {
+                  await model.pickImage();
+                  await model.imageUpData(group);
+                  await model.fetchAllJoinGroups();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.blue,
+                  ),
+                  height: 100,
+                  width: 100,
+                  child: (() {
+                    if (group.imgURL == '') {
+                      return const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.grey,
+                      );
+                    } else if (model.imageFile != null) {
+                      return Image.file(model.imageFile!);
+                    }
+                    return CircleAvatar(
+                      radius: 30,
+                      child: ClipOval(
+                        child: Image.network(
+                          group.imgURL,
+                        ),
+                      ),
+                    );
+                  })(),
                 ),
-                height: 100,
-                width: 100,
               ),
-              Text('${groups.groupName}'),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Flexible(
+                  child: Text('${group.groupName}',
+                      style: TextStyle(
+                        fontSize: 24,
+                      )),
+                ),
+              ),
               Card(),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(onPressed: () {}, icon: Icon(Icons.accessibility)),
-                  IconButton(
-                      onPressed: () {}, icon: Icon(Icons.note_add_outlined)),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    GroupFloderPage(joinGroup: joinGroup!)));
-                      },
-                      icon: Icon(Icons.folder)),
+                  Column(
+                    children: [
+                      IconButton(
+                          iconSize: 30,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        GroupFloderPage(group: group)));
+                          },
+                          icon: Icon(Icons.folder_open)),
+                      SizedBox(
+                        child: TextButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        GroupFloderPage(group: group)));
+                          },
+                          style: TextButton.styleFrom(
+                            primary: Colors.black,
+                          ),
+                          icon: const Icon(Icons.folder_open,size:30),
+                          label: const Text('Folder',style: TextStyle(fontSize: 18)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],
@@ -194,4 +265,9 @@ class ModalAction extends StatelessWidget {
       }),
     );
   }
+}
+
+Color TextColor() {
+  Color grey = Colors.grey;
+  return grey;
 }

@@ -9,6 +9,7 @@ class StoolPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {

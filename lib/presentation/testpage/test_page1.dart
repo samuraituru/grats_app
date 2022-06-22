@@ -1,35 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sticky_headers/sticky_headers.dart';
 
 class TestPage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWrapper(
-      title: 'Sticky Headers Example',
-      child: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: <Widget>[
-            ListTile(
-              title: const Text('Example 1 - Headers and Content'),
-              onTap: () => navigateTo(context, (context) => Example1()),
-            ),
-            ListTile(
-              title: const Text('Example 2 - Animated Headers with Content'),
-              onTap: () => navigateTo(context, (context) => Example2()),
-            ),
-            ListTile(
-              title: const Text('Example 3 - Headers overlapping the Content'),
-              onTap: () => navigateTo(context, (context) => Example3()),
-            ),
-            ListTile(
-              title: const Text('Example 4 - Example using scroll controller'),
-              onTap: () => navigateTo(context, (context) => Example4()),
-            ),
-          ],
-        ).toList(growable: false),
-      ),
-    );
+    return Text('');
   }
 
   void navigateTo(BuildContext context, WidgetBuilder builder) {
@@ -56,23 +30,6 @@ class Example1 extends StatelessWidget {
         itemBuilder: (context, index) {
           return Material(
             color: Colors.grey[300],
-            child: StickyHeader(
-              controller: controller, // Optional
-              header: Container(
-                height: 50.0,
-                color: Colors.blueGrey[700],
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Header #$index',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-              content: Container(
-                width: 100,
-                height: 100,
-              ),
-            ),
           );
         },
       ),
@@ -80,118 +37,6 @@ class Example1 extends StatelessWidget {
   }
 }
 
-class Example2 extends StatelessWidget {
-  const Example2({
-    Key? key,
-    this.controller,
-  }) : super(key: key);
-
-  final ScrollController? controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaffoldWrapper(
-      wrap: controller == null,
-      title: 'Example 2',
-      child: ListView.builder(
-        primary: controller == null,
-        controller: controller,
-        itemBuilder: (context, index) {
-          return Material(
-            color: Colors.grey[300],
-            child: StickyHeaderBuilder(
-              controller: controller, // Optional
-              builder: (BuildContext context, double stuckAmount) {
-                stuckAmount = 1.0 - stuckAmount.clamp(0.0, 1.0);
-                return Container(
-                  height: 50.0,
-                  color: Color.lerp(
-                      Colors.blue[700], Colors.red[700], stuckAmount),
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          'Header #$index',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Offstage(
-                        offstage: stuckAmount <= 0.0,
-                        child: Opacity(
-                          opacity: stuckAmount,
-                          child: IconButton(
-                            icon: Icon(Icons.favorite, color: Colors.white),
-                            onPressed: () => ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                    content: Text('Favorite #$index'))),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              content: Container(
-                width: 100,
-                height: 100,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class Example3 extends StatelessWidget {
-  const Example3({
-    Key? key,
-    this.controller,
-  }) : super(key: key);
-
-  final ScrollController? controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaffoldWrapper(
-      wrap: controller == null,
-      title: 'Example 3',
-      child: ListView.builder(
-        primary: controller == null,
-        controller: controller,
-        itemBuilder: (context, index) {
-          return Material(
-            color: Colors.grey[300],
-            child: StickyHeaderBuilder(
-              overlapHeaders: true,
-              controller: controller, // Optional
-              builder: (BuildContext context, double stuckAmount) {
-                stuckAmount = 1.0 - stuckAmount.clamp(0.0, 1.0);
-                return Container(
-                  height: 50.0,
-                  color:
-                      Colors.grey.shade900.withOpacity(0.6 + stuckAmount * 0.4),
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Header #$index',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                );
-              },
-              content: Container(
-                width: 100,
-                height: 100,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
 
 class ScaffoldWrapper extends StatelessWidget {
   const ScaffoldWrapper({
@@ -266,8 +111,6 @@ class _Example4State extends State<Example4> {
             child: TabBarView(
               children: <Widget>[
                 Example1(controller: _controller[1]),
-                Example2(controller: _controller[2]),
-                Example3(controller: _controller[3]),
               ],
             ),
           ),

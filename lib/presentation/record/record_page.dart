@@ -6,6 +6,7 @@ class RecordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<RecordModel>(
         create: (_) => RecordModel(),
         child: Consumer<RecordModel>(builder: (context, model, child) {

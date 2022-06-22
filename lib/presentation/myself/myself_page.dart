@@ -12,6 +12,7 @@ class MyselfPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MyselfModel>(
         create: (_) => MyselfModel(),
         child: Consumer<MyselfModel>(builder: (context, model, child) {

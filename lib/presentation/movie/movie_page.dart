@@ -9,6 +9,7 @@ class MoviePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MovieModel>(
         create: (_) => MovieModel(),
         child: Consumer<MovieModel>(builder: (context, model, child) {

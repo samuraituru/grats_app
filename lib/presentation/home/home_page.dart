@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
     final double deviceWidth = MediaQuery.of(context).size.width;
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<HomeModel>(
         create: (_) => HomeModel(),
         child: Consumer<HomeModel>(builder: (context, model, child) {

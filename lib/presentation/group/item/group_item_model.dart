@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/folder.dart';
+import 'package:grats_app/domain/item2.dart';
 import 'package:grats_app/domain/record.dart';
 
 class GroupItemModel extends ChangeNotifier {
@@ -9,39 +10,38 @@ class GroupItemModel extends ChangeNotifier {
 //  final List<Items>? header = items;
   GroupItemModel(this.controller);
 
-  List<Record>? records;
+  List<Item2>? items;
+  String itemName = '';
+  String itemDescription = '';
 
-  Future getRecord() async {
-    final QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc('Group')
-        .collection('Folders')
-        .doc('Folder')
+  Future<void> getItem(Folder folder) async {
+    final  snapshot = await FirebaseFirestore.instance
         .collection('Items')
+        .where("folderID", isEqualTo: folder.folderID)
         .get();
 
-    final List<Record> records = snapshot.docs.map((DocumentSnapshot document) {
+    final List<Item2> items = snapshot.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String title = data['title'];
-      final String contents = data['contents'];
-      return Record(title:title,contents:contents, headerName: '', folderID: '', groupID: '');
+      final String itemName = data['itemName'];
+      final String itemDescription = data['itemDescription'];
+      return Item2(itemName:itemName,itemDescription:itemDescription);
     }).toList();
-    this.records = records;
+    this.items = items;
     notifyListeners();
   }
 
 
-  Future addRecord(Record record) async {
-    if (record.title == null || record.title == "") {
-      throw 'レコード名が入力されていません';
+  Future setItem() async {
+    if (itemName == null || itemName == "") {
+      throw 'アイテム名が入力されていません';
     }
 
-    final doc = FirebaseFirestore.instance.collection('Records').doc();
+    final doc = FirebaseFirestore.instance.collection('Items').doc();
 
-    // firestoreにrecordを追加
+    // Firestoreにrecordを追加
     await doc.set({
-      'title': record.title,
-      'contents': record.contents,
+      'itemName': itemName,
+      'itemDescription': itemDescription,
     });
   }
 }

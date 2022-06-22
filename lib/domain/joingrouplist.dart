@@ -4,6 +4,7 @@ class JoinGroup {
   String? groupName;
   String? groupDescription;
   String? memberCounter;
+  String? imgURL;
 
   JoinGroup({
     this.joinUserID,
@@ -11,5 +12,6 @@ class JoinGroup {
     this.groupName,
     this.groupDescription,
     this.memberCounter,
+    this.imgURL,
   });
 }
