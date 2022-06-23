@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
+import 'package:grats_app/presentation/record/record_page.dart';
+import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 
 class RecordItemPage extends StatelessWidget {
@@ -10,6 +12,7 @@ class RecordItemPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<RecordItemModel>(
         create: (_) => RecordItemModel()..initAction(folderID),
         child: Consumer<RecordItemModel>(builder: (context, model, child) {
@@ -17,7 +20,7 @@ class RecordItemPage extends StatelessWidget {
               ?.map(
                 (item) => ListTile(
                   leading: Text(item.itemName ?? '名前無し'),
-                  title: Text(item.itemDescription?? ''),
+                  title: Text(item.itemDescription ?? ''),
                 ),
               )
               .toList() as List<Widget>;
@@ -25,6 +28,12 @@ class RecordItemPage extends StatelessWidget {
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: AppBar(
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.push(context, SlideRightRoute(page: RecordPage()));
+                  },
+                ),
                 centerTitle: true,
                 title: Text('Record'),
                 actions: [

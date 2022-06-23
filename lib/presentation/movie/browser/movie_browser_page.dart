@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
 import 'package:grats_app/presentation/movie/local/local_countItem_widget.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
+import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -12,6 +13,7 @@ class MovieBrowserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MovieBrowserModel>(
         create: (_) => MovieBrowserModel()..initState(),
         child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
@@ -22,10 +24,7 @@ class MovieBrowserPage extends StatelessWidget {
               leading: IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MoviePage()),
-                  );
+                  Navigator.push(context, SlideRightRoute(page: MoviePage()));
                 },
               ),
               title: !model.searchBoolean

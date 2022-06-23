@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
   var textcontroller = TextEditingController();
+  String imgURL = '';
+  File? imageFile;
 
   String? uid;
   MyUser myuser = MyUser();

@@ -1,3 +1,4 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_model.dart';
@@ -19,36 +20,37 @@ class HomePage extends StatelessWidget {
         create: (_) => HomeModel(),
         child: Consumer<HomeModel>(builder: (context, model, child) {
           final tabItems = [
-            const BottomNavigationBarItem(
+             TabItem(
               icon: Icon(Icons.home),
-              label: '',
+              title: 'Home',
             ),
-            const BottomNavigationBarItem(
+             TabItem(
               icon: Icon(Icons.groups_rounded),
-              label: '',
+              title: 'Group',
             ),
-            const BottomNavigationBarItem(
+             TabItem(
               icon: Icon(Icons.edit),
-              label: '',
+              title: 'Record',
             ),
-            const BottomNavigationBarItem(
+             TabItem(
               icon: Icon(Icons.movie_creation_outlined),
-              label: '',
+              title: 'Movie',
             ),
-            const BottomNavigationBarItem(
+             TabItem(
               icon: Icon(Icons.person_rounded),
-              label: '',
+              title: 'MyPage',
             ),
           ];
           return Scaffold(
             body: _homePageBody(context, model),
-            bottomNavigationBar: BottomNavigationBar(
+            bottomNavigationBar: ConvexAppBar(
+              backgroundColor: Colors.green,
               onTap: (index) {
                 model.onTabTapped(index);
               },
-              currentIndex: model.currentIndex,
+              initialActiveIndex: model.currentIndex,
               items: tabItems,
-              type: BottomNavigationBarType.fixed,
+              //type: BottomNavigationBarType.fixed,
             ),
           );
         }),

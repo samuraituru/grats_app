@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
+import 'package:grats_app/presentation/slide_left_route.dart';
 import 'package:provider/provider.dart';
 
 class MyselfAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MyselfModel>(
           create: (_) => MyselfModel(),
           child: Consumer<MyselfModel>(builder: (context, model, child) {
@@ -15,10 +17,8 @@ class MyselfAccount extends StatelessWidget {
                 appBar: AppBar(
                   leading: IconButton(icon:Icon(Icons.arrow_back_ios),
                   onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyselfPage()),
-                    );
+                    Navigator.push(context,
+                        SlideLeftRoute(exitPage: this, enterPage: MyselfPage()));
                   }),
                   centerTitle: true,
                   title: Text('アカウント詳細'),

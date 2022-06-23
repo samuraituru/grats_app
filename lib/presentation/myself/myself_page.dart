@@ -43,7 +43,40 @@ class MyselfPage extends StatelessWidget {
                         child: SizedBox(
                           height: 120,
                           width: 120,
-                          child: Container(
+                          child:
+                          GestureDetector(
+                            onTap: () async {
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              height: 100,
+                              width: 100,
+                              child: (() {
+                                if (model.imgURL == '') {
+                                  return const CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Colors.grey,
+                                    child: Icon(Icons.add,
+                                        size: 40, color: Colors.white),
+                                  );
+                                } else if (model.imageFile != null) {
+                                  return Image.file(model.imageFile!);
+                                }
+                                return CircleAvatar(
+                                  radius: 30,
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      model.imgURL,
+                                    ),
+                                  ),
+                                );
+                              })(),
+                            ),
+                          ),
+                          /*Container(
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.grey,
@@ -57,7 +90,7 @@ class MyselfPage extends StatelessWidget {
                                 onTap: () async {},
                               ),
                             ),
-                          ),
+                          ),*/
                         ),
                       ),
                     ]),
