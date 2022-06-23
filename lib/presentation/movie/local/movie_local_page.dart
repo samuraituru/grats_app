@@ -3,12 +3,14 @@ import 'package:grats_app/presentation/movie/local/local_countItem_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:grats_app/presentation/movie/local/watch_widget.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
+import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 
 class MovieLocalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MovieLocalModel>(
         create: (_) => MovieLocalModel(),
         child: Consumer<MovieLocalModel>(
@@ -47,11 +49,7 @@ class MovieLocalPage extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.arrow_back_ios),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MoviePage()),
-                          );
+                          Navigator.push(context, SlideRightRoute(page: MoviePage()));
                         },
                       ),
                     ),

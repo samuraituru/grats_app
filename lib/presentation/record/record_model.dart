@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/objectboxFolder.dart';
+import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
 import 'package:grats_app/presentation/record/item/record_item_page.dart';
+import 'package:grats_app/presentation/slide_right_route.dart';
 
 import '../../main.dart';
 
@@ -65,14 +67,8 @@ class RecordModel extends ChangeNotifier {
         .map(
           (folder) => ListTile(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecordItemPage(
-                    folderID: folder.id,
-                  ),
-                ),
-              );
+              Navigator.push(context,
+                  SlideRightRoute(page: RecordItemPage(folderID: folder.id)));
             },
             leading: Text(folder.floderName ?? '名前無し'),
             title: Text('${folder.floderDescription}'),

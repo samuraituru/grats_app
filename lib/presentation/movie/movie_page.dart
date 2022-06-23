@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_page.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
 import 'package:grats_app/presentation/movie/movie_model.dart';
+import 'package:grats_app/presentation/slide_left_route.dart';
 import 'package:grats_app/presentation/testpage/listviewwidget.dart';
 import 'package:provider/provider.dart';
 
@@ -28,10 +29,8 @@ class MoviePage extends StatelessWidget {
                     leading: Icon(Icons.public_outlined),
                     title: Text('browserで視聴'),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MovieBrowserPage()),
-                      );
+                      Navigator.push(context,
+                          SlideLeftRoute(exitPage: this, enterPage: MovieBrowserPage()));
                     }, // タップ
                   ),
                 ),
@@ -43,10 +42,8 @@ class MoviePage extends StatelessWidget {
                     leading: Icon(Icons.smartphone),
                     title: Text('ローカルで視聴'),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MovieLocalPage()),
-                      );
+                      Navigator.push(context,
+                          SlideLeftRoute(exitPage: this, enterPage: MovieLocalPage()));
                     }, // タップ
                   ),
                 ),

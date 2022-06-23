@@ -9,10 +9,22 @@ import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GroupModel extends ChangeNotifier {
+
   var controller = TextEditingController();
   final imagePicker = ImagePicker();
   File? imageFile;
   var editText = '';
+  bool isEnabled = false;
+
+  void blockButtonEnable() {
+    isEnabled = true;
+    notifyListeners();
+  }
+
+  void blockButtonDisable() {
+    isEnabled = false;
+    notifyListeners();
+  }
 
   Group? group;
   List<Group> groups = [];
@@ -24,7 +36,7 @@ class GroupModel extends ChangeNotifier {
   List<String> gIDList = [];
 
   List<String> memberIDs = [];
-  Map<String,dynamic> memberIDsMap = {};
+  Map<String, dynamic> memberIDsMap = {};
   String groupID = '';
 
   String? uID;
@@ -151,7 +163,8 @@ class GroupModel extends ChangeNotifier {
     memberIDs.add(currentUID);
     return memberIDs;
   }
-  Map<String, dynamic> mapAdd(String currentUID){
+
+  Map<String, dynamic> mapAdd(String currentUID) {
     memberIDsMap['UID'] = currentUID;
     return memberIDsMap;
   }

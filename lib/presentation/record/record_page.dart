@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
+import 'package:grats_app/presentation/record/item/record_item_page.dart';
 import 'package:grats_app/presentation/record/record_model.dart';
+import 'package:grats_app/presentation/slide_left_route.dart';
 import 'package:provider/provider.dart';
 
 class RecordPage extends StatelessWidget {
@@ -10,6 +13,23 @@ class RecordPage extends StatelessWidget {
       home: ChangeNotifierProvider<RecordModel>(
         create: (_) => RecordModel(),
         child: Consumer<RecordModel>(builder: (context, model, child) {
+          List<ListTile> folder = model.folderBox
+              .getAll()
+              .map(
+                (folder) => ListTile(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        SlideLeftRoute(
+                            exitPage: this,
+                            enterPage: RecordItemPage(folderID: folder.id)));
+                  },
+                  leading: Text(folder.floderName ?? '名前無し'),
+                  title: Text('${folder.floderDescription}'),
+                ),
+              )
+              .toList();
+
           return Scaffold(
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(kToolbarHeight),
@@ -76,8 +96,7 @@ class RecordPage extends StatelessWidget {
             ),
             body: Center(
               child: ListView(
-                children:
-                model.fetchBox(context),
+                children: folder,
               ),
             ),
           );
