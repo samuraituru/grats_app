@@ -11,7 +11,7 @@ class MyselfAccount extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<MyselfModel>(
-          create: (_) => MyselfModel(),
+          create: (_) => MyselfModel()..getMyuser(),
           child: Consumer<MyselfModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar: AppBar(
@@ -36,7 +36,8 @@ class MyselfAccount extends StatelessWidget {
                     ListTile(
                       title: Text('ログアウト'),
                       onTap: ()async {
-                       await FirebaseAuth.instance.signOut();
+                       await model.SignOut(context);
+                       //Navigator.of(context).pop();
                       },
                     ),
                   ],

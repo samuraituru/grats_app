@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
+import 'package:grats_app/presentation/login/login_page.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
@@ -60,5 +61,17 @@ class MyselfModel extends ChangeNotifier {
       'userName': user.userName,
       'target': user.target,
     });
+  }
+  SignOut(context) async{
+    if (uid != null){
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).pop();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginPage()),
+      );
+    }
+
   }
 }

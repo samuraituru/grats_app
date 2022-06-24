@@ -1,11 +1,11 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_model.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
 import 'package:grats_app/presentation/record/record_page.dart';
-import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -20,10 +20,10 @@ class HomePage extends StatelessWidget {
         create: (_) => HomeModel(),
         child: Consumer<HomeModel>(builder: (context, model, child) {
           final tabItems = [
-             TabItem(
+             /*TabItem(
               icon: Icon(Icons.home),
               title: 'Home',
-            ),
+            ),*/
              TabItem(
               icon: Icon(Icons.groups_rounded),
               title: 'Group',
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             body: _homePageBody(context, model),
             bottomNavigationBar: ConvexAppBar(
-              backgroundColor: Colors.green,
+              backgroundColor: ThemeColors.color,
               onTap: (index) {
                 model.onTabTapped(index);
               },
@@ -62,29 +62,29 @@ class HomePage extends StatelessWidget {
     final currentIndex = model.currentIndex;
     return Stack(
       children: <Widget>[
-        _tabPage(
+        /*_tabPage(
           currentIndex,
           0,
           SignUpPage(),
-        ),
+        ),*/
         _tabPage(
           currentIndex,
-          1,
+          0,
           GroupPage(),
         ),
         _tabPage(
           currentIndex,
-          2,
+          1,
           RecordPage(),
         ),
         _tabPage(
           currentIndex,
-          3,
+          2,
           MoviePage(),
         ),
         _tabPage(
           currentIndex,
-          4,
+          3,
           MyselfPage(),
         ),
       ],
