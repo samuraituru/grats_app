@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
+import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class IntroductionPage extends StatelessWidget {
@@ -16,116 +19,142 @@ class IntroductionPage extends StatelessWidget {
       create: (_) => IntroductionModel(),
       child: Scaffold(
         body: Consumer<IntroductionModel>(builder: (context, model, child) {
-          final controller = ConfettiController(duration: const Duration(seconds: 5));
-          void confettiEvent() {
-            controller.play();
-          }
           final listPagesViewModel = [
             PageViewModel(
-              title: "グループ機能",
-              body: "自由にグループを作成しグループ内で情報を共有しよう!グループ毎に戦術や情報を追記する事ができるよ!",
-              image: const Center(
-                child: Icon(
-                  Icons.groups,
-                  size: 200,
-                ),
+              titleWidget: SizedBox(
+                width: 600,
+                height: 600,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('見たい動画から気になる項目を\nカウントしてみよう',
+                        style: TextStyle(
+                            color: ThemeColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                    ),
+                    Lottie.asset(
+                      'lib/assets/movie_image.json',
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.fill,
+                    ),
+                  ],
+                )),
               ),
-              decoration: const PageDecoration(
-                titleTextStyle: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-              ),
+              reverse: true,
+              body: "",
             ),
             PageViewModel(
-              title: "レコード機能",
-              body:
-                  "自分で分析した情報をレコードとして残す事ができるよ!レコードにまとめる事で後で振り返り易くなる所属しているグループに作成したレコードを追加できるよ!",
-              image: const Center(
-                child: Icon(
-                  Icons.create_outlined,
-                  size: 200,
-                ),
+              titleWidget: SizedBox(
+                width: 600,
+                height: 600,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('分析の結果をレコードに残そう',
+                        style: TextStyle(
+                            color: ThemeColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                    ),
+                    Lottie.asset(
+                      'lib/assets/record_image.json',
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.fill,
+                    ),
+                  ],
+                )),
               ),
-              decoration: const PageDecoration(
-                titleTextStyle: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-              ),
+              reverse: true,
+              body: "",
             ),
             PageViewModel(
-              title: "分析サポート機能",
-              body: "このアプリでは動画による分析をサポートするよ!分析の情報はレコードに出力ができるよ",
-              image: const Center(
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  size: 200,
-                ),
+              titleWidget: SizedBox(
+                width: 600,
+                height: 600,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('グループ機能を使って\n情報を共有しよう',
+                        style: TextStyle(
+                            color: ThemeColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                    ),
+                    Lottie.asset(
+                      'lib/assets/group_image.json',
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.fill,
+                    ),
+                  ],
+                )),
               ),
-              decoration: const PageDecoration(
-                titleTextStyle: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-              ),
+              reverse: true,
+              body: "",
             ),
             PageViewModel(
-              title: "始めてみよう",
-              //body: '',
+              titleWidget: SizedBox(
+                width: 500,
+                height: 500,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: buildConfetti(model)),
+                    Text('Gratsをはじめましょう♪♪♪',
+                        style: TextStyle(
+                            color: ThemeColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                    ),
+                    Lottie.asset(
+                      'lib/assets/startup_image.json',
+                      width: 250,
+                      height: 250,
+                      fit: BoxFit.fill,
+                    ),
+                  ],
+                )),
+              ),
+              reverse: true,
               bodyWidget: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ConfettiWidget(
-                      confettiController: controller,
-                      blastDirection: pi / 2,
-                      // 紙吹雪を出す方向(この場合画面上に向けて発射)
-                      emissionFrequency: 0.1,
-                      // 発射頻度(数が小さいほど紙と紙の間隔が狭くなる)
-                      minBlastForce: 5,
-                      // 紙吹雪の出る瞬間の5フレーム分の速度の最小
-                      maxBlastForce: 20,
-                      // 紙吹雪の出る瞬間の5フレーム分の速度の最大(数が大きほど紙吹雪は遠くに飛んでいきます。)
-                      numberOfParticles: 10,
-                      // 1秒あたりの紙の枚数
-                      gravity: 0.1,
-                      // 紙の落ちる速さ(0~1で0だとちょーゆっくり)
-                      colors: const <Color>[
-                        // 紙吹雪の色指定
-                        Colors.red,
-                        Colors.blue,
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // On button presed
-                    },
-                    child: const Text("新規登録"),
-                  ),
                   SizedBox(
-                    width: 100,
+                    width: 200,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        confettiEvent();
+                        model.controller.play();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SignUpPage()),
+                        );
                       },
                       child: const Text(
-                        "ログイン",
+                        "はじめる",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: ThemeColors.color,
                           fontSize: 15,
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.greenAccent, //ボタンの背景色
+                        primary: ThemeColors.textColor, //ボタンの背景色
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -134,31 +163,28 @@ class IntroductionPage extends StatelessWidget {
                   ),
                 ],
               ),
-              image: const Center(
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                  size: 200,
-                ),
-              ),
-              decoration: const PageDecoration(
-                titleTextStyle: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle:
-                    TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-              ),
             ),
           ];
           return IntroductionScreen(
+            globalBackgroundColor: ThemeColors.color,
             pages: listPagesViewModel,
             onDone: () {
               model.setFirstIntro();
             },
             showSkipButton: true,
             back: const Icon(Icons.arrow_back),
-            skip: const Text('skip'),
-            next: const Text('next'),
+            skip: const Text(
+              'skip',
+              style: TextStyle(
+                color: ThemeColors.textColor,
+              ),
+            ),
+            next: const Text(
+              'next',
+              style: TextStyle(
+                color: ThemeColors.textColor,
+              ),
+            ),
             done: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -166,19 +192,48 @@ class IntroductionPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
-              child: const Text("ゲストで始める",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              child: const Text(
+                "ゲストで始める",
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: ThemeColors.textColor),
+              ),
             ),
             dotsDecorator: DotsDecorator(
                 size: const Size.square(10.0),
                 activeSize: const Size(15.0, 10.0),
-                color: Colors.black26,
+                color: ThemeColors.textColor,
                 spacing: const EdgeInsets.symmetric(horizontal: 3.0),
                 activeShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0))),
           );
         }),
       ),
+    );
+  }
+
+  Widget buildConfetti(model) {
+    return ConfettiWidget(
+      confettiController: model.controller,
+      //displayTarget: true,
+      blastDirectionality: BlastDirectionality.explosive,
+      //blastDirection: pi / 2,// 紙吹雪を出す方向(この場合画面上に向けて発射)
+      emissionFrequency: 1,
+      // 発射頻度(数が小さいほど紙と紙の間隔が狭くなる)
+      numberOfParticles: 2,
+      // 1秒あたりの紙の枚数
+      shouldLoop: false,
+      maxBlastForce: 8,
+      // 紙吹雪の出る瞬間の5フレーム分の速度の最大(数が大きほど紙吹雪は遠くに飛んでいきます。)
+      minBlastForce: 5,
+      // 紙吹雪の出る瞬間の5フレーム分の速度の最小
+      colors: [Colors.green, Colors.pink, Colors.orange],
+      maximumSize: Size(20, 20),
+      minimumSize: Size(10, 10),
+      gravity: 0.4,
+      // 紙の落ちる速さ(0~1で0だとちょーゆっくり)
+      particleDrag: 0.001,
     );
   }
 }
