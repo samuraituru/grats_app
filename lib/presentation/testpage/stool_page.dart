@@ -1,30 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/presentation/introduction/Introduction_model.dart';
+import 'package:grats_app/presentation/introduction/introduction_page.dart';
 import 'package:grats_app/presentation/signup/signup_page.dart';
+import 'package:provider/provider.dart';
 
 import '../home/home_page.dart';
 
 class StoolPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // スプラッシュ画面などに書き換えても良い
-                return const SizedBox();
-              }
-              if (snapshot.hasData) {
-                // User が null でなない、つまりサインイン済みのホーム画面へ
-                return HomePage();
-              }
-              // User が null である、つまり未サインインのサインイン画面へ
-              return SignUpPage();
-            },
-          ),
-        );
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ChangeNotifierProvider<IntroductionModel>(
+        create: (_) => IntroductionModel()..getPrefIntro(),
+        child: Consumer<IntroductionModel>(
+          builder: (context, model, child) {
+            //trueであればIntroductionPageを表示し
+            //falseであればSignUpPageを表示する
+            return model.firstIntro == true ? IntroductionPage() : SignUpPage();
+          },
+        ),
+      ),
+    );
   }
 }

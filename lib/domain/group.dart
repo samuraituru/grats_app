@@ -3,7 +3,7 @@ class Group {
   String? groupDescription;
   String? groupID;
   Map<String,dynamic>? memberIDs;
-  String imgURL;
+  String? imgURL;
 
   Group(
       {this.groupName,

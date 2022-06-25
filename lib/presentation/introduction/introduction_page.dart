@@ -30,7 +30,7 @@ class IntroductionPage extends StatelessWidget {
                   children: [
                     Text('見たい動画から気になる項目を\nカウントしてみよう',
                         style: TextStyle(
-                            color: ThemeColors.textColor,
+                            color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                     Padding(
@@ -58,7 +58,7 @@ class IntroductionPage extends StatelessWidget {
                   children: [
                     Text('分析の結果をレコードに残そう',
                         style: TextStyle(
-                            color: ThemeColors.textColor,
+                            color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                     Padding(
@@ -86,7 +86,7 @@ class IntroductionPage extends StatelessWidget {
                   children: [
                     Text('グループ機能を使って\n情報を共有しよう',
                         style: TextStyle(
-                            color: ThemeColors.textColor,
+                            color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                     Padding(
@@ -117,7 +117,7 @@ class IntroductionPage extends StatelessWidget {
                         child: buildConfetti(model)),
                     Text('Gratsをはじめましょう♪♪♪',
                         style: TextStyle(
-                            color: ThemeColors.textColor,
+                            color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
                     Padding(
@@ -154,7 +154,7 @@ class IntroductionPage extends StatelessWidget {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: ThemeColors.textColor, //ボタンの背景色
+                        primary: ThemeColors.whiteColor, //ボタンの背景色
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -169,20 +169,20 @@ class IntroductionPage extends StatelessWidget {
             globalBackgroundColor: ThemeColors.color,
             pages: listPagesViewModel,
             onDone: () {
-              model.setFirstIntro();
+              model.setFirstIntro();//Introductionが終わると既に見たことを示すFalseを格納する
             },
             showSkipButton: true,
             back: const Icon(Icons.arrow_back),
             skip: const Text(
               'skip',
               style: TextStyle(
-                color: ThemeColors.textColor,
+                color: ThemeColors.whiteColor,
               ),
             ),
             next: const Text(
               'next',
               style: TextStyle(
-                color: ThemeColors.textColor,
+                color: ThemeColors.whiteColor,
               ),
             ),
             done: TextButton(
@@ -197,13 +197,13 @@ class IntroductionPage extends StatelessWidget {
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
-                    color: ThemeColors.textColor),
+                    color: ThemeColors.whiteColor),
               ),
             ),
             dotsDecorator: DotsDecorator(
                 size: const Size.square(10.0),
                 activeSize: const Size(15.0, 10.0),
-                color: ThemeColors.textColor,
+                color: ThemeColors.whiteColor,
                 spacing: const EdgeInsets.symmetric(horizontal: 3.0),
                 activeShape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0))),

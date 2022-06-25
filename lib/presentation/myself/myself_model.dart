@@ -2,36 +2,49 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/presentation/login/login_page.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
-  var textcontroller = TextEditingController();
+  TextEditingController textController = TextEditingController();
+  final imagePicker = ImagePicker();
   String imgURL = '';
   File? imageFile;
 
   String? uid;
-  MyUser myuser = MyUser();
-  DocumentSnapshot? snapshot;
+  MyUser? myUser;
+  DocumentSnapshot? userDocSnapshot;
 
-  Future getMyuser() async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.uid = currentuser?.uid.toString();
+  Future<void> fetchMyUser() async {
+    //FirebaseAuthからcurrentUser-IDを取得
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    this.uid = currentUser?.uid.toString();
 
-    final snapshot =
-        await FirebaseFirestore.instance.collection('Users').doc(uid).get();
-    this.snapshot = snapshot;
+    if (currentUser != null) {
+      final userDocSnapshot =
+          await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+      this.userDocSnapshot = userDocSnapshot;
 
-    final Map<String, dynamic>? data = snapshot.data();
-    myuser.userName = data!['userName'];
-    myuser.target = data['target'];
-    myuser.gID = data['gID'];
-    notifyListeners();
+      final data = userDocSnapshot.data();
+      final userName = data!['userName'] as String?;
+      final target = data['target'] as String?;
+      final groupID = data['groupID'] as String?;
+      final imgURL = data['imgURL'] as String?;
+      MyUser myUser = MyUser(
+          userName: userName,
+          target: target,
+          groupID: groupID,
+          imgURL: imgURL ?? '');
+      this.myUser = myUser;
+      notifyListeners();
+    }
   }
 
-  Future addMyselfInfo(MyUser user) async {
+  void myselfInfoAdd(MyUser user) async {
     if (user.userName == null || user.userName == "") {
       throw 'プロフィール名が入力されていません';
     }
@@ -40,16 +53,27 @@ class MyselfModel extends ChangeNotifier {
       throw '目標が入力されていません';
     }
 
-    final doc = FirebaseFirestore.instance.collection('Users').doc();
+    final usersDoc = FirebaseFirestore.instance.collection('Users').doc();
 
-    // firestoreに追加
-    await doc.set({
+    // FireStorageへアップロード
+    String? imgURL;
+    if (imageFile != null) {
+      final task = await FirebaseStorage.instance
+          .ref('Users/${usersDoc.id}')
+          .putFile(imageFile!);
+      imgURL = await task.ref.getDownloadURL();
+    }
+
+    // Firestoreに追加
+    await usersDoc.set({
       'userName': user.userName,
       'target': user.target,
+      'imgURL': imgURL ?? '',
     });
+    notifyListeners();
   }
 
-  updateMyselfInfo(MyUser user) {
+  void updateMyselfInfo(MyUser user) {
     if (user.userName == null || user.userName == "") {
       throw 'プロフィール名が入力されていません';
     }
@@ -61,17 +85,29 @@ class MyselfModel extends ChangeNotifier {
       'userName': user.userName,
       'target': user.target,
     });
+    notifyListeners();
   }
-  SignOut(context) async{
-    if (uid != null){
+
+ Future<void> signOut(context) async {
+    if (uid != null) {
       await FirebaseAuth.instance.signOut();
-      Navigator.of(context).pop();
-      Navigator.push(
+      //Navigator.of(context).pop();
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-            builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
+        (route) => false,
       );
     }
+  }
 
+  Future<void> pickImage() async {
+    //GalleryからImageを取得
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      //格納されたImageのPathを取得
+      imageFile = File(pickedFile.path);
+    }
+    notifyListeners();
   }
 }

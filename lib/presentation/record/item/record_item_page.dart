@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
 import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:grats_app/presentation/slide_right_route.dart';
@@ -13,6 +14,7 @@ class RecordItemPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: createTheme(),
       home: ChangeNotifierProvider<RecordItemModel>(
         create: (_) => RecordItemModel()..initAction(folderID),
         child: Consumer<RecordItemModel>(builder: (context, model, child) {

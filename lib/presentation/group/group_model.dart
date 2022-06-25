@@ -9,7 +9,6 @@ import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GroupModel extends ChangeNotifier {
-
   var controller = TextEditingController();
   final imagePicker = ImagePicker();
   File? imageFile;
@@ -46,7 +45,7 @@ class GroupModel extends ChangeNotifier {
   DocumentSnapshot? docsnapshot;
   DocumentSnapshot? groupsSnapshot;
 
-  Future<void> fetchAllJoinGroups() async {
+  Future<void> fetchAllGroups() async {
     User? currentuser = await FirebaseAuth.instance.currentUser;
     this.currentUID = currentuser?.uid.toString();
     if (currentUID == null || currentUID == "") {
@@ -61,18 +60,18 @@ class GroupModel extends ChangeNotifier {
       final List<Group> joins =
           joinGroupsDoc.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-        final String groupID = data['groupID'];
-        final String groupName = data['groupName'];
-        final String groupDescription = data['groupDescription'];
-        final Map<String, dynamic> memberIDs = data['memberIDs'];
-        final String imgURL = data['imgURL'];
+        final groupID = data['groupID'] as String?;
+        final groupName = data['groupName'] as String?;
+        final groupDescription = data['groupDescription'] as String?;
+        final memberIDs = data['memberIDs'] as Map<String, dynamic>?;
+        final imgURL = data['imgURL'] as String?;
 
         return Group(
           groupID: groupID,
           groupName: groupName,
           groupDescription: groupDescription,
           memberIDs: memberIDs,
-          imgURL: imgURL,
+          imgURL: imgURL ?? '',
         );
       }).toList();
       this.groups = joins;
@@ -102,7 +101,7 @@ class GroupModel extends ChangeNotifier {
     this.docsnapshot = docsnapshot;
 
     final Map<String, dynamic>? data = docsnapshot.data();
-    myuser.gID = data!['gID'];
+    myuser.groupID = data!['gID'];
     notifyListeners();
   }
 
@@ -134,7 +133,7 @@ class GroupModel extends ChangeNotifier {
     //GroupのDocumentReferenceを取得
     final groupsDoc = FirebaseFirestore.instance.collection('Groups').doc();
 
-    // Fire-Storageへアップロード
+    // FireStorageへアップロード
     String? imgURL;
     if (imageFile != null) {
       final task = await FirebaseStorage.instance
@@ -153,7 +152,7 @@ class GroupModel extends ChangeNotifier {
         'groupDescription': groupDescription,
         'groupID': groupID,
         'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
-        'imgURL': imgURL,
+        'imgURL': imgURL ?? '',
       },
     );
     notifyListeners();
@@ -169,7 +168,7 @@ class GroupModel extends ChangeNotifier {
     return memberIDsMap;
   }
 
-  Future pickImage() async {
+  Future<void> pickImage() async {
     //GalleryからImageを取得
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
@@ -177,6 +176,7 @@ class GroupModel extends ChangeNotifier {
       //格納されたImageのPathを取得
       imageFile = File(pickedFile.path);
     }
+    notifyListeners();
   }
 
   Future<void> imageUpData(Group group) async {
