@@ -49,3 +49,15 @@ flutter:
   assets:
     - lib/assets/
 
+  fonts:
+    - family: Shadows_Into_Light
+      fonts:
+        - asset: lib/assets/fonts/ShadowsIntoLight-Regular.ttf
+
+    - family: Courgette
+      fonts:
+        - asset: lib/assets/fonts/Courgette-Regular.ttf
+
+    - family: PatrickHand
+      fonts:
+        - asset: lib/assets/fonts/PatrickHand-Regular.ttf

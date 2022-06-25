@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
 import 'package:grats_app/presentation/record/item/record_item_page.dart';
 import 'package:grats_app/presentation/record/record_model.dart';
@@ -10,6 +11,7 @@ class RecordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: createTheme(),
       home: ChangeNotifierProvider<RecordModel>(
         create: (_) => RecordModel(),
         child: Consumer<RecordModel>(builder: (context, model, child) {

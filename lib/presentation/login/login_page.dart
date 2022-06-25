@@ -20,14 +20,14 @@ class LoginPage extends StatelessWidget {
             appBar: AppBar(
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios,color: ThemeColors.textColor),
+                icon: Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
                 onPressed: () {
                   Navigator.push(context, SlideRightRoute(page: SignUpPage()));
                 },
               ),
               title: Text(
-                'ログイン',
-                style: TextStyle(color: ThemeColors.textColor),
+                'Login',
+                style: TextStyle(color: ThemeColors.whiteColor),
               ),
             ),
             body: Stack(
@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
                         controller: model.titleController,
                         decoration: InputDecoration(
                           labelText: 'メールアドレス',
-                          fillColor: ThemeColors.textColor,
+                          fillColor: ThemeColors.whiteColor,
                           filled: true,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -70,7 +70,7 @@ class LoginPage extends StatelessWidget {
                         controller: model.authorController,
                         decoration: InputDecoration(
                           labelText: 'パスワード',
-                          fillColor: ThemeColors.textColor,
+                          fillColor: ThemeColors.whiteColor,
                           filled: true,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -104,7 +104,7 @@ class LoginPage extends StatelessWidget {
                       },
                       child: Text(
                         'ログイン',
-                        style: TextStyle(color: ThemeColors.textColor),
+                        style: TextStyle(color: ThemeColors.whiteColor),
                       ),
                     ),
                     if (model.isLoading)

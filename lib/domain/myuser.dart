@@ -2,17 +2,17 @@ class MyUser {
   String? userName;
   String? target;
   String? uID;
-  String? gID;
+  String? groupID;
   List<dynamic>? gIDList;
   String? email;
-  String? imageURL;
+  String? imgURL;
 
   MyUser(
       {this.userName,
       this.target,
       this.uID,
       this.email,
-      this.gID,
-      this.imageURL,
+      this.groupID,
+      this.imgURL = '',
       this.gIDList});
 }

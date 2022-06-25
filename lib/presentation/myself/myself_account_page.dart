@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
 import 'package:grats_app/presentation/slide_left_route.dart';
@@ -10,8 +11,9 @@ class MyselfAccount extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: createTheme(),
       home: ChangeNotifierProvider<MyselfModel>(
-          create: (_) => MyselfModel()..getMyuser(),
+          create: (_) => MyselfModel()..fetchMyUser(),
           child: Consumer<MyselfModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar: AppBar(
@@ -21,7 +23,7 @@ class MyselfAccount extends StatelessWidget {
                         SlideLeftRoute(exitPage: this, enterPage: MyselfPage()));
                   }),
                   centerTitle: true,
-                  title: Text('アカウント詳細'),
+                  title: Text('Setting'),
                 ),
                 body: ListView(
                   children: [
@@ -36,7 +38,7 @@ class MyselfAccount extends StatelessWidget {
                     ListTile(
                       title: Text('ログアウト'),
                       onTap: ()async {
-                       await model.SignOut(context);
+                       await model.signOut(context);
                        //Navigator.of(context).pop();
                       },
                     ),

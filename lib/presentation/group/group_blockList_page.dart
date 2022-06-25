@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/group.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/slide_left_route.dart';
@@ -10,6 +11,7 @@ class GroupBloclListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: createTheme(),
       home: ChangeNotifierProvider<GroupModel>(
         create: (_) => GroupModel(),
         child: Consumer<GroupModel>(builder: (context, model, child) {
@@ -23,12 +25,12 @@ class GroupBloclListPage extends StatelessWidget {
           final List<Widget> widgets = groups.map((group) {
             return ListTile(
               onTap: () {},
-              leading: group.imgURL != ''
+              leading: group.imgURL != null
                   ? CircleAvatar(
                       radius: 30,
                       child: ClipOval(
                         child: Image.network(
-                          group.imgURL,
+                          group.imgURL?? '',
                         ),
                       ),
                     )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_page.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_page.dart';
 import 'package:grats_app/presentation/movie/movie_model.dart';
@@ -11,6 +12,7 @@ class MoviePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: createTheme(),
       home: ChangeNotifierProvider<MovieModel>(
         create: (_) => MovieModel(),
         child: Consumer<MovieModel>(builder: (context, model, child) {

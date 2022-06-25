@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_blockList_page.dart';
 import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
-import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/group.dart';
@@ -16,9 +16,10 @@ class GroupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupModel>(
-      create: (_) => GroupModel()..fetchAllJoinGroups(),
+      create: (_) => GroupModel()..fetchAllGroups(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: createTheme(),
         home: Consumer<GroupModel>(
           builder: (context, model, child) {
             final List<Group> groups = model.groups;
@@ -41,14 +42,14 @@ class GroupPage extends StatelessWidget {
                       isScrollControlled: true,
                       builder: (BuildContext context) {
                         return GroupModal(group: group);
-                      }).whenComplete(() => model.fetchAllJoinGroups());
+                      }).whenComplete(() => model.fetchAllGroups());
                 },
                 leading: group.imgURL != ''
                     ? CircleAvatar(
                         radius: 30,
                         child: ClipOval(
                           child: Image.network(
-                            group.imgURL,
+                            group.imgURL ?? '',
                           ),
                         ),
                       )
@@ -128,7 +129,7 @@ class GroupPage extends StatelessWidget {
                                   child: const Text('OK'),
                                   onPressed: () async {
                                     await model.addGroup();
-                                    await model.fetchAllJoinGroups();
+                                    await model.fetchAllGroups();
                                     Navigator.pop(context);
                                   },
                                 ),
@@ -226,7 +227,7 @@ class GroupModal extends StatelessWidget {
               onTap: () async {
                 await model.pickImage();
                 await model.imageUpData(group);
-                await model.fetchAllJoinGroups();
+                await model.fetchAllGroups();
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -248,7 +249,7 @@ class GroupModal extends StatelessWidget {
                     radius: 30,
                     child: ClipOval(
                       child: Image.network(
-                        group.imgURL,
+                        group.imgURL!,
                       ),
                     ),
                   );
