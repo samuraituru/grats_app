@@ -1,300 +1,305 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
-import 'package:grats_app/presentation/myself/myself_account_page.dart';
-
+import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
+import 'package:grats_app/presentation/slide_left_route.dart';
 
 import 'package:provider/provider.dart';
 
 class MyselfPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: createTheme(),
-      home: ChangeNotifierProvider<MyselfModel>(
-        create: (_) => MyselfModel()..fetchMyUser(),
-        child: Consumer<MyselfModel>(builder: (context, model, child) {
-          double screenHeight = MediaQuery.of(context).size.height;
-          double screenWidth = MediaQuery.of(context).size.width;
-          double appbarHeight = AppBar().preferredSize.height;
-          print('screenHeightは${screenHeight}');
-          print('screenWidthは${screenWidth}');
-          print('appbarHeightは${appbarHeight}');
+    return ChangeNotifierProvider<MyselfModel>(
+      create: (_) => MyselfModel()..fetchMyUser(),
+      child: Consumer<MyselfModel>(builder: (context, model, child) {
+        double screenHeight = MediaQuery.of(context).size.height;
+        double screenWidth = MediaQuery.of(context).size.width;
+        double appbarHeight = AppBar().preferredSize.height;
+        print('screenHeightは${screenHeight}');
+        print('screenWidthは${screenWidth}');
+        print('appbarHeightは${appbarHeight}');
 
-          //int? tabIndex = DefaultTabController.of(context)?.index;
-          //MyUser? myUser = model.myUser;
-          String? uid = model.uid;
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text('Mypage'),
-            ),
-            body: LayoutBuilder(
-              builder: ((context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(minHeight: constraints.maxHeight),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Column(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                width: screenWidth,
-                                height: screenHeight / 2,
-                                color: ThemeColors.cyanColor,
-                              ),
-                              Column(
-                                children: [
-                                  Row(
-                                    //crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async =>
-                        Navigator.of(context).pushReplacementNamed("/login"),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.blue,
+        //int? tabIndex = DefaultTabController.of(context)?.index;
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text('Mypage'),
+          ),
+          body: LayoutBuilder(
+            builder: ((context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            Container(
+                              width: screenWidth,
+                              height: screenHeight / 2,
+                              color: ThemeColors.cyanColor,
+                            ),
+                            Column(
+                              children: [
+                                Row(
+                                  //crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    !model.isLogin
+                                        ? GestureDetector(
+                                            onTap: () async => Navigator.of(
+                                                    context)
+                                                .pushNamed("/login"),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.blue,
+                                              ),
+                                              height: 55,
+                                              width: 55,
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    ThemeColors.cyanSubColor,
+                                                child: Icon(Icons.login,
+                                                    size: 30,
+                                                    color:
+                                                        ThemeColors.whiteColor),
+                                              ),
+                                            ),
+                                          )
+                                        : GestureDetector(
+                                            onTap: () async =>
+                                                model.fetchMyUser(),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              height: 55,
+                                              width: 55,
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    ThemeColors.cyanSubColor,
+                                                child: Icon(Icons.refresh,
+                                                    size: 30,
+                                                    color:
+                                                        ThemeColors.whiteColor),
+                                              ),
+                                            ),
                                           ),
-                                          height: 55,
-                                          width: 55,
-                                          child: (() {
-                                            return const CircleAvatar(
-                                              backgroundColor:
-                                                  ThemeColors.cyanSubColor,
-                                              child: Icon(Icons.login,
-                                                  size: 30,
-                                                  color:
-                                                      ThemeColors.whiteColor),
-                                            );
-                                          })(),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(30.0),
-                                        child: SizedBox(
-                                          height: 120,
-                                          width: 120,
-                                          child: (() {
-                                            if (!model.isLogin) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.white, //枠線の色
-                                                    width: 5, //枠線の太さ
-                                                  ),
-                                                  shape: BoxShape.circle,
-                                                  //color: Colors.blue,
+                                    Padding(
+                                      padding: const EdgeInsets.all(30.0),
+                                      child: SizedBox(
+                                        height: 120,
+                                        width: 120,
+                                        child: (() {
+                                          if (!model.isLogin) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.white, //枠線の色
+                                                  width: 5, //枠線の太さ
                                                 ),
-                                                height: 100,
-                                                width: 100,
-                                                child: const CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor:
-                                                      ThemeColors.cyanSubColor,
-                                                  child: Icon(Icons.person,
-                                                      size: 80,
-                                                      color: Colors.white),
-                                                ),
-                                              );
-                                            }
-                                            GestureDetector(
-                                              onTap: () async {
-                                                await model.pickImage();
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.white, //枠線の色
-                                                    width: 5, //枠線の太さ
-                                                  ),
-                                                  shape: BoxShape.circle,
-                                                  //color: Colors.blue,
-                                                ),
-                                                height: 100,
-                                                width: 100,
-                                                child: (() {
-                                                  if (model.imageFile != null) {
-                                                    return Image.file(
-                                                        model.imageFile!);
-                                                  }
-                                                  //初期値は''のため下記を実行
-                                                  else if (model
-                                                              .myUser.imgURL ==
-                                                          '' ||
-                                                      model.myUser.imgURL ==
-                                                          null) {
-                                                    return const CircleAvatar(
-                                                      radius: 30,
-                                                      backgroundColor:
-                                                          ThemeColors
-                                                              .cyanSubColor,
-                                                      child: Icon(Icons.add,
-                                                          size: 40,
-                                                          color: Colors.white),
-                                                    );
-                                                  }
-                                                  //プロフィールにimgURLがある場合は下記を実行
-                                                  return CircleAvatar(
-                                                    radius: 30,
-                                                    child: ClipOval(
-                                                      child: Image.network(
-                                                          model.myUser.imgURL),
-                                                    ),
-                                                  );
-                                                })(),
+                                                shape: BoxShape.circle,
+                                                //color: Colors.blue,
+                                              ),
+                                              height: 100,
+                                              width: 100,
+                                              child: const CircleAvatar(
+                                                radius: 30,
+                                                backgroundColor:
+                                                    ThemeColors.cyanSubColor,
+                                                child: Icon(Icons.person,
+                                                    size: 80,
+                                                    color: Colors.white),
                                               ),
                                             );
-                                          })(),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    MyselfAccount()),
+                                          }
+                                          return GestureDetector(
+                                            onTap: () async {
+                                              await model.pickImage();
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: ThemeColors.cyanSubColor, //枠線の色
+                                                  width: 5, //枠線の太さ
+                                                ),
+                                                shape: BoxShape.circle,
+                                                //color: Colors.blue,
+                                              ),
+                                              height: 100,
+                                              width: 100,
+                                              child: (() {
+                                                if (model.imageFile != null) {
+                                                  return ClipOval(
+                                                    child: Image.file(
+                                                        model.imageFile!),
+                                                  );
+                                                }
+                                                //初期値は''のため下記を実行
+                                                else if (model.myUser.imgURL ==
+                                                        '' ||
+                                                    model.myUser.imgURL ==
+                                                        null) {
+                                                  return const CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundColor: ThemeColors
+                                                        .cyanSubColor,
+                                                    child: Icon(Icons.add,
+                                                        size: 40,
+                                                        color: Colors.white),
+                                                  );
+                                                }
+                                                //プロフィールにimgURLがある場合は下記を実行
+                                                return CircleAvatar(
+                                                  radius: 30,
+                                                  child: ClipOval(
+                                                    child: Image.network(
+                                                        model.myUser.imgURL),
+                                                  ),
+                                                );
+                                              })(),
+                                            ),
                                           );
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.blue,
-                                          ),
-                                          height: 55,
-                                          width: 55,
-                                          child: (() {
-                                            return const CircleAvatar(
-                                              backgroundColor:
-                                                  ThemeColors.cyanSubColor,
-                                              child: Icon(Icons.settings,
-                                                  size: 30,
-                                                  color:
-                                                      ThemeColors.whiteColor),
-                                            );
-                                          })(),
-                                        ),
+                                        })(),
                                       ),
-                                    ],
-                                  ),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints.expand(
-                                        height: 45.0, width: 180.0),
-                                    child: TextField(
-                                      enabled: model.isLogin,
-                                      controller: model.userNameController,
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.person,
-                                            color: ThemeColors.whiteColor),
-                                        hintText: model.isLogin
-                                            ? model.myUser.userName ?? '名前未設定'
-                                            : 'ゲストアカウント',
-                                        hintStyle: TextStyle(
-                                            color: ThemeColors.whiteColor),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: ThemeColors.whiteColor),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context, SlideLeftRoute(exitPage: this,enterPage: MyselfSetting()));
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue,
                                         ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: ThemeColors.whiteColor),
-                                        ),
+                                        height: 55,
+                                        width: 55,
+                                        child: (() {
+                                          return const CircleAvatar(
+                                            backgroundColor:
+                                                ThemeColors.cyanSubColor,
+                                            child: Icon(Icons.settings,
+                                                size: 30,
+                                                color: ThemeColors.whiteColor),
+                                          );
+                                        })(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints.expand(
+                                      height: 45.0, width: 180.0),
+                                  child: TextField(
+                                    enabled: model.isLogin,
+                                    controller: model.userNameController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.person,
+                                          color: ThemeColors.whiteColor),
+                                      hintText: model.isLogin
+                                          ? model.myUser.userName ?? '名前未設定'
+                                          : 'ゲストアカウント',
+                                      hintStyle: TextStyle(
+                                          color: ThemeColors.whiteColor),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: ThemeColors.whiteColor),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: ThemeColors.whiteColor),
                                       ),
                                     ),
                                   ),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints.expand(
-                                        height: 80.0, width: 280.0),
-                                    child: TextField(
-                                      enabled: model.isLogin,
-                                      controller: model.userTargetController,
-                                      keyboardType: TextInputType.multiline,
-                                      //キーボードを複数行対応にする
-                                      maxLines: null,
-                                      //TextFieldで複数行表示する
-                                      decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.comment,
+                                ),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints.expand(
+                                      height: 80.0, width: 280.0),
+                                  child: TextField(
+                                    enabled: model.isLogin,
+                                    controller: model.userTargetController,
+                                    keyboardType: TextInputType.multiline,
+                                    //キーボードを複数行対応にする
+                                    maxLines: null,
+                                    //TextFieldで複数行表示する
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.comment,
+                                          color: ThemeColors.whiteColor),
+                                      //filled: true,
+                                      //fillColor: ThemeColors.whiteColor,
+                                      //contentPadding: EdgeInsets.all(20),
+                                      hintText: model.isLogin
+                                          ? model.myUser.userTarget ??
+                                              '      目標・ひとことコメント'
+                                          : '       ゲストアカウント',
+                                      hintStyle: TextStyle(
+                                          color: ThemeColors.whiteColor),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
                                             color: ThemeColors.whiteColor),
-                                        //filled: true,
-                                        //fillColor: ThemeColors.whiteColor,
-                                        //contentPadding: EdgeInsets.all(20),
-
-                                        hintText: model.isLogin
-                                            ? model.myUser.target ??
-                                                '      目標・ひとことコメント'
-                                            : '       ゲストアカウント',
-                                        hintStyle: TextStyle(
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
                                             color: ThemeColors.whiteColor),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: ThemeColors.whiteColor),
-                                        ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: ThemeColors.whiteColor),
-                                        ),
                                       ),
                                     ),
                                   ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      !model.isLogin
-                                          ? null
-                                          : model.myselfInfoAdd();
-                                    },
-                                    child: Text('プロフィールを更新',
-                                        style: TextStyle(
-                                            color: ThemeColors.whiteColor)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-
-                          /*ElevatedButton(
-                            onPressed: () {
-                              //DefaultTabController.of(context)?.animateTo(2);
-                            },
-                            child: Text('MyRecordへ')),*/
-                          Card(
-                            child: Column(
-                              children: const [
-                                ListTile(
-                                  leading: Icon(Icons.add),
-                                  title: Text('現在のレコード数'),
-                                  subtitle: Text('Card SubTitle'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    !model.isLogin
+                                        ? null
+                                        : await model.userInfoUpdate();
+                                    await model.fetchMyUser();
+                                  },
+                                  child: Text('プロフィールを更新',
+                                      style: TextStyle(
+                                          color: ThemeColors.whiteColor)),
                                 ),
                               ],
                             ),
-                            // Card自体の色
-                            margin: const EdgeInsets.all(30),
-                            elevation: 8,
-                            // 影の離れ具合
-                            shadowColor: Colors.black,
-                            // 影の色
-                            shape: RoundedRectangleBorder(
-                              // 枠線を変更できる
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                          ],
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed("/record");
+                            },
+                            child: Text('MyRecordへ')),
+                        Card(
+                          child: Column(
+                            children: const [
+                              ListTile(
+                                leading: Icon(Icons.add),
+                                title: Text('現在のレコード数'),
+                                subtitle: Text('Card SubTitle'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                          // Card自体の色
+                          margin: const EdgeInsets.all(30),
+                          elevation: 8,
+                          // 影の離れ具合
+                          shadowColor: Colors.black,
+                          // 影の色
+                          shape: RoundedRectangleBorder(
+                            // 枠線を変更できる
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }),
-            ),
-          );
-        }),
-      ),
+                ),
+              );
+            }),
+          ),
+        );
+      }),
     );
   }
 }

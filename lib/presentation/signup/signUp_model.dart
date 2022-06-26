@@ -8,6 +8,7 @@ class SignUpModel extends ChangeNotifier {
   final passwordController = TextEditingController();
   String? email;
   String? password;
+  Map<String,dynamic>? groupIDs;
 
   bool isLoading = false;
 
@@ -63,6 +64,9 @@ class SignUpModel extends ChangeNotifier {
         'uID': uID,
         'email': email,
         'imgURL': '',
+        'groupIDs': groupIDs,
+      'userName': '',
+      'target': '',
       });
     }
   }

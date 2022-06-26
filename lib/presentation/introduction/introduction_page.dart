@@ -141,10 +141,7 @@ class IntroductionPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         model.controller.play();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUpPage()),
-                        );
+                        Navigator.of(context).pushReplacementNamed("/signUp");
                       },
                       child: const Text(
                         "はじめる",
@@ -187,10 +184,7 @@ class IntroductionPage extends StatelessWidget {
             ),
             done: TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
+                Navigator.of(context).pushReplacementNamed("/home");
               },
               child: const Text(
                 "ゲストで始める",

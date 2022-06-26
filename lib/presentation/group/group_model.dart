@@ -93,18 +93,6 @@ class GroupModel extends ChangeNotifier {
     return group = Group(groupID: groupID, groupName: groupName);
   }
 
-  Future getMyuser() async {
-    final docsnapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(currentUID)
-        .get();
-    this.docsnapshot = docsnapshot;
-
-    final Map<String, dynamic>? data = docsnapshot.data();
-    myuser.groupID = data!['gID'];
-    notifyListeners();
-  }
-
   Future<NetworkImage> getImage(group) async {
     NetworkImage networkImage = await NetworkImage(group);
     return networkImage;

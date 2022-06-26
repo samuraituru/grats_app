@@ -5,7 +5,6 @@ import 'package:grats_app/domain/item.dart';
 class MovieLocalModel extends ChangeNotifier {
   final texteditingcontroller = TextEditingController();
   final scrollController = ScrollController();
-  String title = '';
   String editTitle = '';
   int counter = 0;
   Color selectColor = Colors.lightBlue;
@@ -13,10 +12,11 @@ class MovieLocalModel extends ChangeNotifier {
   var countItems = <Item>[];
 
   void countItemCreate() {
-    if (title != null) {
-      countItems.add(Item(title: title));
+    if (texteditingcontroller.text != null) {
+      countItems.add(Item(title: texteditingcontroller.text));
       this.texteditingcontroller.clear();
       notifyListeners();
+      texteditingcontroller.clear();
     }
   }
   void increment(Item countItem) {

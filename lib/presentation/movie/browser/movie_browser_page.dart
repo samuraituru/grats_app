@@ -12,289 +12,290 @@ class MovieBrowserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider<MovieBrowserModel>(
-        create: (_) => MovieBrowserModel()..initState(),
-        child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
-          return Scaffold(
-            resizeToAvoidBottomInset: true,
-            appBar: AppBar(
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
+    return ChangeNotifierProvider<MovieBrowserModel>(
+      create: (_) => MovieBrowserModel()..initState(),
+      child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            title: !model.searchBoolean
+                ? Text('Browser')
+                : model.searchTextField(),
+            actions: !model.searchBoolean
+                ? [
+              IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    model.searchPush();
+                    model.searchIndexList = [];
+                  }),
+              IconButton(
+                icon: Icon(Icons.refresh),
                 onPressed: () {
-                  Navigator.push(context, SlideRightRoute(page: MoviePage()));
+                  //webViewController?.reload();
                 },
               ),
-              title: !model.searchBoolean
-                  ? Text('Browser')
-                  : model.searchTextField(),
-              actions: !model.searchBoolean
-                  ? [
-                      IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            model.searchPush();
-                            model.searchIndexList = [];
-                          }),
-                      IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: () {
-                          //webViewController?.reload();
-                        },
-                      ),
-                    ]
-                  : [
-                      IconButton(
-                        icon: Icon(Icons.clear),
-                        onPressed: () {
-                          model.searchPull();
-                        },
-                      ),
-                    ],
-            ),
-            body: Stack(children: [
-              Stack(
-                children: model.WidgetList,
+            ]
+                : [
+              IconButton(
+                icon: Icon(Icons.clear),
+                onPressed: () {
+                  model.searchPull();
+                },
               ),
-            ]),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.arrow_upward),
-              onPressed: () async {
-                await showModalBottomSheet(
-                  enableDrag: true,
-                  isDismissible: false,
-                  context: context,
-                  isScrollControlled: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(15)),
-                  ),
-                  builder: (BuildContext context) {
-                    return StatefulBuilder(
+            ],
+          ),
+          body: Stack(children: [
+            Stack(
+              children: model.WidgetList,
+            ),
+          ]),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.arrow_upward),
+            onPressed: () async {
+              await showModalBottomSheet(
+                enableDrag: true,
+                isDismissible: true,
+                context: context,
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(15)),
+                ),
+                builder: (BuildContext context) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: StatefulBuilder(
                         builder: (BuildContext context, StateSetter setState) {
-                      return SizedBox(
-                        height: 400,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextField(
-                                controller: model.texteditingcontroller,
-                                onChanged: (String? value) {
-                                  model.title = value!;
-                                },
-                                decoration: InputDecoration(
-                                  hintText: 'カウントしたい項目を追加',
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        model.countItemCreate();
-                                      });
+                          return SizedBox(
+                            height: 400,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextField(
+                                    controller: model.texteditingcontroller,
+                                    onChanged: (String? value) {
+                                      model.title = value!;
                                     },
-                                    icon: Icon(Icons.add),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 335,
-                              color: Colors.white,
-                              child: SingleChildScrollView(
-                                child: ListView.builder(
-                                  //physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: model.countItems.length,
-                                  itemBuilder: (BuildContext context, index) {
-                                    final countItem = model.countItems[index];
-                                    //model.countItem = model.countItems[index];
-                                    //final countItems = model.countItems;
-                                    //final bodyList = model.bodyList;
-                                    return StatefulBuilder(builder:
-                                        (BuildContext context,
-                                            StateSetter setState) {
-                                      return Dismissible(
-                                        direction: DismissDirection.horizontal,
-                                        onDismissed:
-                                            (DismissDirection direction) async {
-                                          setState(() async {
-                                            if (direction ==
-                                                    DismissDirection
-                                                        .endToStart ||
-                                                direction ==
-                                                    DismissDirection
-                                                        .startToEnd) {
-                                              await model
-                                                  .countItemDelete(index);
-                                              //await model.countItems.removeAt(index);
-                                              await model.bodyListdelete(index);
-                                              //await model.bodyList.removeAt(index);
-                                            }
+                                    decoration: InputDecoration(
+                                      hintText: 'カウントしたい項目を追加',
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            model.countItemCreate();
                                           });
                                         },
-                                        key: UniqueKey(),
-                                        child: Card(
-                                          child: ListTile(
-                                            leading: Container(
-                                              width: 40,
-                                              child: FloatingActionButton(
-                                                heroTag: 'color',
-                                                backgroundColor:
+                                        icon: Icon(Icons.add),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 335,
+                                  color: Colors.white,
+                                  child: SingleChildScrollView(
+                                    child: ListView.builder(
+                                      //physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: model.countItems.length,
+                                      itemBuilder: (BuildContext context, index) {
+                                        final countItem = model.countItems[index];
+                                        //model.countItem = model.countItems[index];
+                                        //final countItems = model.countItems;
+                                        //final bodyList = model.bodyList;
+                                        return StatefulBuilder(builder:
+                                            (BuildContext context,
+                                            StateSetter setState) {
+                                          return Dismissible(
+                                            direction: DismissDirection.horizontal,
+                                            onDismissed:
+                                                (DismissDirection direction) async {
+                                              setState(() async {
+                                                if (direction ==
+                                                    DismissDirection
+                                                        .endToStart ||
+                                                    direction ==
+                                                        DismissDirection
+                                                            .startToEnd) {
+                                                  await model
+                                                      .countItemDelete(index);
+                                                  //await model.countItems.removeAt(index);
+                                                  await model.bodyListdelete(index);
+                                                  //await model.bodyList.removeAt(index);
+                                                }
+                                              });
+                                            },
+                                            key: UniqueKey(),
+                                            child: Card(
+                                              child: ListTile(
+                                                leading: Container(
+                                                  width: 40,
+                                                  child: FloatingActionButton(
+                                                    heroTag: 'color',
+                                                    backgroundColor:
                                                     countItem.color,
-                                                onPressed: () {
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
+                                                    onPressed: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
                                                           context) {
-                                                        return AlertDialog(
-                                                          title: Text(
-                                                              'Pick a color!'),
-                                                          content:
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                  'Pick a color!'),
+                                                              content:
                                                               SingleChildScrollView(
-                                                            child: BlockPicker(
-                                                              pickerColor: model
-                                                                  .selectColor,
-                                                              onColorChanged:
-                                                                  (Color
-                                                                      color) {
-                                                                model.selectColor =
-                                                                    color;
-                                                                model.changeColor(
-                                                                    countItem);
-                                                              },
-                                                            ),
-                                                          ),
-                                                          actions: <Widget>[
-                                                            ElevatedButton(
-                                                              child: const Text(
-                                                                  'DONE'),
-                                                              onPressed: () {
-                                                                Navigator.of(
+                                                                child: BlockPicker(
+                                                                  pickerColor: model
+                                                                      .selectColor,
+                                                                  onColorChanged:
+                                                                      (Color
+                                                                  color) {
+                                                                    model.selectColor =
+                                                                        color;
+                                                                    model.changeColor(
+                                                                        countItem);
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              actions: <Widget>[
+                                                                ElevatedButton(
+                                                                  child: const Text(
+                                                                      'DONE'),
+                                                                  onPressed: () {
+                                                                    Navigator.of(
                                                                         context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        );
-                                                      });
-                                                  Text("Block Color Picker");
-                                                },
-                                              ),
-                                            ),
-                                            title: Text('${countItem.title}'),
-                                            onLongPress: () {
-                                              print('押された');
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    title: Text('項目名を編集'),
-                                                    content: TextField(
-                                                      controller:
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                      Text("Block Color Picker");
+                                                    },
+                                                  ),
+                                                ),
+                                                title: Text('${countItem.title}'),
+                                                onLongPress: () {
+                                                  print('押された');
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: Text('項目名を編集'),
+                                                        content: TextField(
+                                                          controller:
                                                           TextEditingController(
-                                                        text: countItem.title,
-                                                      ),
-                                                      decoration:
+                                                            text: countItem.title,
+                                                          ),
+                                                          decoration:
                                                           InputDecoration(
-                                                        contentPadding:
+                                                            contentPadding:
                                                             EdgeInsets
                                                                 .symmetric(
-                                                          vertical: 20,
+                                                              vertical: 20,
+                                                            ),
+                                                          ),
+                                                          onChanged: (text) {
+                                                            model.editTitle = text;
+                                                          },
+                                                        ),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            child: Text('キャンセル'),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                          TextButton(
+                                                            child: Text('更新'),
+                                                            onPressed: () {
+                                                              model.updateText(
+                                                                  countItem);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                trailing: StatefulBuilder(builder:
+                                                    (BuildContext context,
+                                                    StateSetter setState) {
+                                                  return Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Container(
+                                                        width: 40,
+                                                        child: FloatingActionButton(
+                                                          heroTag: 'plus',
+                                                          backgroundColor:
+                                                          Colors.pink,
+                                                          tooltip: 'Action!',
+                                                          child: Icon(Icons.add),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              model
+                                                                  .itemCountIncrement(
+                                                                  countItem);
+                                                            });
+                                                          },
                                                         ),
                                                       ),
-                                                      onChanged: (text) {
-                                                        model.editTitle = text;
-                                                      },
-                                                    ),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        child: Text('キャンセル'),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                      ),
-                                                      TextButton(
-                                                        child: Text('更新'),
-                                                        onPressed: () {
-                                                          model.updateText(
-                                                              countItem);
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
+                                                      Text('${countItem.counter}'),
+                                                      Container(
+                                                        width: 40,
+                                                        child: FloatingActionButton(
+                                                          heroTag: 'minus',
+                                                          tooltip: 'Action!',
+                                                          child: Icon(Icons.remove),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              model
+                                                                  .itemCountdecrement(
+                                                                  countItem);
+                                                            });
+
+                                                          },
+                                                        ),
                                                       ),
                                                     ],
                                                   );
-                                                },
-                                              );
-                                            },
-                                            trailing: StatefulBuilder(builder:
-                                                (BuildContext context,
-                                                    StateSetter setState) {
-                                              return Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Container(
-                                                    width: 40,
-                                                    child: FloatingActionButton(
-                                                      heroTag: 'plus',
-                                                      backgroundColor:
-                                                          Colors.pink,
-                                                      tooltip: 'Action!',
-                                                      child: Icon(Icons.add),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          model
-                                                              .itemCountIncrement(
-                                                                  countItem);
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Text('${countItem.counter}'),
-                                                  Container(
-                                                    width: 40,
-                                                    child: FloatingActionButton(
-                                                      heroTag: 'minus',
-                                                      tooltip: 'Action!',
-                                                      child: Icon(Icons.remove),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          model
-                                                              .itemCountdecrement(
-                                                              countItem);
-                                                        });
-
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            }),
-                                          ),
-                                        ),
-                                      );
-                                    });
-                                  },
+                                                }),
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                      },
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    });
-                  },
-                ).whenComplete(() {
-                  print('showModalBottomSheetが閉じた！');
-                  //model.bodyListAdd();
-                  //model.bodyListInsert();
-                });
-              },
-            ),
-          );
-        }),
-      ),
+                          );
+                        }),
+                  );
+                },
+              ).whenComplete(() {
+                print('showModalBottomSheetが閉じた！');
+                //model.bodyListAdd();
+                //model.bodyListInsert();
+              });
+            },
+          ),
+        );
+      }),
     );
   }
 }

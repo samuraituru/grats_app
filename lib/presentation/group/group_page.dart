@@ -17,140 +17,136 @@ class GroupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupModel>(
       create: (_) => GroupModel()..fetchAllGroups(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: createTheme(),
-        home: Consumer<GroupModel>(
-          builder: (context, model, child) {
-            final List<Group> groups = model.groups;
+      child: Consumer<GroupModel>(
+        builder: (context, model, child) {
+          final List<Group> groups = model.groups;
 
-            if (groups == null) {
-              return const SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator()));
-            }
-            final List<Widget> widgets = groups.map((group) {
-              return ListTile(
-                onTap: () {
-                  final groups = model.group;
-                  showModalBottomSheet(
-                      backgroundColor: Colors.white.withOpacity(0.8),
-                      enableDrag: true,
-                      isDismissible: false,
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (BuildContext context) {
-                        return GroupModal(group: group);
-                      }).whenComplete(() => model.fetchAllGroups());
-                },
-                leading: group.imgURL != ''
-                    ? CircleAvatar(
-                        radius: 30,
-                        child: ClipOval(
-                          child: Image.network(
-                            group.imgURL ?? '',
-                          ),
-                        ),
-                      )
-                    : CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.grey,
-                      ),
-                title: Text('${group.groupName}'),
-                subtitle: Text('${group.groupDescription}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {},
+          if (groups == null) {
+            return const SizedBox(
+                width: 100,
+                height: 100,
+                child: Center(child: CircularProgressIndicator()));
+          }
+          final List<Widget> widgets = groups.map((group) {
+            return ListTile(
+              onTap: () {
+                final groups = model.group;
+                showModalBottomSheet(
+                    backgroundColor: Colors.white.withOpacity(0.8),
+                    enableDrag: true,
+                    isDismissible: false,
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return GroupModal(group: group);
+                    }).whenComplete(() => model.fetchAllGroups());
+              },
+              leading: group.imgURL != ''
+                  ? CircleAvatar(
+                radius: 30,
+                child: ClipOval(
+                  child: Image.network(
+                    group.imgURL ?? '',
+                  ),
                 ),
-              );
-            }).toList();
-            return Scaffold(
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight),
-                child: AppBar(
-                  centerTitle: true,
-                  leading: IconButton(icon: Icon(Icons.list_alt), onPressed: () {
-                    Navigator.push(context, SlideRightRoute(page: GroupBloclListPage()));
-                  }),
-                  title: Text('Group'),
-                  actions: [
-                    IconButton(
-                      icon: Icon(Icons.add),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Groupを追加'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                      hintText: " group名を記載",
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        vertical: 20,
-                                      ),
-                                    ),
-                                    onChanged: (text) {
-                                      model.groupName = text;
-                                    },
-                                  ),
-                                  Padding(padding: EdgeInsets.all(10.0)),
-                                  TextField(
-                                    onChanged: (text) {
-                                      model.groupDescription = text;
-                                    },
-                                    decoration: const InputDecoration(
-                                      hintText: " 説明を記載",
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        vertical: 50,
-                                      ),
-                                    ),
-                                  ),
-                                  TextButton(
-                                      onPressed: () {
-                                        model.pickImage();
-                                      },
-                                      child: const Text('画像を追加'))
-                                ],
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('キャンセル'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () async {
-                                    await model.addGroup();
-                                    await model.fetchAllGroups();
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    )
-                  ],
-                  elevation: 0.0,
-                ),
+              )
+                  : CircleAvatar(
+                radius: 30,
+                backgroundColor: Colors.grey,
               ),
-              body: Center(
-                child: ListView(
-                  children: widgets,
-                ),
+              title: Text('${group.groupName}'),
+              subtitle: Text('${group.groupDescription}'),
+              trailing: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {},
               ),
             );
-          },
-        ),
+          }).toList();
+          return Scaffold(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight),
+              child: AppBar(
+                centerTitle: true,
+                leading: IconButton(icon: Icon(Icons.list_alt), onPressed: () {
+                  Navigator.push(context, SlideRightRoute(page: GroupBloclListPage()));
+                }),
+                title: Text('Group'),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Groupを追加'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  decoration: const InputDecoration(
+                                    hintText: " group名を記載",
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 20,
+                                    ),
+                                  ),
+                                  onChanged: (text) {
+                                    model.groupName = text;
+                                  },
+                                ),
+                                Padding(padding: EdgeInsets.all(10.0)),
+                                TextField(
+                                  onChanged: (text) {
+                                    model.groupDescription = text;
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: " 説明を記載",
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 50,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      model.pickImage();
+                                    },
+                                    child: const Text('画像を追加'))
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('キャンセル'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () async {
+                                  await model.addGroup();
+                                  await model.fetchAllGroups();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  )
+                ],
+                elevation: 0.0,
+              ),
+            ),
+            body: Center(
+              child: ListView(
+                children: widgets,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

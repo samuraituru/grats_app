@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
-import 'package:grats_app/presentation/login/login_page.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../domain/myuser.dart';
 
@@ -17,7 +16,7 @@ class MyselfModel extends ChangeNotifier {
   String imgURL = '';
   File? imageFile;
 
-  String? uid;
+  String? uID;
   MyUser myUser = MyUser();
   DocumentSnapshot? userDocSnapshot;
   bool isLoading = false;
@@ -27,10 +26,12 @@ class MyselfModel extends ChangeNotifier {
     isLogin = true;
     notifyListeners();
   }
+
   void switchLogout() {
     isLogin = false;
     notifyListeners();
   }
+
   void startLoading() {
     isLoading = true;
     notifyListeners();
@@ -45,87 +46,83 @@ class MyselfModel extends ChangeNotifier {
     startLoading();
     //FirebaseAuthからcurrentUser-IDを取得
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    this.uid = currentUser?.uid.toString();
-    print('現在のUIDは${uid}');
+    this.uID = currentUser?.uid.toString();
+    print('現在のUIDは${uID}');
 
-    if (currentUser == null){
+    if (currentUser == null) {
       switchLogout();
       throw 'Loginしていません';
     }
-      switchLogin();
-      final userDocSnapshot =
-          await FirebaseFirestore.instance.collection('Users').doc(uid).get();
-      this.userDocSnapshot = userDocSnapshot;
+    switchLogin();
+    final userDocSnapshot =
+        await FirebaseFirestore.instance.collection('Users').doc(uID).get();
+    this.userDocSnapshot = userDocSnapshot;
 
-      final data = userDocSnapshot.data();
-      final userName = data!['userName'] as String?;
-      final target = data['target'] as String?;
-      final groupID = data['groupID'] as String?;
-      final imgURL = data['imgURL'] as String?;
-      MyUser myUser = MyUser(
-          userName: userName,
-          target: target,
-          groupID: groupID,
-          imgURL: imgURL ?? '');
-      this.myUser = myUser;
-      notifyListeners();
-      print(myUser);
+    final data = userDocSnapshot.data();
+    final userName = data!['userName'] as String?;
+    final target = data['userTarget'] as String?;
+    final groupIDs = data['groupID'] as Map<String, dynamic>?;
+    final imgURL = data['imgURL'] as String?;
+    MyUser myUser = MyUser(
+        userName: userName,
+        userTarget: target,
+        groupIDs: groupIDs,
+        imgURL: imgURL ?? '');
+    this.myUser = myUser;
+    notifyListeners();
+    print(myUser);
     endLoading();
   }
 
-  void myselfInfoAdd() async {
+  Future<void> userInfoUpdate() async {
     if (userNameController.text == null || userNameController.text == "") {
       throw 'プロフィール名が入力されていません';
     }
 
-    if (userTargetController.text == null || userTargetController.text.isEmpty) {
+    if (userTargetController.text == null ||
+        userTargetController.text.isEmpty) {
       throw '目標が入力されていません';
     }
 
-    final usersDoc = FirebaseFirestore.instance.collection('Users').doc();
 
     // FireStorageへアップロード
     String? imgURL;
     if (imageFile != null) {
       final task = await FirebaseStorage.instance
-          .ref('Users/${usersDoc.id}')
+          .ref('Users/${uID}')
           .putFile(imageFile!);
       imgURL = await task.ref.getDownloadURL();
     }
 
     // Firestoreに追加
-    await usersDoc.set({
+   await FirebaseFirestore.instance.collection('Users').doc(uID).update({
       'userName': userNameController.text,
-      'target': userTargetController.text,
-      'imgURL': imgURL ?? '',
+      'userTarget': userTargetController.text,
+      'imgURL': imgURL,
     });
+    userNameController.clear();
+    userTargetController.clear();
     notifyListeners();
   }
 
-  void updateMyselfInfo(MyUser user) {
+ Future<void> updateMyselfInfo(MyUser user) async {
     if (user.userName == null || user.userName == "") {
       throw 'プロフィール名が入力されていません';
     }
 
-    if (user.target == null || user.target!.isEmpty) {
+    if (user.userTarget == null || user.userTarget!.isEmpty) {
       throw '目標が入力されていません';
     }
-    FirebaseFirestore.instance.collection('Users').doc(uid).update({
+    await FirebaseFirestore.instance.collection('Users').doc(uID).update({
       'userName': user.userName,
-      'target': user.target,
+      'userTarget': user.userTarget,
     });
     notifyListeners();
   }
 
- Future<void> signOut(context) async {
-    if (uid != null) {
+  Future<void> signOut(context) async {
+    if (uID != null) {
       await FirebaseAuth.instance.signOut();
-      //Navigator.of(context).pop();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-        (route) => false,
-      );
     }
   }
 
