@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/login/login_page.dart';
 import 'package:grats_app/presentation/signup/signUp_model.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class SignUpPage extends StatelessWidget {
               child: Stack(
                 children: [
                   Container(
-                    color: ThemeColors.backGroundColor,
+                    color: ThemeColors.whiteColor,
                   ),
                   Column(
                     children: [
@@ -58,7 +59,7 @@ class SignUpPage extends StatelessWidget {
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.mail),
                               labelText: 'メールアドレス',
-                              fillColor: ThemeColors.whiteColor,
+                              fillColor: ThemeColors.backGroundColor,
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -86,9 +87,10 @@ class SignUpPage extends StatelessWidget {
                           child: TextField(
                             obscureText: model.isObscure,
                             // パスワードが見えないようにする
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(20)
-                              ],// 入力可能な文字数
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(20)
+                            ],
+                            // 入力可能な文字数
                             onChanged: (text) {
                               model.setPassword(text);
                             },
@@ -106,7 +108,7 @@ class SignUpPage extends StatelessWidget {
                                   model.changeObscure();
                                 },
                               ),
-                              fillColor: ThemeColors.whiteColor,
+                              fillColor: ThemeColors.backGroundColor,
                               filled: true,
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -119,14 +121,17 @@ class SignUpPage extends StatelessWidget {
                         ),
                       ),
                       ElevatedButton(
-
                         style: ElevatedButton.styleFrom(
                           elevation: 8,
                           fixedSize: Size(200.0, 50.0),
                           primary: Colors.black,
                           onPrimary: Colors.white,
                           shape: const StadiumBorder(),
-                          side: const BorderSide(color: Colors.black87),
+                          side: const BorderSide(color: Colors.grey),
+                        ),
+                        child: Text(
+                          'SignIn',
+                          style: TextStyle(fontSize: 20),
                         ),
                         onPressed: () async {
                           model.startLoading();
@@ -136,7 +141,7 @@ class SignUpPage extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => HomePage()));
                           } catch (e) {
                             final snackBar = SnackBar(
                               backgroundColor: Colors.red,
@@ -148,10 +153,6 @@ class SignUpPage extends StatelessWidget {
                             model.endLoading();
                           }
                         },
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(fontSize: 20),
-                        ),
                       ),
                       if (model.isLoading)
                         Container(
@@ -162,20 +163,45 @@ class SignUpPage extends StatelessWidget {
                         ),
                       Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: ThemeColors.color,
-                            onPrimary: Colors.white,
-                            shape: const StadiumBorder(),
-                            side: const BorderSide(color: Colors.greenAccent),
-                          ),
-                          child: Text('Loin'),
+                        child: TextButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => LoginPage()));
                           },
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(color: ThemeColors.color),
+                              children: [
+                                TextSpan(
+                                  text: '既にアカウントをお持ちの方は',
+                                ),
+                                TextSpan(
+                                  text: 'Loginへ',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(color: ThemeColors.color),
+                            children: [
+                              TextSpan(
+                                text: 'ゲストアカウントでログイン',
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

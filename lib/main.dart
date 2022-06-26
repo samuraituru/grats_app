@@ -2,8 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/objectbox.g.dart';
+import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
+import 'package:grats_app/presentation/introduction/introduction_page.dart';
+import 'package:grats_app/presentation/login/login_page.dart';
+import 'package:grats_app/presentation/movie/movie_page.dart';
+import 'package:grats_app/presentation/myself/myself_page.dart';
+import 'package:grats_app/presentation/record/record_page.dart';
+import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:grats_app/presentation/testpage/stool_page.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +27,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: createTheme(),
+      routes: <String, WidgetBuilder>{
+        '/group': (BuildContext context) => GroupPage(),
+        '/home': (BuildContext context) => HomePage(),
+        '/introduction': (BuildContext context) => IntroductionPage(),
+        '/login': (BuildContext context) => LoginPage(),
+        '/movie': (BuildContext context) => MoviePage(),
+        '/myself': (BuildContext context) => MyselfPage(),
+        '/record': (BuildContext context) => RecordPage(),
+        '/signUp': (BuildContext context) => SignUpPage(),
+      },
       debugShowCheckedModeBanner: false,
       title: 'Grats App',
       home: ChangeNotifierProvider<IntroductionModel>(

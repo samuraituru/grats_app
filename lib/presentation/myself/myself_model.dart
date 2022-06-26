@@ -10,21 +10,49 @@ import 'package:image_picker/image_picker.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
-  TextEditingController textController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController userTargetController = TextEditingController();
+
   final imagePicker = ImagePicker();
   String imgURL = '';
   File? imageFile;
 
   String? uid;
-  MyUser? myUser;
+  MyUser myUser = MyUser();
   DocumentSnapshot? userDocSnapshot;
+  bool isLoading = false;
+  bool isLogin = false;
+
+  void switchLogin() {
+    isLogin = true;
+    notifyListeners();
+  }
+  void switchLogout() {
+    isLogin = false;
+    notifyListeners();
+  }
+  void startLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  void endLoading() {
+    isLoading = false;
+    notifyListeners();
+  }
 
   Future<void> fetchMyUser() async {
+    startLoading();
     //FirebaseAuthからcurrentUser-IDを取得
     User? currentUser = await FirebaseAuth.instance.currentUser;
     this.uid = currentUser?.uid.toString();
+    print('現在のUIDは${uid}');
 
-    if (currentUser != null) {
+    if (currentUser == null){
+      switchLogout();
+      throw 'Loginしていません';
+    }
+      switchLogin();
       final userDocSnapshot =
           await FirebaseFirestore.instance.collection('Users').doc(uid).get();
       this.userDocSnapshot = userDocSnapshot;
@@ -41,15 +69,16 @@ class MyselfModel extends ChangeNotifier {
           imgURL: imgURL ?? '');
       this.myUser = myUser;
       notifyListeners();
-    }
+      print(myUser);
+    endLoading();
   }
 
-  void myselfInfoAdd(MyUser user) async {
-    if (user.userName == null || user.userName == "") {
+  void myselfInfoAdd() async {
+    if (userNameController.text == null || userNameController.text == "") {
       throw 'プロフィール名が入力されていません';
     }
 
-    if (user.target == null || user.target!.isEmpty) {
+    if (userTargetController.text == null || userTargetController.text.isEmpty) {
       throw '目標が入力されていません';
     }
 
@@ -66,8 +95,8 @@ class MyselfModel extends ChangeNotifier {
 
     // Firestoreに追加
     await usersDoc.set({
-      'userName': user.userName,
-      'target': user.target,
+      'userName': userNameController.text,
+      'target': userTargetController.text,
       'imgURL': imgURL ?? '',
     });
     notifyListeners();

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
 
 class LoginModel extends ChangeNotifier {
-  final titleController = TextEditingController();
-  final authorController = TextEditingController();
+  bool isObscure = true;
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   MyUser? user;
   String? email;
@@ -12,6 +14,11 @@ class LoginModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+  void changeObscure(){
+    // アイコンがタップされたら現在と反対の状態をセットする
+    isObscure = !isObscure;
+    notifyListeners();
+  }
   void startLoading() {
     isLoading = true;
     notifyListeners();
@@ -33,8 +40,8 @@ class LoginModel extends ChangeNotifier {
   }
 
   Future login() async {
-    this.email = titleController.text;
-    this.password = authorController.text;
+    this.email = emailController.text;
+    this.password = passwordController.text;
 
     if (email != null && password != null) {
       // ログイン

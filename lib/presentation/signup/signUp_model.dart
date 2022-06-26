@@ -60,7 +60,7 @@ class SignUpModel extends ChangeNotifier {
 
       final doc = FirebaseFirestore.instance.collection('Users').doc(uID);
       await doc.set({
-        'UID': uID,
+        'uID': uID,
         'email': email,
         'imgURL': '',
       });

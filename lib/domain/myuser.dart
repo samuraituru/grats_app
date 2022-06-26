@@ -5,7 +5,7 @@ class MyUser {
   String? groupID;
   List<dynamic>? gIDList;
   String? email;
-  String? imgURL;
+  String imgURL;
 
   MyUser(
       {this.userName,
