@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grats_app/domain/group.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GroupModel extends ChangeNotifier {
   var controller = TextEditingController();
@@ -91,18 +92,6 @@ class GroupModel extends ChangeNotifier {
     //final String folderID = data['folderID'];
 
     return group = Group(groupID: groupID, groupName: groupName);
-  }
-
-  Future getMyuser() async {
-    final docsnapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(currentUID)
-        .get();
-    this.docsnapshot = docsnapshot;
-
-    final Map<String, dynamic>? data = docsnapshot.data();
-    myuser.groupID = data!['gID'];
-    notifyListeners();
   }
 
   Future<NetworkImage> getImage(group) async {
@@ -198,6 +187,11 @@ class GroupModel extends ChangeNotifier {
         'imgURL': imgURL ?? '',
       },
     );
+    notifyListeners();
+  }
+
+  void shareGroupID(Group group) {
+    Share.share(group.groupID!);
     notifyListeners();
   }
 }

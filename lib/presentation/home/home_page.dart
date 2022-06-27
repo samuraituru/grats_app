@@ -14,47 +14,44 @@ class HomePage extends StatelessWidget {
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider<HomeModel>(
-        create: (_) => HomeModel(),
-        child: Consumer<HomeModel>(builder: (context, model, child) {
-          final tabItems = [
-             /*TabItem(
+    return ChangeNotifierProvider<HomeModel>(
+      create: (_) => HomeModel(),
+      child: Consumer<HomeModel>(builder: (context, model, child) {
+        final tabItems = [
+          /*TabItem(
               icon: Icon(Icons.home),
               title: 'Home',
             ),*/
-             TabItem(
-              icon: Icon(Icons.groups_rounded),
-              title: 'Group',
-            ),
-             TabItem(
-              icon: Icon(Icons.edit),
-              title: 'Record',
-            ),
-             TabItem(
-              icon: Icon(Icons.movie_creation_outlined),
-              title: 'Movie',
-            ),
-             TabItem(
-              icon: Icon(Icons.person_rounded),
-              title: 'MyPage',
-            ),
-          ];
-          return Scaffold(
-            body: _homePageBody(context, model),
-            bottomNavigationBar: ConvexAppBar(
-              backgroundColor: ThemeColors.color,
-              onTap: (index) {
-                model.onTabTapped(index);
-              },
-              initialActiveIndex: model.currentIndex,
-              items: tabItems,
-              //type: BottomNavigationBarType.fixed,
-            ),
-          );
-        }),
-      ),
+          TabItem(
+            icon: Icon(Icons.groups_rounded),
+            title: 'Group',
+          ),
+          TabItem(
+            icon: Icon(Icons.edit),
+            title: 'Record',
+          ),
+          TabItem(
+            icon: Icon(Icons.movie_creation_outlined),
+            title: 'Movie',
+          ),
+          TabItem(
+            icon: Icon(Icons.person_rounded),
+            title: 'MyPage',
+          ),
+        ];
+        return Scaffold(
+          body: _homePageBody(context, model),
+          bottomNavigationBar: ConvexAppBar(
+            backgroundColor: ThemeColors.color,
+            onTap: (index) {
+              model.onTabTapped(index);
+            },
+            initialActiveIndex: model.currentIndex,
+            items: tabItems,
+            //type: BottomNavigationBarType.fixed,
+          ),
+        );
+      }),
     );
   }
 

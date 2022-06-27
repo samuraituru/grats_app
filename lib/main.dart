@@ -2,8 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/objectbox.g.dart';
+import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
+import 'package:grats_app/presentation/introduction/introduction_page.dart';
+import 'package:grats_app/presentation/login/login_page.dart';
+import 'package:grats_app/presentation/movie/movie_page.dart';
+import 'package:grats_app/presentation/myself/myself_setting_page.dart';
+import 'package:grats_app/presentation/myself/myself_page.dart';
+import 'package:grats_app/presentation/record/record_page.dart';
+import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:grats_app/presentation/testpage/stool_page.dart';
 import 'package:provider/provider.dart';
 
@@ -20,30 +28,54 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: createTheme(),
+      routes: <String, WidgetBuilder>{
+        '/group': (BuildContext context) => GroupPage(),
+        '/home': (BuildContext context) => HomePage(),
+        '/introduction': (BuildContext context) => IntroductionPage(),
+        '/login': (BuildContext context) => LoginPage(),
+        '/movie': (BuildContext context) => MoviePage(),
+        '/myself': (BuildContext context) => MyselfPage(),
+        '/record': (BuildContext context) => RecordPage(),
+        '/signUp': (BuildContext context) => SignUpPage(),
+        '/myself/setting': (BuildContext context) => MyselfSetting(),
+
+      },
       debugShowCheckedModeBanner: false,
       title: 'Grats App',
-      home: ChangeNotifierProvider<IntroductionModel>(
-        create: (_) => IntroductionModel(),
-        child: Consumer<IntroductionModel>(builder: (context, model, child) {
-          return StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // スプラッシュ画面などに書き換えても良い
-                return const SizedBox();
-              }
-              if (snapshot.hasData) {
-                // User が null でなない、つまりサインイン済みのホーム画面へ
-                return HomePage();
-              }
-              // User が null である、つまり未サインインのサインイン画面へ
-              return StoolPage();
-            },
-          );
+      home: LoginCheckPage(),
+    );
+  }
+}
 
-          //return model.firstIntro == true ? IntroductionPage() : StoolPage();
-        }),
-      ),
+
+
+class LoginCheckPage extends StatelessWidget {
+  const LoginCheckPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<IntroductionModel>(
+      create: (_) => IntroductionModel(),
+      child: Consumer<IntroductionModel>(builder: (context, model, child) {
+        return StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // スプラッシュ画面などに書き換えても良い
+              return const SizedBox();
+            }
+            if (snapshot.hasData) {
+              // User が null でなない、つまりサインイン済みのホーム画面へ
+              return HomePage();
+            }
+            // User が null である、つまり未サインインのサインイン画面へ
+            return StoolPage();
+          },
+        );
+
+        //return model.firstIntro == true ? IntroductionPage() : StoolPage();
+      }),
     );
   }
 }

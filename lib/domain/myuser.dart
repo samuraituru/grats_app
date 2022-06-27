@@ -1,18 +1,16 @@
 class MyUser {
   String? userName;
-  String? target;
+  String? userTarget;
   String? uID;
-  String? groupID;
-  List<dynamic>? gIDList;
+  Map<String,dynamic>? groupIDs;
   String? email;
-  String? imgURL;
+  String imgURL;
 
   MyUser(
       {this.userName,
-      this.target,
+      this.userTarget,
       this.uID,
       this.email,
-      this.groupID,
       this.imgURL = '',
-      this.gIDList});
+      this.groupIDs});
 }

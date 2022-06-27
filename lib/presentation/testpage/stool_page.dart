@@ -10,17 +10,14 @@ import '../home/home_page.dart';
 class StoolPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider<IntroductionModel>(
-        create: (_) => IntroductionModel()..getPrefIntro(),
-        child: Consumer<IntroductionModel>(
-          builder: (context, model, child) {
-            //trueであればIntroductionPageを表示し
-            //falseであればSignUpPageを表示する
-            return model.firstIntro == true ? IntroductionPage() : SignUpPage();
-          },
-        ),
+    return ChangeNotifierProvider<IntroductionModel>(
+      create: (_) => IntroductionModel()..getPrefIntro(),
+      child: Consumer<IntroductionModel>(
+        builder: (context, model, child) {
+          //trueであればIntroductionPageを表示し
+          //falseであればSignUpPageを表示する
+          return model.firstIntro == true ? IntroductionPage() : SignUpPage();
+        },
       ),
     );
   }

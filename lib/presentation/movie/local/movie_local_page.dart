@@ -9,23 +9,21 @@ import 'package:provider/provider.dart';
 class MovieLocalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider<MovieLocalModel>(
-        create: (_) => MovieLocalModel(),
-        child: Consumer<MovieLocalModel>(
-          builder: (context, model, child) {
-            return Scaffold(
-              body: LayoutBuilder(
-                builder: (context, constraints) {
-                  return constraints.maxWidth < constraints.maxHeight
-                      ? _buildHorizontal(context)
-                      : _buildHorizontal(context);
-                },
-              ),
-            );
-          },
-        ),
+    return ChangeNotifierProvider<MovieLocalModel>(
+      create: (_) => MovieLocalModel(),
+      child: Consumer<MovieLocalModel>(
+        builder: (context, model, child) {
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                return constraints.maxWidth < constraints.maxHeight
+                    ? _buildHorizontal(context)
+                    : _buildHorizontal(context);
+              },
+            ),
+          );
+        },
       ),
     );
   }
@@ -33,111 +31,112 @@ class MovieLocalPage extends StatelessWidget {
   // 縦向きの場合
   Widget _buildHorizontal(BuildContext context) {
     return Consumer<MovieLocalModel>(builder: (context, model, child) {
-      return Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                child: WatchWidget(),
-              ),
-              SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          Navigator.push(context, SlideRightRoute(page: MoviePage()));
-                        },
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  child: WatchWidget(),
+                ),
+                SafeArea(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      child: IconButton(
-                        icon: Icon(Icons.addchart_outlined),
-                        onPressed: () async {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text('Recordへ記録しますか？'),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    for (int i = 0;
-                                        i < model.countItems.length;
-                                        i++) ...{
-                                      Text('${model.countItems[i].title}: ${model.countItems[i].counter}'),
-                                      //Text('${model.countItems[i].counter}'),
-                                    },
-                                    //model.outPutText(),
-                                    Padding(padding: EdgeInsets.all(10.0)),
-                                  ],
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text('キャンセル'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
+                      Container(
+                        child: IconButton(
+                          icon: Icon(Icons.addchart_outlined),
+                          onPressed: () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Recordへ記録しますか？'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      for (int i = 0;
+                                          i < model.countItems.length;
+                                          i++) ...{
+                                        Text('${model.countItems[i].title}: ${model.countItems[i].counter}'),
+                                        //Text('${model.countItems[i].counter}'),
+                                      },
+                                      //model.outPutText(),
+                                      Padding(padding: EdgeInsets.all(10.0)),
+                                    ],
                                   ),
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
+                                  actions: <Widget>[
+                                    TextButton(
+                                      child: Text('キャンセル'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('OK'),
+                                      onPressed: () {
 
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: model.texteditingcontroller,
+                decoration: InputDecoration(
+                  hintText: 'カウントしたい項目を追加',
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      model.countItemCreate();
+                    },
+                    icon: Icon(Icons.add),
+                  ),
                 ),
               ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: model.texteditingcontroller,
-              onChanged: (String? value) {
-                model.title = value!;
-              },
-              decoration: InputDecoration(
-                hintText: 'カウントしたい項目を追加',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    model.countItemCreate();
+            ),
+            Container(
+              height: 375,
+              child: SingleChildScrollView(
+                controller: model.scrollController,
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: model.countItems.length,
+                  itemBuilder: (BuildContext context, index) {
+                    final countItem = model.countItems[index];
+                    final countItems = model.countItems;
+                    return CountItemWidget(
+                        countItem: countItem,
+                        countItems: countItems,
+                        itemIndex: index);
                   },
-                  icon: Icon(Icons.add),
                 ),
               ),
             ),
-          ),
-          Container(
-            height: 375,
-            child: SingleChildScrollView(
-              controller: model.scrollController,
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: model.countItems.length,
-                itemBuilder: (BuildContext context, index) {
-                  final countItem = model.countItems[index];
-                  final countItems = model.countItems;
-                  return CountItemWidget(
-                      countItem: countItem,
-                      countItems: countItems,
-                      itemIndex: index);
-                },
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       );
     });
   }

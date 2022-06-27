@@ -8,6 +8,7 @@ class SignUpModel extends ChangeNotifier {
   final passwordController = TextEditingController();
   String? email;
   String? password;
+  Map<String,dynamic>? groupIDs;
 
   bool isLoading = false;
 
@@ -60,9 +61,12 @@ class SignUpModel extends ChangeNotifier {
 
       final doc = FirebaseFirestore.instance.collection('Users').doc(uID);
       await doc.set({
-        'UID': uID,
+        'uID': uID,
         'email': email,
         'imgURL': '',
+        'groupIDs': groupIDs,
+      'userName': '',
+      'target': '',
       });
     }
   }
