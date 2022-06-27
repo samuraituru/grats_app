@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
@@ -84,7 +86,6 @@ class MyselfModel extends ChangeNotifier {
       throw '目標が入力されていません';
     }
 
-
     // FireStorageへアップロード
     String? imgURL;
     if (imageFile != null) {
@@ -95,7 +96,7 @@ class MyselfModel extends ChangeNotifier {
     }
 
     // Firestoreに追加
-   await FirebaseFirestore.instance.collection('Users').doc(uID).update({
+    await FirebaseFirestore.instance.collection('Users').doc(uID).update({
       'userName': userNameController.text,
       'userTarget': userTargetController.text,
       'imgURL': imgURL,
@@ -105,7 +106,7 @@ class MyselfModel extends ChangeNotifier {
     notifyListeners();
   }
 
- Future<void> updateMyselfInfo(MyUser user) async {
+  Future<void> updateMyselfInfo(MyUser user) async {
     if (user.userName == null || user.userName == "") {
       throw 'プロフィール名が入力されていません';
     }
@@ -135,5 +136,44 @@ class MyselfModel extends ChangeNotifier {
       imageFile = File(pickedFile.path);
     }
     notifyListeners();
+  }
+
+  String id = "";
+  String groupID = 'test';
+
+  void shareGroupURL() {
+    String url =
+        "https://grats.page.link/?link=https%3A%2F%2Fgrats.page.link%2Fpost?id=${id}&apn=com.example.grats_app";
+    Share.share(url);
+  }
+  void sharegroupID() {
+      Share.share(groupID);
+  }
+
+  Future<void> initDeepLinks() async {
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) async {
+      final Uri? deepLink = dynamicLinkData.link;
+
+      if (deepLink != null) {
+        //ここにdeepLink変数を基に処理を書いていく
+        OpenPost(deepLink.queryParameters["id"].toString()); //id(つまりABC123)を渡す
+      }
+    }).onError((error) async {
+      print('onLinkError');
+      print(error.message);
+    });
+
+    final PendingDynamicLinkData? data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri? deepLink = data?.link;
+
+    if (deepLink != null) {
+      //ここにdeepLink変数を基に処理を書いていく
+      OpenPost(deepLink.queryParameters["id"].toString()); //id(つまりABC123)を渡す
+    }
+  }
+
+  void OpenPost(String path) {
+    print(path);
   }
 }

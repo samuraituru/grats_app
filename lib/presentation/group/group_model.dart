@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grats_app/domain/group.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 class GroupModel extends ChangeNotifier {
   var controller = TextEditingController();
@@ -186,6 +187,11 @@ class GroupModel extends ChangeNotifier {
         'imgURL': imgURL ?? '',
       },
     );
+    notifyListeners();
+  }
+
+  void shareGroupID(Group group) {
+    Share.share(group.groupID!);
     notifyListeners();
   }
 }

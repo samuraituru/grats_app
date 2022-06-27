@@ -299,6 +299,16 @@ class GroupModal extends StatelessWidget {
                   icon: const Icon(Icons.folder_open, size: 30),
                   label: const Text('Folder', style: TextStyle(fontSize: 18)),
                 ),
+                TextButton.icon(
+                  onPressed: () {
+                    model.shareGroupID(group);
+                  },
+                  style: TextButton.styleFrom(
+                    primary: Colors.black,
+                  ),
+                  icon: const Icon(Icons.folder_open, size: 30),
+                  label: const Text('招待', style: TextStyle(fontSize: 18)),
+                ),
               ],
             ),
           ],
