@@ -10,7 +10,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
 
 class GroupModel extends ChangeNotifier {
-  var controller = TextEditingController();
+  TextEditingController groupNameController = TextEditingController();
+  TextEditingController groupDescController = TextEditingController();
+  TextEditingController groupCordController = TextEditingController();
+
+  void controllerReset() {
+    groupNameController.clear();
+    groupDescController.clear();
+    groupCordController.clear();
+    notifyListeners();
+  }
+
   final imagePicker = ImagePicker();
   File? imageFile;
   var editText = '';
@@ -29,7 +39,7 @@ class GroupModel extends ChangeNotifier {
   Group? group;
   List<Group> groups = [];
 
-  String groupName = '';
+  //String groupName = '';
   String groupDescription = '';
   MyUser myuser = MyUser();
 
@@ -41,7 +51,9 @@ class GroupModel extends ChangeNotifier {
 
   String? uID;
   String? currentUID;
-  String? addgroup;
+  String? groupName;
+  String? groupDesc;
+
   QuerySnapshot? snapshot;
   DocumentSnapshot? docsnapshot;
   DocumentSnapshot? groupsSnapshot;
@@ -111,11 +123,15 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setName(String name){
+    groupName = name;
+    notifyListeners();
+  }
   Future<void> addGroup() async {
     if (groupName == null || groupName == "") {
       throw 'グループ名が入力されていません';
     }
-    if (groupDescription == null || groupDescription.isEmpty) {
+    if (groupDesc == null || groupDesc!.isEmpty) {
       throw '説明が入力されていません';
     }
 
@@ -138,18 +154,13 @@ class GroupModel extends ChangeNotifier {
     await groupsDoc.set(
       {
         'groupName': groupName,
-        'groupDescription': groupDescription,
+        'groupDescription': groupDesc,
         'groupID': groupID,
         'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
         'imgURL': imgURL ?? '',
       },
     );
     notifyListeners();
-  }
-
-  List<String> memberListAdd(String currentUID) {
-    memberIDs.add(currentUID);
-    return memberIDs;
   }
 
   Map<String, dynamic> mapAdd(String currentUID) {
@@ -179,7 +190,6 @@ class GroupModel extends ChangeNotifier {
       imgURL = await task.ref.getDownloadURL();
       print(imgURL);
     }
-
     //FirestoreのGroup情報を更新
     await groupsDoc.update(
       {
@@ -192,6 +202,37 @@ class GroupModel extends ChangeNotifier {
 
   void shareGroupID(Group group) {
     Share.share(group.groupID!);
+    notifyListeners();
+  }
+
+  Future<void> modalfinishActions() async {
+    if (groupCordController.text != null) {
+      await addGroup();
+    }
+    else if (groupCordController.text != null) {
+      await groupCodeJoin();
+    }
+  }
+
+  String? groupCord;
+
+  Future<void> groupCodeJoin() async {
+    if (groupCordController.text == null || groupCordController.text == "") {
+      throw 'グループコードが入力されていません';
+    }
+    groupCord = groupCordController.text;
+
+    //groupCordからGroupのDocumentReferenceを取得
+    final groupCordDoc =
+        await FirebaseFirestore.instance.collection(groupCord!).doc();
+
+    if (currentUID != null)
+      //groupCordDocのmemberIDsへ自分のuIDを追記する
+      await groupCordDoc.set(
+        {
+          'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
+        },
+      );
     notifyListeners();
   }
 }
