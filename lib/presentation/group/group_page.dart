@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_blockList_page.dart';
-import 'package:grats_app/presentation/group/group_page_dialog_tab1.dart';
-import 'package:grats_app/presentation/group/group_page_dialog_tab2.dart';
+import 'package:grats_app/presentation/group/group_page_alerttabview.dart';
 import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
@@ -21,103 +20,13 @@ class GroupPage extends StatelessWidget {
       child: Consumer<GroupModel>(
         builder: (context, model, child) {
           final List<Group> groups = model.groups;
-          final List<TabInfo> _tabs = [
-            TabInfo("グループ作成", GroupPageDialogTab1(context: context)),
-            /*TabInfo("グループ作成", SingleChildScrollView(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(20),
-                            child: GestureDetector(
-                              onTap: () async {
-                                await model.pickImage();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.black12, //枠線の色
-                                    width: 5, //枠線の太さ
-                                  ),
-                                  shape: BoxShape.circle,
-                                  //color: Colors.blue,
-                                ),
-                                height: 100,
-                                width: 100,
-                                child: (() {
-                                  //imageFileがNullでないつまり、画像選択時は下記を実行
-                                  if (model.imageFile != null) {
-                                    return ClipOval(
-                                      child: Image.file(model.imageFile!),
-                                    );
-                                  }
-                                  //imageFileがNullつまり、選択していない時は下記を実施
-                                  return CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: ThemeColors.whiteColor,
-                                    child:
-                                    Icon(Icons.add, size: 40, color: Colors.grey),
-                                  );
-                                })(),
-                              ),
-                            ),
-                          ),
-                          TextField(
-                            onChanged: (name) {
-                              setState(() {
-                                model.setName(name);
-                                //model.groupName = name;
-                              });
-                            },
-                            controller: model.groupNameController,
-                            //textInputAction: TextInputAction.next,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.group),
-                              labelText: 'group名を記載',
-                              //fillColor: ThemeColors.backGroundColor,
-                              filled: true,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  //color: ThemeColors.whiteColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(padding: EdgeInsets.all(10.0)),
-                          TextField(
-                            onChanged: (desc) {
-                              model.groupDesc = desc;
-                            },
-                            controller: model.groupDescController,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.comment),
-                              labelText: '説明を記載',
-                              //fillColor: ThemeColors.backGroundColor,
-                              filled: true,
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical: 40,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  //color: ThemeColors.whiteColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
+          if (model.isLoading)
+            Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-            ),),*/
-            TabInfo("コードから参加", GroupPageDialogTab2()),
-          ];
+            );
           if (groups == null) {
             return const SizedBox(
                 width: 100,
@@ -125,37 +34,40 @@ class GroupPage extends StatelessWidget {
                 child: Center(child: CircularProgressIndicator()));
           }
           final List<Widget> widgets = groups.map((group) {
-            return ListTile(
-              onTap: () {
-                final groups = model.group;
-                showModalBottomSheet(
-                    backgroundColor: Colors.white.withOpacity(0.8),
-                    enableDrag: true,
-                    isDismissible: false,
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      return GroupPageModal(group: group);
-                    }).whenComplete(() => model.fetchAllGroups());
-              },
-              leading: group.imgURL != ''
-                  ? CircleAvatar(
-                      radius: 30,
-                      child: ClipOval(
-                        child: Image.network(
-                          group.imgURL ?? '',
+            return Visibility(
+              //visible: (group.blockIDs?.contains(group.imgURL!) ?? false),
+              child: Card(
+                elevation: 3,
+                child: ListTile(
+                  onTap: () {
+
+                    showModalBottomSheet(
+                        backgroundColor: Colors.white.withOpacity(0.8),
+                        enableDrag: true,
+                        isDismissible: false,
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          return GroupPageModal(group: group);
+                        }).whenComplete(() => model.fetchAllGroups());
+                  },
+                  leading: group.imgURL != ''
+                      ? CircleAvatar(
+                          radius: 30,
+                          child: ClipOval(
+                            child: Image.network(
+                              group.imgURL ?? '',
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey,
                         ),
-                      ),
-                    )
-                  : CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey,
-                    ),
-              title: Text('${group.groupName}'),
-              subtitle: Text('${group.groupDescription}'),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {},
+                  title: Text('${group.groupName}'),
+                  subtitle: Text('${group.groupDescription}'),
+                  trailing: Icon(Icons.keyboard_arrow_up),
+                ),
               ),
             );
           }).toList();
@@ -165,7 +77,7 @@ class GroupPage extends StatelessWidget {
               child: AppBar(
                 centerTitle: true,
                 leading: IconButton(
-                    icon: Icon(Icons.list_alt),
+                    icon: Icon(Icons.list_alt,color: ThemeColors.whiteColor),
                     onPressed: () {
                       Navigator.push(
                           context, SlideRightRoute(page: GroupBloclListPage()));
@@ -173,12 +85,12 @@ class GroupPage extends StatelessWidget {
                 title: Text('Group'),
                 actions: [
                   IconButton(
-                    icon: Icon(Icons.add),
+                    icon: Icon(Icons.add,color: ThemeColors.whiteColor),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (context) {
-                          return Alert();
+                          return AlertTabView();
                           /*return AlertDialog(
                             //insetPadding: EdgeInsets.zero,
                             content: Container(
@@ -240,8 +152,14 @@ class GroupPage extends StatelessWidget {
               ),
             ),
             body: Center(
-              child: ListView(
-                children: widgets,
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  print('Loading New Data');
+                  await model.fetchAllGroups();
+                },
+                child: ListView(
+                  children: widgets,
+                ),
               ),
             ),
           );
@@ -326,19 +244,29 @@ class GroupPageModal extends StatelessWidget {
               },
               child: Container(
                 decoration: BoxDecoration(
+                  border: Border.all(
+                    color: ThemeColors.backGroundColor, //枠線の色
+                    width: 5, //枠線の太さ
+                  ),
                   shape: BoxShape.circle,
-                  color: Colors.blue,
+                  //color: Colors.blue,
                 ),
                 height: 100,
                 width: 100,
                 child: (() {
-                  if (group.imgURL == '') {
+                  if (model.imageFile != null) {
+                    return ClipOval(
+                      child: Image.file(model.imageFile!),
+                    );
+                  }
+                  else if (group.imgURL == '' || group.imgURL == null) {
                     return const CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
+                      child: Icon(Icons.add,
+                          size: 40,
+                          color: Colors.white),
                     );
-                  } else if (model.imageFile != null) {
-                    return Image.file(model.imageFile!);
                   }
                   return CircleAvatar(
                     radius: 30,
@@ -379,7 +307,8 @@ class GroupPageModal extends StatelessWidget {
                         radius: 18,
                         backgroundColor: Colors.grey,
                         child:
-                            Text('10', style: TextStyle(color: Colors.white)),
+                            Text('${group.memberIDs?.length}',
+                                style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -397,16 +326,6 @@ class GroupPageModal extends StatelessWidget {
                   ),
                   icon: const Icon(Icons.folder_open, size: 30),
                   label: const Text('Folder', style: TextStyle(fontSize: 18)),
-                ),
-                TextButton.icon(
-                  onPressed: () {
-                    model.shareGroupID(group);
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  icon: const Icon(Icons.folder_open, size: 30),
-                  label: const Text('招待', style: TextStyle(fontSize: 18)),
                 ),
               ],
             ),
@@ -527,14 +446,38 @@ class GroupSettingModal extends StatelessWidget {
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+          ),
           ListTile(
-            title: Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
+            onTap: (){
+              model.shareGroupID(group);
+            },
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Icon(Icons.share,size: 30),
+                ),
+                Text('Group-Codeを発行', style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          ListTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
             onTap: () {},
           ),
           ListTile(
-            title: Text('グループを退会する',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('グループを退会する',
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+            ),
             onTap: () {},
           ),
         ]);

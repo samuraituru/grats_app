@@ -128,10 +128,14 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
   Future<void> addGroup() async {
-    if (groupName == null || groupName == "") {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.currentUID = currentuser?.uid.toString();
+    print(currentUID);
+
+    if (groupNameController.text == null || groupNameController.text == "") {
       throw 'グループ名が入力されていません';
     }
-    if (groupDesc == null || groupDesc!.isEmpty) {
+    if (groupDescController.text == null || groupDescController.text.isEmpty) {
       throw '説明が入力されていません';
     }
 
@@ -153,8 +157,8 @@ class GroupModel extends ChangeNotifier {
     //FirestoreにGroups情報を追加
     await groupsDoc.set(
       {
-        'groupName': groupName,
-        'groupDescription': groupDesc,
+        'groupName': groupNameController.text,
+        'groupDescription': groupDescController.text,
         'groupID': groupID,
         'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
         'imgURL': imgURL ?? '',
@@ -206,7 +210,7 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> modalfinishActions() async {
-    if (groupCordController.text != null) {
+    if (groupNameController.text != null && groupNameController.text != '') {
       await addGroup();
     }
     else if (groupCordController.text != null) {
@@ -224,11 +228,14 @@ class GroupModel extends ChangeNotifier {
 
     //groupCordからGroupのDocumentReferenceを取得
     final groupCordDoc =
-        await FirebaseFirestore.instance.collection(groupCord!).doc();
+        await FirebaseFirestore.instance.collection('Groups').doc(groupCord!);
+
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.currentUID = currentuser?.uid.toString();
 
     if (currentUID != null)
       //groupCordDocのmemberIDsへ自分のuIDを追記する
-      await groupCordDoc.set(
+      await groupCordDoc.update(
         {
           'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
         },

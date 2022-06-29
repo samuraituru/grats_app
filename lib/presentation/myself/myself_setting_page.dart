@@ -22,17 +22,6 @@ class MyselfSetting extends StatelessWidget {
           body: Column(
             children: [
               ListTile(
-                title: Row(
-                  children: [
-                    Icon(Icons.share),
-                    Text('招待コード発行'),
-                  ],
-                ),
-                onTap: () {
-                  model.sharegroupID();
-                },
-              ),
-              ListTile(
                 title: Text('プライバシーポリシー'),
                 onTap: () {},
               ),
