@@ -4,6 +4,7 @@ class Group {
   String? groupID;
   Map<String,dynamic>? memberIDs;
   String? imgURL;
+  Map<String,dynamic>? blockIDs;
 
   Group(
       {this.groupName,
