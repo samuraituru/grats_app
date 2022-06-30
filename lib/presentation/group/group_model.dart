@@ -13,6 +13,7 @@ class GroupModel extends ChangeNotifier {
   TextEditingController groupNameController = TextEditingController();
   TextEditingController groupDescController = TextEditingController();
   TextEditingController groupCordController = TextEditingController();
+  TextEditingController groupRenameController = TextEditingController();
 
   void controllerReset() {
     groupNameController.clear();
@@ -26,18 +27,55 @@ class GroupModel extends ChangeNotifier {
   var editText = '';
   bool isEnabled = false;
 
-  void blockButtonEnable() {
-    isEnabled = true;
+  Map<String, dynamic> isBlocksTrue(String currentUID) {
+    //ブロックするため、Trueをセットする
+    isBlocks['$currentUID'] = true;
+    return isBlocks;
+  }
+
+  Map<String, dynamic> isBlocksFalse(String currentUID) {
+    //ブロックするため、Trueをセットする
+    isBlocks['$currentUID'] = false;
+    return isBlocks;
+  }
+
+  Future<void> blockButtonEnable(Group group, String currentUID) async {
+    if (currentUID == null || currentUID == "") {
+      throw 'loginされていません';
+    }
+    group.isBlocks!['$currentUID'] = true;
+
+    final groupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(group.groupID);
+    await groupsDoc.update(
+      {
+        'isBlocks': isBlocksTrue(currentUID),
+      },
+    );
     notifyListeners();
   }
 
-  void blockButtonDisable() {
-    isEnabled = false;
+  Future<void> blockButtonDisable(Group group, String currentUID) async {
+    if (currentUID == null || currentUID == "") {
+      throw 'loginされていません';
+    }
+    group.isBlocks!['$currentUID'] = false;
+
+    final groupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(group.groupID);
+    await groupsDoc.update(
+      {
+        'isBlocks': isBlocksFalse(currentUID),
+      },
+    );
     notifyListeners();
   }
 
   Group? group;
   List<Group> groups = [];
+  List<Group> blockGroups = [];
 
   //String groupName = '';
   String groupDescription = '';
@@ -47,6 +85,9 @@ class GroupModel extends ChangeNotifier {
 
   List<String> memberIDs = [];
   Map<String, dynamic> memberIDsMap = {};
+  List<dynamic> memberIDsList = [];
+  Map<String, dynamic> isBlocks = {};
+
   String groupID = '';
 
   String? uID;
@@ -66,7 +107,7 @@ class GroupModel extends ChangeNotifier {
     }
     final QuerySnapshot joinGroupsDoc = await FirebaseFirestore.instance
         .collection('Groups')
-        .where("memberIDs.UID", isEqualTo: currentUID)
+        .where("memberIDs", arrayContains: currentUID)
         .get();
 
     if (joinGroupsDoc != null) {
@@ -76,7 +117,8 @@ class GroupModel extends ChangeNotifier {
         final groupID = data['groupID'] as String?;
         final groupName = data['groupName'] as String?;
         final groupDescription = data['groupDescription'] as String?;
-        final memberIDs = data['memberIDs'] as Map<String, dynamic>?;
+        final memberIDs = data['memberIDs'] as List<dynamic>?;
+        final isBlocks = data['isBlocks'] as Map<String, dynamic>?;
         final imgURL = data['imgURL'] as String?;
 
         return Group(
@@ -84,6 +126,7 @@ class GroupModel extends ChangeNotifier {
           groupName: groupName,
           groupDescription: groupDescription,
           memberIDs: memberIDs,
+          isBlocks: isBlocks,
           imgURL: imgURL ?? '',
         );
       }).toList();
@@ -123,10 +166,11 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setName(String name){
+  void setName(String name) {
     groupName = name;
     notifyListeners();
   }
+
   Future<void> addGroup() async {
     User? currentuser = await FirebaseAuth.instance.currentUser;
     this.currentUID = currentuser?.uid.toString();
@@ -160,11 +204,23 @@ class GroupModel extends ChangeNotifier {
         'groupName': groupNameController.text,
         'groupDescription': groupDescController.text,
         'groupID': groupID,
-        'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
+        'memberIDs': listAdd(currentUID!), //memberIDsに自身のUIDを追加
+        'isBlocks': isBlocksAdd(currentUID!),
         'imgURL': imgURL ?? '',
       },
     );
     notifyListeners();
+  }
+
+  Map<String, dynamic> isBlocksAdd(String currentUID) {
+    //初期値はブロックしていないため、Falseをセットする
+    isBlocks['${currentUID}'] = false;
+    return isBlocks;
+  }
+
+  List<dynamic> listAdd(String currentUID) {
+    memberIDsList.add(currentUID);
+    return memberIDsList;
   }
 
   Map<String, dynamic> mapAdd(String currentUID) {
@@ -212,8 +268,7 @@ class GroupModel extends ChangeNotifier {
   Future<void> modalfinishActions() async {
     if (groupNameController.text != null && groupNameController.text != '') {
       await addGroup();
-    }
-    else if (groupCordController.text != null) {
+    } else if (groupCordController.text != null) {
       await groupCodeJoin();
     }
   }
@@ -237,9 +292,90 @@ class GroupModel extends ChangeNotifier {
       //groupCordDocのmemberIDsへ自分のuIDを追記する
       await groupCordDoc.update(
         {
-          'memberIDs': mapAdd(currentUID!), //memberIDsに自身のUIDを追加
+          'memberIDs': listAdd(currentUID!), //memberIDsに自身のUIDを追加
+          'isBlocks': isBlocksAdd(currentUID!),
         },
       );
     notifyListeners();
+  }
+
+  Future<void> fetchBlockList() async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    this.currentUID = currentuser?.uid.toString();
+
+    final QuerySnapshot blockGroupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .where("isBlocks.${currentUID}", isEqualTo: true)
+        .get();
+
+    if (blockGroupsDoc != null) {
+      final List<Group> joins =
+          blockGroupsDoc.docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+        final groupID = data['groupID'] as String?;
+        final groupName = data['groupName'] as String?;
+        final groupDescription = data['groupDescription'] as String?;
+        final memberIDs = data['memberIDs'] as List<dynamic>?;
+        final isBlocks = data['isBlocks'] as Map<String, dynamic>?;
+        final imgURL = data['imgURL'] as String?;
+
+        return Group(
+          groupID: groupID,
+          groupName: groupName,
+          groupDescription: groupDescription,
+          memberIDs: memberIDs,
+          isBlocks: isBlocks,
+          imgURL: imgURL ?? '',
+        );
+      }).toList();
+      this.blockGroups = joins;
+      notifyListeners();
+    }
+  }
+
+  Future<void> groupNameUpdate(Group group) async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
+
+    if (groupRenameController.text == null ||
+        groupRenameController.text == "") {
+      throw 'グループ名が入力されていません';
+    }
+
+    final groupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(group.groupID);
+    await groupsDoc.update(
+      {
+        'groupName': groupRenameController.text,
+      },
+    );
+    notifyListeners();
+  }
+
+  Future<void> groupWithdraw(Group group) async {
+    User? currentuser = await FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
+
+    final groupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(group.groupID);
+    await groupsDoc.update(
+      {
+        'memberIDs': removeMyID(group, currentUID!), //memberIDsに自身のUIDを追加
+        'isBlocks': removeIsBlocks(currentUID!),
+      },
+    );
+    notifyListeners();
+  }
+
+  List<dynamic>? removeMyID(Group group, String currentUID) {
+    group.memberIDs?.remove(currentUID);
+    return group.memberIDs;
+  }
+  Map<String, dynamic> removeIsBlocks(String currentUID) {
+    //指定したキーを値ごと削除
+    isBlocks.remove(currentUID);
+    return isBlocks;
   }
 }
