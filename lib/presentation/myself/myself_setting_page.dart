@@ -30,11 +30,11 @@ class MyselfSetting extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
                 onTap: () async {
-                  model.startLoading();
                   // 追加の処理
                   try {
                     await model.signOut(context);
-                    Navigator.of(context).pushReplacementNamed('/login');
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/login", (_) => false);
                   } catch (e) {
                     final snackBar = SnackBar(
                       backgroundColor: Colors.red,
@@ -42,21 +42,9 @@ class MyselfSetting extends StatelessWidget {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   } finally {
-                    model.endLoading();
                   }
                 },
               ),
-              if (model.isLoading)
-                SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Container(
-                    color: ThemeColors.whiteColor,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ),
             ],
           ),
         );

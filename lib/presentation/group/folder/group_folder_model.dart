@@ -5,30 +5,35 @@ import 'package:grats_app/domain/group.dart';
 import 'package:grats_app/domain/joingrouplist.dart';
 
 class GroupFolderModel extends ChangeNotifier {
-  final ScrollController? controller;
-
-  GroupFolderModel(this.controller);
+  TextEditingController folderNameController = TextEditingController();
+  TextEditingController folderDescController = TextEditingController();
 
   List<Folder>? folders;
   Group? group;
   String folderName = '';
   String folderDescription = '';
 
-  Future addFolder() async {
-    if (folderName == null || folderName == "") {
+  void controllerClear() {
+    folderNameController.clear();
+    folderDescController.clear();
+  }
+
+  Future<void> addFolder() async {
+    if (folderNameController.text == null || folderNameController.text == "") {
       throw 'フォルダ名が入力されていません';
     }
-    if (folderDescription == null || folderDescription.isEmpty) {
+    if (folderDescController.text == null ||
+        folderDescController.text.isEmpty) {
       throw '説明が入力されていません';
     }
-    final doc = FirebaseFirestore.instance.collection('Folders').doc();
+    final foldersDoc = FirebaseFirestore.instance.collection('Folders').doc();
     //Folder-IDを取得
-    String folderID = doc.id;
+    String folderID = foldersDoc.id;
     // Firestoreに追加
-    await doc.set(
+    await foldersDoc.set(
       {
-        'folderName': folderName,
-        'folderDescription': folderDescription,
+        'folderName': folderNameController.text,
+        'folderDescription': folderDescController.text,
         'folderID': folderID,
         'groupID': group?.groupID,
       },
@@ -36,7 +41,38 @@ class GroupFolderModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getFolder(Group group) async {
+  Future<void> folderUpdate(Folder folder) async {
+    if (folderNameController.text != null ||
+        folderDescController.text != null) {
+      final foldersDoc = await FirebaseFirestore.instance
+          .collection('Folders')
+          .doc(folder.folderID);
+
+      // Firestoreの値を更新する
+      await foldersDoc.update(
+        {
+          'folderName': folderNameCheck(folder),
+          'folderDescription': folderDescriptionCheck(folder),
+        },
+      );
+    }
+  }
+
+  String folderNameCheck(Folder folder) {
+    if (folderNameController.text == '') {
+      return folder.folderName!;
+    }
+    return folderNameController.text;
+  }
+
+  String folderDescriptionCheck(Folder folder) {
+    if (folderDescController.text == '') {
+      return folder.folderDescription!;
+    }
+    return folderDescController.text;
+  }
+
+  Future<void> fetchFolder(Group group) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('Folders')
         .where("groupID", isEqualTo: group.groupID)
@@ -45,12 +81,21 @@ class GroupFolderModel extends ChangeNotifier {
 
     final List<Folder> folders = snapshot.docs.map((DocumentSnapshot document) {
       Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-      final String folderName = data['folderName'];
-      final String folderDescription = data['folderDescription'];
+      final folderName = data['folderName'] as String;
+      final folderDescription = data['folderDescription'] as String;
+      final folderID = data['folderID'] as String?;
+      final groupID = data['groupID'] as String;
       return Folder(
-          folderName: folderName, folderDescription: folderDescription);
+          folderName: folderName,
+          folderDescription: folderDescription,
+          folderID: folderID,
+          groupID: groupID);
     }).toList();
     this.folders = folders;
     notifyListeners();
+  }
+
+  Future<void> foldersDocDelete(Folder folder) async{
+    FirebaseFirestore.instance.collection('Folders').doc(folder.folderID).delete();
   }
 }

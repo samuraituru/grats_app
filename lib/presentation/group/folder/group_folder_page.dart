@@ -14,7 +14,7 @@ class GroupFloderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupFolderModel>(
-      create: (_) => GroupFolderModel(null)..getFolder(group),
+      create: (_) => GroupFolderModel()..fetchFolder(group),
       child: Consumer<GroupFolderModel>(builder: (context, model, child) {
         final List<Folder>? folders = model.folders;
         model.group = group;
@@ -30,6 +30,7 @@ class GroupFloderPage extends StatelessWidget {
               (folder) => Padding(
                 padding: const EdgeInsets.only(right: 20,left: 20,bottom: 8,top: 8),
                 child: Card(
+                  elevation: 3,
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -37,6 +38,55 @@ class GroupFloderPage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => GroupItemPage(folder: folder)),
                       );
+                    },
+                    onLongPress: (){
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Folder名を変更'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextField(
+                                  controller: model.folderNameController,
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.folder_open),
+                                    labelText: 'Folder名を記載',
+                                    //fillColor: ThemeColors.backGroundColor,
+                                    filled: true,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                        //color: ThemeColors.whiteColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('キャンセル'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  model.controllerClear();
+                                },
+                              ),
+                              TextButton(
+                                child: Text('OK'),
+                                onPressed: () async{
+                                  await model.folderUpdate(folder);
+                                  await model.fetchFolder(group);
+                                  Navigator.pop(context);
+                                  model.controllerClear();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      model.foldersDocDelete(folder);
                     },
                     leading: CircleAvatar(
                       child: Icon(Icons.folder_open),
@@ -51,21 +101,43 @@ class GroupFloderPage extends StatelessWidget {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text('Folderを追加'),
+                              title: const Text('Folder名を変更'),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   TextField(
-                                    decoration: const InputDecoration(
-                                      hintText: " Folder名を記載",
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        vertical: 20,
+                                    controller: model.folderNameController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.folder_open),
+                                      labelText: 'Folder名を記載',
+                                      //fillColor: ThemeColors.backGroundColor,
+                                      filled: true,
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          //color: ThemeColors.whiteColor,
+                                        ),
                                       ),
                                     ),
-                                    onChanged: (text) {
-                                      model.folderName = text;
-                                    },
+                                  ),
+                                  Padding(padding: EdgeInsets.all(10.0)),
+                                  TextField(
+                                    controller: model.folderDescController,
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.folder_open),
+                                      labelText: '説明を記載',
+                                      //fillColor: ThemeColors.backGroundColor,
+                                      filled: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 40,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                        borderSide: BorderSide(
+                                          //color: ThemeColors.whiteColor,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -74,14 +146,16 @@ class GroupFloderPage extends StatelessWidget {
                                   child: const Text('キャンセル'),
                                   onPressed: () {
                                     Navigator.pop(context);
+                                    model.controllerClear();
                                   },
                                 ),
                                 TextButton(
                                   child: Text('OK'),
                                   onPressed: () async{
-                                    await model.addFolder();
-                                    await model.getFolder(group);
+                                    await model.folderUpdate(folder);
+                                    await model.fetchFolder(group);
                                     Navigator.pop(context);
+                                    model.controllerClear();
                                   },
                                 ),
                               ],
@@ -121,27 +195,37 @@ class GroupFloderPage extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextField(
-                                decoration: const InputDecoration(
-                                  hintText: " Folder名を記載",
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 20,
+                                controller: model.folderNameController,
+                                //textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: 'Folder名を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      //color: ThemeColors.whiteColor,
+                                    ),
                                   ),
                                 ),
-                                onChanged: (text) {
-                                  model.folderName = text;
-                                },
                               ),
                               Padding(padding: EdgeInsets.all(10.0)),
                               TextField(
-                                onChanged: (text) {
-                                  model.folderDescription = text;
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: " 説明を記載",
-                                  border: OutlineInputBorder(),
+                                controller: model.folderDescController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: '説明を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical: 50,
+                                    vertical: 40,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      //color: ThemeColors.whiteColor,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -152,14 +236,16 @@ class GroupFloderPage extends StatelessWidget {
                               child: const Text('キャンセル'),
                               onPressed: () {
                                 Navigator.pop(context);
+                                model.controllerClear();
                               },
                             ),
                             TextButton(
                               child: Text('OK'),
                               onPressed: () async{
                                await model.addFolder();
-                                await model.getFolder(group);
+                                await model.fetchFolder(group);
                                 Navigator.pop(context);
+                                model.controllerClear();
                               },
                             ),
                           ],
@@ -173,8 +259,16 @@ class GroupFloderPage extends StatelessWidget {
             ),
           ),
           body: Center(
-            child: ListView(
-              children: widgets,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await model.fetchFolder(group);
+              },
+              child: Container(
+                color: ThemeColors.backGroundColor,
+                child: ListView(
+                  children: widgets,
+                ),
+              ),
             ),
           ),
         );

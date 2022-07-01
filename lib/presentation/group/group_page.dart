@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_blockList_page.dart';
@@ -5,11 +6,15 @@ import 'package:grats_app/presentation/group/group_page_alerttabview.dart';
 import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_model.dart';
+import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
 import '../../domain/group.dart';
 
 class GroupPage extends StatelessWidget {
-  const GroupPage({
+  bool? isLogin;
+
+  GroupPage({
+    this.isLogin,
     Key? key,
   }) : super(key: key);
 
@@ -21,10 +26,10 @@ class GroupPage extends StatelessWidget {
         builder: (context, model, child) {
           final List<Group> groups = model.groups;
           final currentUID = model.currentUID;
-          if (model.isLoading){
-           return Container(
-             width: 100,
-             height: 100,
+          if (model.isLoading) {
+            return Container(
+              width: 100,
+              height: 100,
               color: Colors.white,
               child: Center(
                 child: CircularProgressIndicator(),
@@ -51,7 +56,8 @@ class GroupPage extends StatelessWidget {
                         context: context,
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                          return GroupPageModal(group: group,currentUID: currentUID!);
+                          return GroupPageModal(
+                              group: group, currentUID: currentUID!);
                         }).whenComplete(() => model.fetchAllGroups());
                   },
                   leading: group.imgURL != ''
@@ -79,23 +85,27 @@ class GroupPage extends StatelessWidget {
               preferredSize: Size.fromHeight(kToolbarHeight),
               child: AppBar(
                 centerTitle: true,
-                leading: IconButton(
-                    icon: Icon(Icons.list_alt,color: ThemeColors.whiteColor),
-                    onPressed: () async{
-                     await Navigator.push(
-                          context, SlideRightRoute(page: GroupBloclListPage()));
-                     model.fetchAllGroups();
-                    }),
+                leading: (isLogin!)
+                    ? IconButton(
+                        icon:
+                            Icon(Icons.list_alt, color: ThemeColors.whiteColor),
+                        onPressed: () async {
+                          await Navigator.push(context,
+                              SlideRightRoute(page: GroupBloclListPage()));
+                          model.fetchAllGroups();
+                        })
+                    : nil,
                 title: Text('Group'),
                 actions: [
-                  IconButton(
-                    icon: Icon(Icons.add,color: ThemeColors.whiteColor),
-                    onPressed: () async {
-                     await showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertTabView();
-                          /*return AlertDialog(
+                  (isLogin!)
+                      ? IconButton(
+                          icon: Icon(Icons.add, color: ThemeColors.whiteColor),
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertTabView();
+                                /*return AlertDialog(
                             //insetPadding: EdgeInsets.zero,
                             content: Container(
                               width: 550,
@@ -147,11 +157,12 @@ class GroupPage extends StatelessWidget {
                               ),
                             ],
                           );*/
-                        },
-                      );
-                      model.fetchAllGroups();
-                    },
-                  )
+                              },
+                            );
+                            model.fetchAllGroups();
+                          },
+                        )
+                      : SizedBox()
                 ],
                 elevation: 0.0,
               ),
@@ -160,14 +171,18 @@ class GroupPage extends StatelessWidget {
               color: ThemeColors.backGroundColor,
               child: Center(
                 child: RefreshIndicator(
-                  onRefresh: () async {
-                    print('Loading New Data');
-                    await model.fetchAllGroups();
-                  },
-                  child: ListView(
-                    children: widgets,
-                  ),
-                ),
+                    onRefresh: () async {
+                      print('Loading New Data');
+                      await model.fetchAllGroups();
+                    },
+                    child: (isLogin!)
+                        ? ListView(
+                            children: widgets,
+                          )
+                        : Text(
+                            'ゲストアカウントのため使用できません',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
               ),
             ),
           );
@@ -185,7 +200,8 @@ class GroupPageModal extends StatelessWidget {
   Group group;
   String currentUID;
 
-  GroupPageModal({required this.group,required this.currentUID, Key? key}) : super(key: key);
+  GroupPageModal({required this.group, required this.currentUID, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +235,7 @@ class GroupPageModal extends StatelessWidget {
                             primary: Colors.grey,
                           ),
                           onPressed: () {
-                            model.blockButtonEnable(group,currentUID);
+                            model.blockButtonEnable(group, currentUID);
                             MySnackBar.show(
                                 context: context, message: 'blockしました');
                           },
@@ -233,7 +249,7 @@ class GroupPageModal extends StatelessWidget {
                             primary: Colors.white,
                           ),
                           onPressed: () {
-                            model.blockButtonDisable(group,currentUID);
+                            model.blockButtonDisable(group, currentUID);
                             MySnackBar.show(
                                 context: context, message: 'block解除しました');
                           },
@@ -267,14 +283,11 @@ class GroupPageModal extends StatelessWidget {
                     return ClipOval(
                       child: Image.file(model.imageFile!),
                     );
-                  }
-                  else if (group.imgURL == '' || group.imgURL == null) {
+                  } else if (group.imgURL == '' || group.imgURL == null) {
                     return const CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
-                      child: Icon(Icons.add,
-                          size: 40,
-                          color: Colors.white),
+                      child: Icon(Icons.add, size: 40, color: Colors.white),
                     );
                   }
                   return CircleAvatar(
@@ -315,9 +328,8 @@ class GroupPageModal extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 18,
                         backgroundColor: Colors.grey,
-                        child:
-                            Text('${group.memberIDs?.length}',
-                                style: TextStyle(color: Colors.white)),
+                        child: Text('${group.memberIDs?.length}',
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -451,9 +463,9 @@ class GroupSettingModal extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-             await model.groupNameUpdate(group);
-             Navigator.of(context).pop();
-             Navigator.of(context).pop();
+              await model.groupNameUpdate(group);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
             },
             child: Text('グループ名を更新',
                 style:
@@ -463,7 +475,7 @@ class GroupSettingModal extends StatelessWidget {
             padding: const EdgeInsets.all(30.0),
           ),
           ListTile(
-            onTap: (){
+            onTap: () {
               model.shareGroupID(group);
             },
             title: Row(
@@ -471,9 +483,10 @@ class GroupSettingModal extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Icon(Icons.share,size: 30),
+                  child: Icon(Icons.share, size: 30),
                 ),
-                Text('Group-Codeを発行', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('Group-Codeを発行',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -488,8 +501,8 @@ class GroupSettingModal extends StatelessWidget {
             title: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text('グループを退会する',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red)),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             onTap: () {
               model.groupWithdraw(group);

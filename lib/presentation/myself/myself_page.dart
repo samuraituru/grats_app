@@ -40,10 +40,11 @@ class MyselfPage extends StatelessWidget {
                           children: [
                             Container(
                               width: screenWidth,
-                              height: screenHeight / 2,
+                              height: screenHeight / 2+ 20,
                               color: ThemeColors.cyanColor,
                             ),
                             Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   //crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,7 +54,7 @@ class MyselfPage extends StatelessWidget {
                                         ? GestureDetector(
                                             onTap: () async => Navigator.of(
                                                     context)
-                                                .pushNamed("/login"),
+                                                .pushReplacementNamed("/login"),
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
@@ -125,7 +126,8 @@ class MyselfPage extends StatelessWidget {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                  color: ThemeColors.cyanSubColor, //枠線の色
+                                                  color: ThemeColors
+                                                      .cyanSubColor, //枠線の色
                                                   width: 5, //枠線の太さ
                                                 ),
                                                 shape: BoxShape.circle,
@@ -170,7 +172,11 @@ class MyselfPage extends StatelessWidget {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.push(context, SlideLeftRoute(exitPage: this,enterPage: MyselfSetting()));
+                                        Navigator.push(
+                                            context,
+                                            SlideLeftRoute(
+                                                exitPage: this,
+                                                enterPage: MyselfSetting()));
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -192,77 +198,117 @@ class MyselfPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints.expand(
-                                      height: 45.0, width: 180.0),
-                                  child: TextField(
-                                    enabled: model.isLogin,
-                                    controller: model.userNameController,
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.person,
-                                          color: ThemeColors.whiteColor),
-                                      hintText: model.isLogin
-                                          ? model.myUser.userName ?? '名前未設定'
-                                          : 'ゲストアカウント',
-                                      hintStyle: TextStyle(
-                                          color: ThemeColors.whiteColor),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: ThemeColors.whiteColor),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: ThemeColors.whiteColor),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints.expand(
+                                            height: 50.0, width: 200.0),
+                                        child: TextFormField(
+                                          //textAlign: TextAlign.center,
+                                          enabled: model.isLogin,
+                                          controller: model.userNameController,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            prefixIcon: Icon(Icons.person,
+                                                color: ThemeColors.whiteColor),
+                                            hintText: model.isLogin
+                                                ? model.myUser.userName ?? '名前未設定'
+                                                : 'ゲストアカウント',
+                                            hintStyle: TextStyle(
+                                                color: ThemeColors.whiteColor),
+                                            enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: ThemeColors.whiteColor),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: ThemeColors.whiteColor),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints.expand(
-                                      height: 80.0, width: 280.0),
-                                  child: TextField(
-                                    enabled: model.isLogin,
-                                    controller: model.userTargetController,
-                                    keyboardType: TextInputType.multiline,
-                                    //キーボードを複数行対応にする
-                                    maxLines: null,
-                                    //TextFieldで複数行表示する
-                                    decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.comment,
-                                          color: ThemeColors.whiteColor),
-                                      //filled: true,
-                                      //fillColor: ThemeColors.whiteColor,
-                                      //contentPadding: EdgeInsets.all(20),
-                                      hintText: model.isLogin
-                                          ? model.myUser.userTarget ??
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints.expand(
+                                          height: 80.0, width: 200.0),
+                                      child: TextFormField(
+                                        enabled: model.isLogin,
+                                        controller: model.userTargetController,
+                                        keyboardType: TextInputType.multiline,
+                                        //キーボードを複数行対応にする
+                                        maxLines: 3,
+                                        //TextFieldで複数行表示する
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          prefixIcon: Icon(Icons.comment,
+                                              color: ThemeColors.whiteColor),
+                                          //filled: true,
+                                          //fillColor: ThemeColors.whiteColor,
+                                          //contentPadding: EdgeInsets.all(20),
+                                          hintText: model.isLogin
+                                              ? model.myUser.userTarget ??
                                               '      目標・ひとことコメント'
-                                          : '       ゲストアカウント',
-                                      hintStyle: TextStyle(
-                                          color: ThemeColors.whiteColor),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: ThemeColors.whiteColor),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: ThemeColors.whiteColor),
+                                              : '       ゲストアカウント',
+                                          hintStyle: TextStyle(
+                                              color: ThemeColors.whiteColor),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: ThemeColors.whiteColor),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: ThemeColors.whiteColor),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    (model.isLogin)
+                                        ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          model.startLoading();
+                                          // 追加の処理
+                                          try {
+                                            await model.userInfoUpdate();
+                                          } catch (e) {
+                                            final snackBar = SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content: Text(e.toString()),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          } finally {
+                                            model.endLoading();
+                                            await model.fetchMyUser();
+                                          }
+                                        },
+                                        child: Text('プロフィールを更新',
+                                            style: TextStyle(
+                                                color: ThemeColors.whiteColor)),
+                                      ),
+                                    )
+                                        : SizedBox(),
+                                  ],
                                 ),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                    !model.isLogin
-                                        ? null
-                                        : await model.userInfoUpdate();
-                                    await model.fetchMyUser();
-                                  },
-                                  child: Text('プロフィールを更新',
-                                      style: TextStyle(
-                                          color: ThemeColors.whiteColor)),
-                                ),
+
                               ],
                             ),
+                            Center(
+                                child: (model.isLoading)
+                                    ? SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: Container(
+                                    color: Colors.transparent,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                )
+                                    : SizedBox()),
                           ],
                         ),
                         ElevatedButton(

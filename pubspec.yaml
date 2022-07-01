@@ -37,6 +37,7 @@ dependencies:
   keyboard_actions: ^4.0.1
   firebase_dynamic_links: ^4.2.6
   share_plus: ^4.0.10
+  nil: ^1.1.1
 
 dev_dependencies:
   flutter_test:

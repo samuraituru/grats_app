@@ -75,6 +75,7 @@ class MyselfModel extends ChangeNotifier {
     print(myUser);
     endLoading();
   }
+String userName = '';
 
   Future<void> userInfoUpdate() async {
     if (userNameController.text == null || userNameController.text == "") {

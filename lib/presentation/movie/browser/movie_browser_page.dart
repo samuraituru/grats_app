@@ -289,8 +289,6 @@ class MovieBrowserPage extends StatelessWidget {
                 },
               ).whenComplete(() {
                 print('showModalBottomSheetが閉じた！');
-                //model.bodyListAdd();
-                //model.bodyListInsert();
               });
             },
           ),
