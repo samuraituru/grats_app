@@ -1,4 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
@@ -9,13 +10,14 @@ import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
+  HomePage({
+    Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final double deviceHeight = MediaQuery.of(context).size.height;
-    final double deviceWidth = MediaQuery.of(context).size.width;
 
     return ChangeNotifierProvider<HomeModel>(
-      create: (_) => HomeModel(),
+      create: (_) => HomeModel()..listenAuth(),
       child: Consumer<HomeModel>(builder: (context, model, child) {
         final tabItems = [
           /*TabItem(
@@ -67,7 +69,7 @@ class HomePage extends StatelessWidget {
         _tabPage(
           currentIndex,
           0,
-          GroupPage(),
+          GroupPage(isLogin:model.isLogin),
         ),
         _tabPage(
           currentIndex,

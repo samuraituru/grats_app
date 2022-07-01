@@ -135,10 +135,7 @@ class SignUpPage extends StatelessWidget {
                         // 追加の処理
                         try {
                           await model.signUp();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                          Navigator.of(context).pushReplacementNamed("/home");
                         } catch (e) {
                           final snackBar = SnackBar(
                             backgroundColor: Colors.red,

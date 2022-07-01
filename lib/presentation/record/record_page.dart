@@ -16,17 +16,17 @@ class RecordPage extends StatelessWidget {
             .getAll()
             .map(
               (folder) => ListTile(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  SlideLeftRoute(
-                      exitPage: this,
-                      enterPage: RecordItemPage(folderID: folder.id)));
-            },
-            leading: Text(folder.floderName ?? '名前無し'),
-            title: Text('${folder.floderDescription}'),
-          ),
-        )
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      SlideLeftRoute(
+                          exitPage: this,
+                          enterPage: RecordItemPage(folderID: folder.id)));
+                },
+                leading: Text(folder.floderName ?? '名前無し'),
+                title: Text('${folder.floderDescription}'),
+              ),
+            )
             .toList();
 
         return Scaffold(
@@ -37,7 +37,7 @@ class RecordPage extends StatelessWidget {
               title: Text('Record'),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add, color: ThemeColors.whiteColor),
                   onPressed: () {
                     showDialog(
                       context: context,
