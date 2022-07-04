@@ -8,15 +8,15 @@ class SignUpModel extends ChangeNotifier {
   final passwordController = TextEditingController();
   String? email;
   String? password;
-  Map<String,dynamic>? groupIDs;
+  List<dynamic> groupIDs =[];
 
   bool isLoading = false;
 
- void changeObscure(){
-   // アイコンがタップされたら現在と反対の状態をセットする
-   isObscure = !isObscure;
-   notifyListeners();
- }
+  void changeObscure() {
+    // アイコンがタップされたら現在と反対の状態をセットする
+    isObscure = !isObscure;
+    notifyListeners();
+  }
 
   void startLoading() {
     isLoading = true;
@@ -38,7 +38,7 @@ class SignUpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future signUp() async {
+  Future<void> signUp() async {
     this.email = emailController.text;
     this.password = passwordController.text;
 
@@ -52,22 +52,25 @@ class SignUpModel extends ChangeNotifier {
     // firebase authでユーザー作成
     final userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email!, password: password!);
-    final user = userCredential.user;
+    final user = await userCredential.user;
 
     if (user != null) {
-      final uID = user.uid;
+      final myUID = user.uid;
 
       // Firestoreに追加
 
-      final doc = FirebaseFirestore.instance.collection('Users').doc(uID);
+      final doc =  await FirebaseFirestore.instance.collection('Users').doc(myUID);
       await doc.set({
-        'uID': uID,
+        'UID': myUID,
         'email': email,
         'imgURL': '',
-        'groupIDs': groupIDs,
-      'userName': '',
-      'target': '',
+        'groupIDs': addGroupIDs(),
+        'userName': '',
+        'userTarget': '',
       });
     }
+  }
+  List<dynamic> addGroupIDs() {
+    return groupIDs;
   }
 }

@@ -41,7 +41,7 @@ class GroupFolderModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> folderUpdate(Folder folder) async {
+  Future<void> updateFolder(Folder folder) async {
     if (folderNameController.text != null ||
         folderDescController.text != null) {
       final foldersDoc = await FirebaseFirestore.instance

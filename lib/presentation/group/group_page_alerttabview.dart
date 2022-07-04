@@ -169,9 +169,21 @@ class AlertTabView extends StatelessWidget {
                       child: const Text('OK'),
                       onPressed: () async {
                         setState(() async {
-                          await model.modalfinishActions();
-                          Navigator.pop(context);
-                          model.controllerReset();
+                          try {
+                            await model.modalFinishActions();
+                          } catch (e) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text(e.toString()),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } finally {
+                            model.endLoading();
+                            Navigator.pop(context);
+                            model.controllerReset();
+                          }
+
                         });
                       },
                     );

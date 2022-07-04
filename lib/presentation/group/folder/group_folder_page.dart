@@ -28,7 +28,8 @@ class GroupFloderPage extends StatelessWidget {
         final List<Widget> widgets = folders
             .map(
               (folder) => Padding(
-                padding: const EdgeInsets.only(right: 20,left: 20,bottom: 8,top: 8),
+                padding: const EdgeInsets.only(
+                    right: 20, left: 20, bottom: 8, top: 8),
                 child: Card(
                   elevation: 3,
                   child: ListTile(
@@ -36,63 +37,39 @@ class GroupFloderPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => GroupItemPage(folder: folder)),
+                            builder: (context) =>
+                                GroupItemPage(folder: folder)),
                       );
                     },
-                    onLongPress: (){
-                      showDialog(
+                    onLongPress: () async {
+                      await showDialog(
                         context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('Folder名を変更'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextField(
-                                  controller: model.folderNameController,
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.folder_open),
-                                    labelText: 'Folder名を記載',
-                                    //fillColor: ThemeColors.backGroundColor,
-                                    filled: true,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        //color: ThemeColors.whiteColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                        builder: (BuildContext context) => AlertDialog(
+                          content: Text('フォルダを削除しますか？'),
+                          actions: <Widget>[
+                            SimpleDialogOption(
+                              child: Text('Yes'),
+                              onPressed: () {
+                                model.foldersDocDelete(folder);
+                                Navigator.pop(context);
+                              },
                             ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('キャンセル'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  model.controllerClear();
-                                },
-                              ),
-                              TextButton(
-                                child: Text('OK'),
-                                onPressed: () async{
-                                  await model.folderUpdate(folder);
-                                  await model.fetchFolder(group);
-                                  Navigator.pop(context);
-                                  model.controllerClear();
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                            SimpleDialogOption(
+                              child: Text('No'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
                       );
-                      model.foldersDocDelete(folder);
+                      model.fetchFolder(group);
                     },
                     leading: CircleAvatar(
                       child: Icon(Icons.folder_open),
                     ),
                     title: Text('${folder.folderName}'),
-                      tileColor:Colors.yellow[100],
+                    tileColor: Colors.yellow[100],
                     subtitle: Text('${folder.folderDescription}'),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),
@@ -115,8 +92,8 @@ class GroupFloderPage extends StatelessWidget {
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
-                                          //color: ThemeColors.whiteColor,
-                                        ),
+                                            //color: ThemeColors.whiteColor,
+                                            ),
                                       ),
                                     ),
                                   ),
@@ -126,7 +103,6 @@ class GroupFloderPage extends StatelessWidget {
                                     decoration: InputDecoration(
                                       prefixIcon: Icon(Icons.folder_open),
                                       labelText: '説明を記載',
-                                      //fillColor: ThemeColors.backGroundColor,
                                       filled: true,
                                       contentPadding: EdgeInsets.symmetric(
                                         vertical: 40,
@@ -134,8 +110,8 @@ class GroupFloderPage extends StatelessWidget {
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
-                                          //color: ThemeColors.whiteColor,
-                                        ),
+                                            //color: ThemeColors.whiteColor,
+                                            ),
                                       ),
                                     ),
                                   ),
@@ -151,8 +127,8 @@ class GroupFloderPage extends StatelessWidget {
                                 ),
                                 TextButton(
                                   child: Text('OK'),
-                                  onPressed: () async{
-                                    await model.folderUpdate(folder);
+                                  onPressed: () async {
+                                    await model.updateFolder(folder);
                                     await model.fetchFolder(group);
                                     Navigator.pop(context);
                                     model.controllerClear();
@@ -176,7 +152,7 @@ class GroupFloderPage extends StatelessWidget {
             child: AppBar(
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios,color: ThemeColors.whiteColor),
+                icon: Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -184,7 +160,7 @@ class GroupFloderPage extends StatelessWidget {
               title: Text('${group.groupName}'),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.add,color: ThemeColors.whiteColor),
+                  icon: Icon(Icons.add, color: ThemeColors.whiteColor),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -205,8 +181,8 @@ class GroupFloderPage extends StatelessWidget {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide(
-                                      //color: ThemeColors.whiteColor,
-                                    ),
+                                        //color: ThemeColors.whiteColor,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -224,8 +200,8 @@ class GroupFloderPage extends StatelessWidget {
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide(
-                                      //color: ThemeColors.whiteColor,
-                                    ),
+                                        //color: ThemeColors.whiteColor,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -241,11 +217,21 @@ class GroupFloderPage extends StatelessWidget {
                             ),
                             TextButton(
                               child: Text('OK'),
-                              onPressed: () async{
-                               await model.addFolder();
-                                await model.fetchFolder(group);
-                                Navigator.pop(context);
-                                model.controllerClear();
+                              onPressed: () async {
+                                try {
+                                  await model.addFolder();
+                                } catch (e) {
+                                  final snackBar = SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(e.toString()),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } finally {
+                                  await model.fetchFolder(group);
+                                  Navigator.pop(context);
+                                  model.controllerClear();
+                                }
                               },
                             ),
                           ],

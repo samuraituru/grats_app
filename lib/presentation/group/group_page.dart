@@ -263,7 +263,6 @@ class GroupPageModal extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () async {
-                await model.pickImage();
                 await model.imageUpData(group);
                 await model.fetchAllGroups();
               },
@@ -448,7 +447,7 @@ class GroupSettingModal extends StatelessWidget {
       child: Consumer<GroupModel>(builder: (context, model, child) {
         return Column(children: [
           Padding(
-            padding: const EdgeInsets.all(100.0),
+            padding: const EdgeInsets.all(80.0),
           ),
           Text('グループ名'),
           Padding(
@@ -461,13 +460,40 @@ class GroupSettingModal extends StatelessWidget {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+          ),
+          Text('説明'),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: TextField(
+              controller: model.groupReDescController,
+              decoration: InputDecoration(
+                hintText:
+                group.groupDescription != null ? '${group.groupDescription}' : 'Unknown',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+          ),
           TextButton(
             onPressed: () async {
-              await model.groupNameUpdate(group);
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              try {
+                await model.groupNameUpdate(group);
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              } catch (e) {
+                print(e.toString());
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text(e.toString()),
+                );
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(snackBar);
+              }
             },
-            child: Text('グループ名を更新',
+            child: Text('グループ情報を更新',
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
@@ -500,14 +526,91 @@ class GroupSettingModal extends StatelessWidget {
           ListTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('グループを退会する',
+              child: Text('グループから退会する',
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.red)),
             ),
             onTap: () {
-              model.groupWithdraw(group);
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  //title: new Text('AlertDialog'),
+                  content: Text('グループから退会しますか？'),
+                  actions: <Widget>[
+                    SimpleDialogOption(
+                      child: Text('Yes'),
+                      onPressed: () async {
+                        await model.groupWithdraw(group);
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    SimpleDialogOption(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('グループを削除する',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.red)),
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  //title: new Text('AlertDialog'),
+                  content: Text('グループを削除しますか？'),
+                  actions: <Widget>[
+                    SimpleDialogOption(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            //title: new Text('AlertDialog'),
+                            content: Text('一度削除したグループは元に戻せませんがよろしいですか？'),
+                            actions: <Widget>[
+                              SimpleDialogOption(
+                                child: Text('Yes'),
+                                onPressed: () async{
+                                  await model.deleteGroup(group);
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              SimpleDialogOption(
+                                child: Text('No'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    SimpleDialogOption(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ]);
