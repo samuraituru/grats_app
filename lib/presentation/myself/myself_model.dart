@@ -75,31 +75,54 @@ class MyselfModel extends ChangeNotifier {
     print(myUser);
     endLoading();
   }
-String userName = '';
+
+  String userName = '';
+
+  bool userNameValidate() {
+    //userNameがNullまたは""である場合にtrueを返す
+    if (userNameController.text == null || userNameController.text == "") {
+      return true;
+    }
+    //入力値がある場合は、falseを返す
+    return false;
+  }
+
+  bool userTargetValidate() {
+    //userTargetがNullまたは""である場合にtrueを返す
+    if (userTargetController.text == null || userTargetController.text == "") {
+      return true;
+    }
+    //入力値がある場合は、falseを返す
+    return false;
+  }
+
+  bool imageFileValidate() {
+    //imageFileがNullである場合にtrueを返す
+    if (imageFile == null){
+      return true;
+    }
+    //入力値がある場合は、falseを返す
+    return false;
+  }
 
   Future<void> userInfoUpdate() async {
-    if (userNameController.text == null || userNameController.text == "") {
-      throw 'プロフィール名が入力されていません';
+    //下記の３つの関数がtrueつまり入力値がない場合は更新しない
+    if (userNameValidate() && userTargetValidate() && imageFileValidate()) {
+      throw '更新する内容がありません';
     }
-
-    if (userTargetController.text == null ||
-        userTargetController.text.isEmpty) {
-      throw '目標が入力されていません';
-    }
-
-    // FireStorageへアップロード
+    //更新する内容が1つでもあれば下記を実行
+    // FireStorageへimgURLをアップロード
     String? imgURL;
     if (imageFile != null) {
-      final task = await FirebaseStorage.instance
-          .ref('Users/${uID}')
-          .putFile(imageFile!);
+      final task =
+          await FirebaseStorage.instance.ref('Users/$uID').putFile(imageFile!);
       imgURL = await task.ref.getDownloadURL();
     }
 
     // Firestoreに追加
     await FirebaseFirestore.instance.collection('Users').doc(uID).update({
-      'userName': userNameController.text,
-      'userTarget': userTargetController.text,
+      'userName': checkUserName(myUser),
+      'userTarget': checkUserTarget(myUser),
       'imgURL': imgURL,
     });
     userNameController.clear();
@@ -107,19 +130,18 @@ String userName = '';
     notifyListeners();
   }
 
-  Future<void> updateMyselfInfo(MyUser user) async {
-    if (user.userName == null || user.userName == "") {
-      throw 'プロフィール名が入力されていません';
+  String checkUserName(MyUser myUser) {
+    if (userNameController.text == "") {
+      return myUser.userName!;
     }
+   return userNameController.text;
+  }
 
-    if (user.userTarget == null || user.userTarget!.isEmpty) {
-      throw '目標が入力されていません';
+  String checkUserTarget(MyUser myUser) {
+    if (userTargetController.text == "") {
+      return myUser.userTarget!;
     }
-    await FirebaseFirestore.instance.collection('Users').doc(uID).update({
-      'userName': user.userName,
-      'userTarget': user.userTarget,
-    });
-    notifyListeners();
+    return userTargetController.text;
   }
 
   Future<void> signOut(context) async {
@@ -139,6 +161,11 @@ String userName = '';
     notifyListeners();
   }
 
+  void deleteImageFile() {
+    imageFile = null;
+    notifyListeners();
+  }
+
   String id = "";
   String groupID = 'test';
 
@@ -147,8 +174,9 @@ String userName = '';
         "https://grats.page.link/?link=https%3A%2F%2Fgrats.page.link%2Fpost?id=${id}&apn=com.example.grats_app";
     Share.share(url);
   }
+
   void sharegroupID() {
-      Share.share(groupID);
+    Share.share(groupID);
   }
 
   Future<void> initDeepLinks() async {

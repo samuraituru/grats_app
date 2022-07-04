@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
@@ -40,7 +41,7 @@ class MyselfPage extends StatelessWidget {
                           children: [
                             Container(
                               width: screenWidth,
-                              height: screenHeight / 2+ 20,
+                              height: screenHeight / 2 + 20,
                               color: ThemeColors.cyanColor,
                             ),
                             Column(
@@ -97,6 +98,7 @@ class MyselfPage extends StatelessWidget {
                                         height: 120,
                                         width: 120,
                                         child: (() {
+                                          //ログインをしていない場合
                                           if (!model.isLogin) {
                                             return Container(
                                               decoration: BoxDecoration(
@@ -119,6 +121,7 @@ class MyselfPage extends StatelessWidget {
                                               ),
                                             );
                                           }
+                                          //ログインしている場合
                                           return GestureDetector(
                                             onTap: () async {
                                               await model.pickImage();
@@ -127,7 +130,7 @@ class MyselfPage extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                 border: Border.all(
                                                   color: ThemeColors
-                                                      .cyanSubColor, //枠線の色
+                                                      .whiteColor, //枠線の色
                                                   width: 5, //枠線の太さ
                                                 ),
                                                 shape: BoxShape.circle,
@@ -136,18 +139,62 @@ class MyselfPage extends StatelessWidget {
                                               height: 100,
                                               width: 100,
                                               child: (() {
+                                                //imageFileにデータが存在する場合
                                                 if (model.imageFile != null) {
-                                                  return ClipOval(
-                                                    child: Image.file(
-                                                        model.imageFile!),
+                                                  return Stack(
+                                                    children: [
+                                                      //imageを表示する
+                                                      ClipOval(
+                                                        child: Image.file(
+                                                            model.imageFile!),
+                                                      ),
+                                                      //ゴミ箱を表示する
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          model
+                                                              .deleteImageFile();
+                                                        },
+                                                        child: SizedBox(
+                                                          height: 40,
+                                                          width: 40,
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              border:
+                                                                  Border.all(
+                                                                color: Colors
+                                                                    .white,
+                                                                //枠線の色
+                                                                width:
+                                                                    3, //枠線の太さ
+                                                              ),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              //color: Colors.blue,
+                                                            ),
+                                                            child: CircleAvatar(
+                                                              backgroundColor:
+                                                                  ThemeColors
+                                                                      .cyanSubColor,
+                                                              child: Icon(
+                                                                  Icons
+                                                                      .delete_forever,
+                                                                  //size: 80,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   );
                                                 }
-                                                //初期値は''のため下記を実行
+                                                //FireStoreの値がNullの場合つまり初期値の場合
                                                 else if (model.myUser.imgURL ==
                                                         '' ||
                                                     model.myUser.imgURL ==
                                                         null) {
-                                                  return const CircleAvatar(
+                                                  return CircleAvatar(
                                                     radius: 30,
                                                     backgroundColor: ThemeColors
                                                         .cyanSubColor,
@@ -213,18 +260,26 @@ class MyselfPage extends StatelessWidget {
                                             border: InputBorder.none,
                                             prefixIcon: Icon(Icons.person,
                                                 color: ThemeColors.whiteColor),
-                                            hintText: model.isLogin
-                                                ? model.myUser.userName ?? '名前未設定'
-                                                : 'ゲストアカウント',
+                                            hintText: (() {
+                                              if (!model.isLogin) {
+                                                return 'ゲストアカウント';
+                                              } else if (model.myUser.userName ==
+                                                  "") {
+                                                return '名前未設定';
+                                              }
+                                              return model.myUser.userName;
+                                            })(),
                                             hintStyle: TextStyle(
                                                 color: ThemeColors.whiteColor),
                                             enabledBorder: UnderlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: ThemeColors.whiteColor),
+                                                  color:
+                                                      ThemeColors.whiteColor),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: ThemeColors.whiteColor),
+                                                  color:
+                                                      ThemeColors.whiteColor),
                                             ),
                                           ),
                                         ),
@@ -247,10 +302,15 @@ class MyselfPage extends StatelessWidget {
                                           //filled: true,
                                           //fillColor: ThemeColors.whiteColor,
                                           //contentPadding: EdgeInsets.all(20),
-                                          hintText: model.isLogin
-                                              ? model.myUser.userTarget ??
-                                              '      目標・ひとことコメント'
-                                              : '       ゲストアカウント',
+                                          hintText: (() {
+                                            if (!model.isLogin) {
+                                             return 'ゲストアカウント';
+                                            } else if (model.myUser.userTarget ==
+                                                "") {
+                                             return '目標\nひとことコメント';
+                                            }
+                                           return model.myUser.userTarget;
+                                          })(),
                                           hintStyle: TextStyle(
                                               color: ThemeColors.whiteColor),
                                           enabledBorder: UnderlineInputBorder(
@@ -266,48 +326,48 @@ class MyselfPage extends StatelessWidget {
                                     ),
                                     (model.isLogin)
                                         ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ElevatedButton(
-                                        onPressed: () async {
-                                          model.startLoading();
-                                          // 追加の処理
-                                          try {
-                                            await model.userInfoUpdate();
-                                          } catch (e) {
-                                            final snackBar = SnackBar(
-                                              backgroundColor: Colors.red,
-                                              content: Text(e.toString()),
-                                            );
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackBar);
-                                          } finally {
-                                            model.endLoading();
-                                            await model.fetchMyUser();
-                                          }
-                                        },
-                                        child: Text('プロフィールを更新',
-                                            style: TextStyle(
-                                                color: ThemeColors.whiteColor)),
-                                      ),
-                                    )
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ElevatedButton(
+                                              onPressed: () async {
+                                                model.startLoading();
+                                                // 追加の処理
+                                                try {
+                                                  await model.userInfoUpdate();
+                                                } catch (e) {
+                                                  final snackBar = SnackBar(
+                                                    backgroundColor: Colors.red,
+                                                    content: Text(e.toString()),
+                                                  );
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(snackBar);
+                                                } finally {
+                                                  model.endLoading();
+                                                  await model.fetchMyUser();
+                                                }
+                                              },
+                                              child: Text('プロフィールを更新',
+                                                  style: TextStyle(
+                                                      color: ThemeColors
+                                                          .whiteColor)),
+                                            ),
+                                          )
                                         : SizedBox(),
                                   ],
                                 ),
-
                               ],
                             ),
                             Center(
                                 child: (model.isLoading)
                                     ? SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: Container(
-                                    color: Colors.transparent,
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                )
+                                        height: 100,
+                                        width: 100,
+                                        child: Container(
+                                          color: Colors.transparent,
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        ),
+                                      )
                                     : SizedBox()),
                           ],
                         ),

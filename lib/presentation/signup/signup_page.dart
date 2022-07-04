@@ -137,6 +137,7 @@ class SignUpPage extends StatelessWidget {
                           await model.signUp();
                           Navigator.of(context).pushReplacementNamed("/home");
                         } catch (e) {
+                          print(e.toString());
                           final snackBar = SnackBar(
                             backgroundColor: Colors.red,
                             content: Text(e.toString()),

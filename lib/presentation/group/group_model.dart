@@ -14,6 +14,7 @@ class GroupModel extends ChangeNotifier {
   TextEditingController groupDescController = TextEditingController();
   TextEditingController groupCordController = TextEditingController();
   TextEditingController groupRenameController = TextEditingController();
+  TextEditingController groupReDescController = TextEditingController();
 
   void controllerReset() {
     groupNameController.clear();
@@ -83,9 +84,8 @@ class GroupModel extends ChangeNotifier {
 
   List<String> gIDList = [];
 
-  List<String> memberIDs = [];
   Map<String, dynamic> memberIDsMap = {};
-  List<dynamic> memberIDsList = [];
+  List<dynamic> memberIDs = [];
   Map<String, dynamic> isBlocks = {};
 
   String groupID = '';
@@ -109,7 +109,7 @@ class GroupModel extends ChangeNotifier {
         .collection('Groups')
         .where("memberIDs", arrayContains: currentUID)
         .get();
-
+    print(joinGroupsDoc);
     if (joinGroupsDoc != null) {
       final List<Group> joins =
           joinGroupsDoc.docs.map((DocumentSnapshot document) {
@@ -176,15 +176,11 @@ class GroupModel extends ChangeNotifier {
     this.currentUID = currentuser?.uid.toString();
     print(currentUID);
 
-    if (groupNameController.text == null || groupNameController.text == "") {
-      throw 'グループ名が入力されていません';
-    }
-    if (groupDescController.text == null || groupDescController.text.isEmpty) {
-      throw '説明が入力されていません';
-    }
-
     //GroupのDocumentReferenceを取得
-    final groupsDoc = FirebaseFirestore.instance.collection('Groups').doc();
+    //DocのIDは自動採番される
+    final groupsDoc =
+        await FirebaseFirestore.instance.collection('Groups').doc();
+    print('グループドキュメントは${groupsDoc}');
 
     // FireStorageへアップロード
     String? imgURL;
@@ -219,8 +215,8 @@ class GroupModel extends ChangeNotifier {
   }
 
   List<dynamic> listAdd(String currentUID) {
-    memberIDsList.add(currentUID);
-    return memberIDsList;
+    memberIDs.add(currentUID);
+    return memberIDs;
   }
 
   Map<String, dynamic> mapAdd(String currentUID) {
@@ -236,12 +232,23 @@ class GroupModel extends ChangeNotifier {
       //格納されたImageのPathを取得
       imageFile = File(pickedFile.path);
     }
+
+
     notifyListeners();
   }
 
   Future<void> imageUpData(Group group) async {
+
+    //GalleryからImageを取得
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      //格納されたImageのPathを取得
+      imageFile = File(pickedFile.path);
+    }
+
     final groupsDoc =
-        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
+        await FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     String? imgURL;
     if (imageFile != null) {
       final task = await FirebaseStorage.instance
@@ -257,7 +264,6 @@ class GroupModel extends ChangeNotifier {
         'imgURL': imgURL ?? '',
       },
     );
-    notifyListeners();
   }
 
   void shareGroupID(Group group) {
@@ -265,7 +271,7 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> modalfinishActions() async {
+  Future<void> modalFinishActions() async {
     if (groupNameController.text != null && groupNameController.text != '') {
       await addGroup();
     } else if (groupCordController.text != null) {
@@ -341,6 +347,10 @@ class GroupModel extends ChangeNotifier {
         groupRenameController.text == "") {
       throw 'グループ名が入力されていません';
     }
+    if (groupReDescController.text == null ||
+        groupReDescController.text == "") {
+      throw '説明が入力されていません';
+    }
 
     final groupsDoc = await FirebaseFirestore.instance
         .collection('Groups')
@@ -348,6 +358,7 @@ class GroupModel extends ChangeNotifier {
     await groupsDoc.update(
       {
         'groupName': groupRenameController.text,
+        'groupDescription': groupReDescController.text,
       },
     );
     notifyListeners();
@@ -373,9 +384,17 @@ class GroupModel extends ChangeNotifier {
     group.memberIDs?.remove(currentUID);
     return group.memberIDs;
   }
+
   Map<String, dynamic> removeIsBlocks(String currentUID) {
     //指定したキーを値ごと削除
     isBlocks.remove(currentUID);
     return isBlocks;
+  }
+
+  Future<void> deleteGroup(Group group) async{
+    final groupsDoc = await FirebaseFirestore.instance
+        .collection('Groups')
+        .doc(group.groupID);
+    await groupsDoc.delete();
   }
 }

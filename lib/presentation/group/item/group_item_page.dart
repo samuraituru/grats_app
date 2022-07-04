@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:grats_app/domain/folder.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/item/group_item_model.dart';
 import 'package:provider/provider.dart';
 
@@ -12,19 +13,28 @@ class GroupItemPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<GroupItemModel>(
-      create: (_) => GroupItemModel(null)..getItem(folder),
+      create: (_) => GroupItemModel()..getItem(folder),
       child: Consumer<GroupItemModel>(
         builder: (context, model, child) {
           if (model.items == null) {
-            return const SizedBox(width: 100,height: 100,child: Center(child: CircularProgressIndicator()));
+            return const SizedBox(
+                width: 100,
+                height: 100,
+                child: Center(child: CircularProgressIndicator()));
           }
           return Scaffold(
             appBar: AppBar(
               centerTitle: true,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
               title: Text('${folder.folderName}'),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add, color: ThemeColors.whiteColor),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -35,27 +45,37 @@ class GroupItemPage extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextField(
-                                decoration: const InputDecoration(
-                                  hintText: " アイテム名を記載",
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 20,
+                                controller: model.itemNameController,
+                                //textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: 'アイテム名を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        //color: ThemeColors.whiteColor,
+                                        ),
                                   ),
                                 ),
-                                onChanged: (text) {
-                                  model.itemName = text;
-                                },
                               ),
                               Padding(padding: EdgeInsets.all(10.0)),
                               TextField(
-                                onChanged: (text) {
-                                  model.itemDescription = text;
-                                },
-                                decoration: const InputDecoration(
-                                  hintText: " 説明を記載",
-                                  border: OutlineInputBorder(),
+                                controller: model.itemDescController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: '説明を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical: 50,
+                                    vertical: 40,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        //color: ThemeColors.whiteColor,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -63,17 +83,29 @@ class GroupItemPage extends StatelessWidget {
                           ),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('キャンセル'),
+                              child: const Text('キャンセル'),
                               onPressed: () {
                                 Navigator.pop(context);
+                                model.controllerClear();
                               },
                             ),
                             TextButton(
                               child: Text('OK'),
-                              onPressed: () {
-                                model.setItem();
-                                model.getItem(folder);
-                                Navigator.pop(context);
+                              onPressed: () async {
+                                try {
+                                  model.setItem();
+                                } catch (e) {
+                                  final snackBar = SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(e.toString()),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } finally {
+                                  await model.getItem(folder);
+                                  Navigator.pop(context);
+                                  model.controllerClear();
+                                }
                               },
                             ),
                           ],
