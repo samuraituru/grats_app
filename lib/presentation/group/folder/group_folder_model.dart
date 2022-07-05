@@ -9,7 +9,7 @@ class GroupFolderModel extends ChangeNotifier {
   TextEditingController folderDescController = TextEditingController();
 
   List<Folder>? folders;
-  Group? group;
+  //Group? group;
   String folderName = '';
   String folderDescription = '';
 
@@ -18,7 +18,7 @@ class GroupFolderModel extends ChangeNotifier {
     folderDescController.clear();
   }
 
-  Future<void> addFolder() async {
+  Future<void> addFolder(Group group) async {
     if (folderNameController.text == null || folderNameController.text == "") {
       throw 'フォルダ名が入力されていません';
     }
@@ -26,7 +26,7 @@ class GroupFolderModel extends ChangeNotifier {
         folderDescController.text.isEmpty) {
       throw '説明が入力されていません';
     }
-    final foldersDoc = FirebaseFirestore.instance.collection('Folders').doc();
+    final foldersDoc = await FirebaseFirestore.instance.collection('Folders').doc();
     //Folder-IDを取得
     String folderID = foldersDoc.id;
     // Firestoreに追加
@@ -35,7 +35,7 @@ class GroupFolderModel extends ChangeNotifier {
         'folderName': folderNameController.text,
         'folderDescription': folderDescController.text,
         'folderID': folderID,
-        'groupID': group?.groupID,
+        'groupID': group.groupID,
       },
     );
     notifyListeners();
