@@ -36,21 +36,29 @@ class GroupItemModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future setItem() async {
-    if (itemName == null || itemName == "") {
+  Future<void> setItem(Folder folder) async {
+    if (itemNameController.text == null || itemNameController.text == "") {
       throw 'アイテム名が入力されていません';
     }
+    if (itemDescController.text == null || itemDescController.text == "") {
+      throw '説明が入力されていません';
+    }
 
-    final itemsDoc = FirebaseFirestore.instance.collection('Items').doc();
+    final itemsDoc = await FirebaseFirestore.instance.collection('Items').doc();
 
     //Folder-IDを取得
     String itemID = itemsDoc.id;
 
     // Firestoreにrecordを追加
     await itemsDoc.set({
-      'itemName': itemName,
-      'itemDescription': itemDescription,
+      'itemName': itemNameController.text,
+      'itemDescription': itemDescController.text,
       'itemID': itemID,
+      'folderID': folder.folderID,
     });
   }
+  Future<void> itemDocDelete(Folder folder) async{
+    FirebaseFirestore.instance.collection('Items').doc(folder.folderID).delete();
+  }
+
 }

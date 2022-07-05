@@ -6,10 +6,10 @@ import 'package:grats_app/presentation/group/folder/group_folder_model.dart';
 import 'package:grats_app/presentation/group/item/group_item_page.dart';
 import 'package:provider/provider.dart';
 
-class GroupFloderPage extends StatelessWidget {
+class GroupFolderPage extends StatelessWidget {
   Group group;
 
-  GroupFloderPage({required this.group});
+  GroupFolderPage({required this.group});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,6 @@ class GroupFloderPage extends StatelessWidget {
       create: (_) => GroupFolderModel()..fetchFolder(group),
       child: Consumer<GroupFolderModel>(builder: (context, model, child) {
         final List<Folder>? folders = model.folders;
-        model.group = group;
 
         if (folders == null) {
           return const SizedBox(
@@ -157,7 +156,7 @@ class GroupFloderPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              title: Text('${group.groupName}'),
+              title: Text('Folder'),
               actions: [
                 IconButton(
                   icon: Icon(Icons.add, color: ThemeColors.whiteColor),
@@ -219,7 +218,7 @@ class GroupFloderPage extends StatelessWidget {
                               child: Text('OK'),
                               onPressed: () async {
                                 try {
-                                  await model.addFolder();
+                                  await model.addFolder(group);
                                 } catch (e) {
                                   final snackBar = SnackBar(
                                     backgroundColor: Colors.red,

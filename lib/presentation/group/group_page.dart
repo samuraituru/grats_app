@@ -339,7 +339,7 @@ class GroupPageModal extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                GroupFloderPage(group: group)));
+                                GroupFolderPage(group: group)));
                   },
                   style: TextButton.styleFrom(
                     primary: Colors.black,
