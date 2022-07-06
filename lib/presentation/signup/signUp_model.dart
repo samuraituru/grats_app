@@ -12,6 +12,12 @@ class SignUpModel extends ChangeNotifier {
 
   bool isLoading = false;
 
+  Map<int,String> errorCode = {
+    1:'[firebase_auth/invalid-email] The email address is badly formatted.',
+    2:'[firebase_auth/email-already-in-use] The email address is already in use by another account.',
+    3:'[firebase_auth/user-not-found] There is no user record corresponding to this identifier.',
+  };
+
   void changeObscure() {
     // アイコンがタップされたら現在と反対の状態をセットする
     isObscure = !isObscure;
