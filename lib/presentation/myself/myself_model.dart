@@ -11,8 +11,10 @@ import 'package:share_plus/share_plus.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController userTargetController = TextEditingController();
+  final userNameController = TextEditingController();
+  final userTargetController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   final imagePicker = ImagePicker();
   String imgURL = '';
@@ -23,6 +25,11 @@ class MyselfModel extends ChangeNotifier {
   DocumentSnapshot? userDocSnapshot;
   bool isLoading = false;
   bool isLogin = false;
+
+  void controllerClear() {
+    emailController.clear();
+    passwordController.clear();
+  }
 
   void switchLogin() {
     isLogin = true;
@@ -98,7 +105,7 @@ class MyselfModel extends ChangeNotifier {
 
   bool imageFileValidate() {
     //imageFileがNullである場合にtrueを返す
-    if (imageFile == null){
+    if (imageFile == null) {
       return true;
     }
     //入力値がある場合は、falseを返す
@@ -134,7 +141,7 @@ class MyselfModel extends ChangeNotifier {
     if (userNameController.text == "") {
       return myUser.userName!;
     }
-   return userNameController.text;
+    return userNameController.text;
   }
 
   String checkUserTarget(MyUser myUser) {
@@ -144,9 +151,29 @@ class MyselfModel extends ChangeNotifier {
     return userTargetController.text;
   }
 
-  Future<void> signOut(context) async {
+  Future<void> signOut() async {
     if (uID != null) {
       await FirebaseAuth.instance.signOut();
+    }
+  }
+
+  Future<void> deleteUser() async {
+
+    if (emailController.text == null) {
+      throw 'Emailが入力されていません';
+    }
+    if (passwordController.text == null || passwordController.text.isEmpty) {
+      throw 'Passwordが入力されていません';
+    }
+    if (uID != null) {
+      //await FirebaseAuth.instance.signOut();
+      AuthCredential credential = await EmailAuthProvider.credential(
+          email: emailController.text, password: passwordController.text);
+
+      await FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(credential);
+
+      await FirebaseAuth.instance.currentUser?.delete();
     }
   }
 

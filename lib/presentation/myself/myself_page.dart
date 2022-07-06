@@ -293,7 +293,7 @@ class MyselfPage extends StatelessWidget {
                                         controller: model.userTargetController,
                                         keyboardType: TextInputType.multiline,
                                         //キーボードを複数行対応にする
-                                        maxLines: 3,
+                                        //maxLines: 3,
                                         //TextFieldで複数行表示する
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
@@ -356,7 +356,7 @@ class MyselfPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Center(
+                            /*Center(
                                 child: (model.isLoading)
                                     ? SizedBox(
                                         height: 100,
@@ -368,7 +368,7 @@ class MyselfPage extends StatelessWidget {
                                           ),
                                         ),
                                       )
-                                    : SizedBox()),
+                                    : SizedBox()),*/
                           ],
                         ),
                         ElevatedButton(

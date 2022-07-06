@@ -139,13 +139,35 @@ class LoginPage extends StatelessWidget {
                         try {
                           await model.login();
                           Navigator.of(context).pushReplacementNamed("/home");
-                        } catch (e) {
-                          final snackBar = SnackBar(
-                            backgroundColor: Colors.red,
-                            content: Text(e.toString()),
-                          );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
+                        } catch (error) {
+                          print(error);
+                          if (error.toString() ==
+                              model.errorCode[1]) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text('フォーマットが適切ではありません\n${error.toString()}'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                          if (error.toString() ==
+                              model.errorCode[2]) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text('メールアドレスが既に登録済みです\n${error.toString()}'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                          if (error.toString() ==
+                              model.errorCode[3]) {
+                            final snackBar = SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text('登録されていないアドレスです\n${error.toString()}'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
                         } finally {
                           model.endLoading();
                         }

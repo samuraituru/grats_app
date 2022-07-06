@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:grats_app/domain/folder.dart';
 import 'package:grats_app/domain/item2.dart';
 import 'package:grats_app/main.dart';

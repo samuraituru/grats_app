@@ -8,6 +8,12 @@ class LoginModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  Map<int,String> errorCode = {
+    1:'[firebase_auth/invalid-email] The email address is badly formatted.',
+    2:'[firebase_auth/email-already-in-use] The email address is already in use by another account.',
+    3:'[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.',
+  };
+
   MyUser? user;
   String? email;
   String? password;
