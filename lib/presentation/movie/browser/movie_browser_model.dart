@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
 import 'package:grats_app/domain/item.dart';
 import 'package:grats_app/presentation/movie/browser/movewidget.dart';
 import 'package:grats_app/presentation/movie/browser/movingwidget.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class MovieBrowserModel extends ChangeNotifier {
   bool searchBoolean = false;
@@ -15,6 +19,9 @@ class MovieBrowserModel extends ChangeNotifier {
   ];
   final texteditingcontroller = TextEditingController();
   final scrollController = ScrollController();
+  WebViewController? webController;
+  final Completer<WebViewController> webViewController =
+      Completer<WebViewController>();
   final countItems = <Item>[];
   Item? countItem;
   MoveWidget? testCountItem;
@@ -23,6 +30,12 @@ class MovieBrowserModel extends ChangeNotifier {
   Cursor? cursor;
   MovingWidget? movingList;
   MoveWidget? testBody;
+
+  void initState() {
+    if (Platform.isAndroid) {
+      WebView.platform = SurfaceAndroidWebView();
+    }
+  }
 
   countItemDelete(int index) {
     countItems.removeAt(index);
@@ -34,17 +47,16 @@ class MovieBrowserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  initState() {
+  initState2() {
     this.movingList = WidgetCreate();
     this.cursor = Cursor(x: 30, y: 100);
   }
 
-  panUpdate(DragUpdateDetails details,Cursor cursor) {
+  panUpdate(DragUpdateDetails details, Cursor cursor) {
     cursor.x += details.delta.dx;
     cursor.y += details.delta.dy;
     notifyListeners();
   }
-
 
   List<int> searchIndexList = [];
   var position = Offset(10, 10);
@@ -130,16 +142,18 @@ class MovieBrowserModel extends ChangeNotifier {
   var controller = TextEditingController();
   var actionText = '';
   var action = <String>['例)反則数（長押しで削除）'];
+  String? newUrl;
 
   Widget searchTextField() {
     return TextField(
-      onChanged: (String s) {
-        tfTap();
+      onChanged: (String newUrl) {
+        this.newUrl = newUrl;
+        /*tfTap();
         for (int i = 0; i < _list.length; i++) {
           if (_list[i].contains(s)) {
             searchIndexList.add(i);
           }
-        }
+        }*/
       },
       cursorColor: Colors.white,
       style: TextStyle(
@@ -157,6 +171,11 @@ class MovieBrowserModel extends ChangeNotifier {
         ),
       ),
     );
+  }
+ void searchAction(){
+    if (newUrl != null){
+      webController?.loadUrl('https://www.google.com/search?q=${newUrl}');
+    }
   }
 
   Widget searchListView() {

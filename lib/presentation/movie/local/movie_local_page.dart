@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/movie/local/local_countItem_widget.dart';
 import 'package:grats_app/presentation/movie/local/movie_local_model.dart';
 import 'package:grats_app/presentation/movie/local/watch_widget.dart';
-import 'package:grats_app/presentation/movie/movie_page.dart';
-import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 
 class MovieLocalPage extends StatelessWidget {
@@ -31,6 +30,13 @@ class MovieLocalPage extends StatelessWidget {
   // 縦向きの場合
   Widget _buildHorizontal(BuildContext context) {
     return Consumer<MovieLocalModel>(builder: (context, model, child) {
+      List<Text> folder = model.folderBox
+          .getAll()
+          .map(
+            (box) => Text('${box.floderName}'),
+          )
+          .toList();
+
       return GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
         onTap: () => FocusScope.of(context).unfocus(),
@@ -48,7 +54,10 @@ class MovieLocalPage extends StatelessWidget {
                       Container(
                         alignment: Alignment.topLeft,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_back_ios),
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: ThemeColors.whiteColor,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -56,7 +65,10 @@ class MovieLocalPage extends StatelessWidget {
                       ),
                       Container(
                         child: IconButton(
-                          icon: Icon(Icons.addchart_outlined),
+                          icon: Icon(
+                            Icons.addchart_outlined,
+                            color: ThemeColors.whiteColor,
+                          ),
                           onPressed: () async {
                             showDialog(
                               context: context,
@@ -66,10 +78,27 @@ class MovieLocalPage extends StatelessWidget {
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      DropdownButton(
+                                        items: folder.map((map) {
+                                          return DropdownMenuItem(
+                                            child: map,
+                                            value: map,
+                                          );
+                                        }).toList(),
+
+                                        onChanged: (value) {
+                                          model.isSelectedItem =
+                                              value.toString();
+                                        },
+                                        //7
+                                        value: model.isSelectedItem,
+                                      ),
+                                      //Text('$isSelectedItem が選択されました。'),
                                       for (int i = 0;
                                           i < model.countItems.length;
                                           i++) ...{
-                                        Text('${model.countItems[i].title}: ${model.countItems[i].counter}'),
+                                        Text(
+                                            '${model.countItems[i].title}  :  ${model.countItems[i].counter}'),
                                         //Text('${model.countItems[i].counter}'),
                                       },
                                       //model.outPutText(),
@@ -85,9 +114,7 @@ class MovieLocalPage extends StatelessWidget {
                                     ),
                                     TextButton(
                                       child: Text('OK'),
-                                      onPressed: () {
-
-                                      },
+                                      onPressed: () {},
                                     ),
                                   ],
                                 );

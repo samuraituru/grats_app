@@ -77,6 +77,16 @@ class TestWidet7Model extends ChangeNotifier {
       notifyListeners();
     }
   }
+  void testCountItemCreate2(moveWidget) {
+    if (title != null) {
+      moveWidget?.cursor.title = title;
+      //this.moveWidget = moveWidget;
+      texteditingcontroller.clear();
+
+      testBodyList.add(moveWidget!);
+      notifyListeners();
+    }
+  }
 
   void countItemCreate() {
     if (title != null) {
@@ -92,5 +102,10 @@ class TestWidet7Model extends ChangeNotifier {
   MoveWidget testWidgetCreate() {
     final moveList = MoveWidget();
     return moveList;
+  }
+
+  void bodyListDelete(int index) {
+    testBodyList.removeAt(index);
+    notifyListeners();
   }
 }

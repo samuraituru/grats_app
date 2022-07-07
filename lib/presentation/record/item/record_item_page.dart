@@ -18,10 +18,10 @@ class RecordItemPage extends StatelessWidget {
         List<Widget> itemsWidget = model.items
             ?.map(
               (item) => ListTile(
-            leading: Text(item.itemName ?? '名前無し'),
-            title: Text(item.itemDescription ?? ''),
-          ),
-        )
+                leading: Text(item.itemName ?? '名前無し'),
+                title: Text(item.itemDescription ?? ''),
+              ),
+            )
             .toList() as List<Widget>;
         return Scaffold(
           appBar: PreferredSize(
@@ -44,7 +44,7 @@ class RecordItemPage extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) {
+                      builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Recordを追加'),
                           content: Column(

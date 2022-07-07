@@ -4,6 +4,7 @@ import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/slide_left_route.dart';
+import 'package:grats_app/presentation/testpage/test_widget7.dart';
 
 import 'package:provider/provider.dart';
 
@@ -373,7 +374,10 @@ class MyselfPage extends StatelessWidget {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).pushNamed("/record");
+                              Navigator.push(
+                                  context,
+                                  SlideLeftRoute(
+                                      exitPage: this, enterPage: TestMovieBrowserPage()));
                             },
                             child: Text('MyRecordへ')),
                         Card(
