@@ -17,35 +17,54 @@ class MoviePage extends StatelessWidget {
             centerTitle: true,
             title: Text('Movie'),
           ),
-          body: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(width: 1.0, color: Colors.grey))),
-                child: ListTile(
-                  leading: Icon(Icons.public_outlined),
-                  title: Text('browserで視聴'),
-                  onTap: () {
-                    Navigator.push(context,
-                        SlideLeftRoute(exitPage: this, enterPage: MovieBrowserPage()));
-                  }, // タップ
+          body: Container(
+            color: ThemeColors.backGroundColor,
+            child: Column(
+              children: [
+                Container(
+                  height: 80,
+                  /*decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(width: 1.0, color: Colors.grey))),*/
+                  child: Card(
+                    elevation: 3,
+                    child: Center(
+                      child: ListTile(
+                        //dense: true,
+                        leading: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [Icon(Icons.public_outlined,size: 35),]),
+                        title: Text('ブラウザで視聴'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              SlideLeftRoute(
+                                  exitPage: this, enterPage: MovieBrowserPage()));
+                        }, // タップ
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(width: 1.0, color: Colors.grey))),
-                child: ListTile(
-                  leading: Icon(Icons.smartphone),
-                  title: Text('ローカルで視聴'),
-                  onTap: () {
-                    Navigator.push(context,
-                        SlideLeftRoute(exitPage: this, enterPage: MovieLocalPage()));
-                  }, // タップ
+                Container(
+                  height: 80,
+                  child: Card(
+                    elevation: 3,
+                    child: Center(
+                      child: ListTile(
+                        leading: Icon(Icons.smartphone,size: 35),
+                        title: Text('ローカルで視聴'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              SlideLeftRoute(
+                                  exitPage: this, enterPage: MovieLocalPage()));
+                        },
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),

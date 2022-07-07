@@ -17,7 +17,6 @@ class GroupItemPage extends StatelessWidget {
       child: Consumer<GroupItemModel>(
         builder: (context, model, child) {
           final List<Item2>? items = model.items;
-          Key centerKey = ValueKey<String>('bottom-sliver-list');
 
           if (items == null) {
             return const SizedBox(

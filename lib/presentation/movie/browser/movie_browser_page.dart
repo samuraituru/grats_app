@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/movie/browser/movie_browser_model.dart';
 import 'package:grats_app/presentation/movie/local/local_countItem_widget.dart';
-import 'package:grats_app/presentation/movie/movie_page.dart';
-import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -20,7 +19,7 @@ class MovieBrowserPage extends StatelessWidget {
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
+              icon: Icon(Icons.arrow_back_ios,color: ThemeColors.whiteColor),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -30,22 +29,39 @@ class MovieBrowserPage extends StatelessWidget {
                 : model.searchTextField(),
             actions: !model.searchBoolean
                 ? [
-              IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-                    model.searchPush();
-                    model.searchIndexList = [];
-                  }),
-              IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: () {
-                  //webViewController?.reload();
-                },
-              ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                    IconButton(
+                        icon: Icon(Icons.search,color: ThemeColors.whiteColor),
+                        onPressed: () {
+                          model.searchPush();
+                          model.searchIndexList = [];
+                        }),
+                    IconButton(
+                      icon: Icon(Icons.refresh,color: ThemeColors.whiteColor),
+                      onPressed: () {
+                        model.webController?.reload();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.list_alt,color: ThemeColors.whiteColor),
+                      onPressed: () {
+
+                      },
+                    ),
+                  ]),
+
             ]
                 : [
               IconButton(
-                icon: Icon(Icons.clear),
+                icon: Icon(Icons.youtube_searched_for,color: ThemeColors.whiteColor),
+                onPressed: () {
+                  model.searchAction();
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.clear,color: ThemeColors.whiteColor),
                 onPressed: () {
                   model.searchPull();
                 },
@@ -53,9 +69,7 @@ class MovieBrowserPage extends StatelessWidget {
             ],
           ),
           body: Stack(children: [
-            Stack(
-              children: model.WidgetList,
-            ),
+            browserWebView(model),
           ]),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.arrow_upward),
@@ -87,6 +101,7 @@ class MovieBrowserPage extends StatelessWidget {
                                       model.title = value!;
                                     },
                                     decoration: InputDecoration(
+                                      prefixIcon:Icon(Icons.comment),
                                       hintText: 'カウントしたい項目を追加',
                                       suffixIcon: IconButton(
                                         onPressed: () {
@@ -302,10 +317,10 @@ class BroserView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MovieBrowserModel>(
-      create: (_) => MovieBrowserModel(),
+      create: (_) => MovieBrowserModel()..initState(),
       child: Consumer<MovieBrowserModel>(builder: (context, model, child) {
         return Stack(children: [
-          BroserWibView(),
+          browserWebView(model),
           TweetContent(),
         ]);
       }),
@@ -313,10 +328,14 @@ class BroserView extends StatelessWidget {
   }
 }
 
-Widget BroserWibView() {
+Widget browserWebView(model) {
   return WebView(
     initialUrl: 'https://youtube.com',
     javascriptMode: JavascriptMode.unrestricted,
+    gestureNavigationEnabled: true,
+    onWebViewCreated: (controller) {
+      model.webController = controller;
+    },
   );
 }
 

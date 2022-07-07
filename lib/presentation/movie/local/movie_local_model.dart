@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/countitem.dart';
 import 'package:grats_app/domain/item.dart';
+import 'package:grats_app/domain/objectboxFolder.dart';
+import 'package:grats_app/domain/objectboxitem.dart';
+import 'package:grats_app/main.dart';
 
 class MovieLocalModel extends ChangeNotifier {
   final texteditingcontroller = TextEditingController();
@@ -8,6 +11,9 @@ class MovieLocalModel extends ChangeNotifier {
   String editTitle = '';
   int counter = 0;
   Color selectColor = Colors.lightBlue;
+  final folderBox = store.box<objectboxFolder>();
+  final itemBox = store.box<objectboxItem>();
+  String? isSelectedItem = 'aaa';
 
   var countItems = <Item>[];
 

@@ -114,7 +114,7 @@ class TestMovieBrowserPage extends StatelessWidget {
                                                     direction ==
                                                         DismissDirection
                                                             .startToEnd) {
-                                                  //await model.bodyListdelete(index);
+                                                  model.bodyListDelete(index);
                                                 }
                                               });
                                             },

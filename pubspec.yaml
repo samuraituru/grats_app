@@ -38,6 +38,7 @@ dependencies:
   firebase_dynamic_links: ^4.2.6
   share_plus: ^4.0.10
   nil: ^1.1.1
+  flutter_launcher_icons: ^0.9.3
 
 dev_dependencies:
   flutter_test:
@@ -65,3 +66,9 @@ flutter:
     - family: PatrickHand
       fonts:
         - asset: lib/assets/fonts/PatrickHand-Regular.ttf
+
+
+flutter_icons:
+    android: "launcher_icon"
+    ios: true
+    image_path: "lib/assets/icon/grats_android.png"
