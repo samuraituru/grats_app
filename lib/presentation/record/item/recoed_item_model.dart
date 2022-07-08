@@ -26,7 +26,7 @@ class RecordItemModel extends ChangeNotifier {
     }
   }
 
-  putItem() {
+  void putItem() {
     if (nameController.text == null || nameController.text == "") {
       throw 'アイテム名が入力されていません';
     }

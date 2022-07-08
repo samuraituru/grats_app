@@ -9,7 +9,7 @@ class MovieLocalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MovieLocalModel>(
-      create: (_) => MovieLocalModel(),
+      create: (_) => MovieLocalModel()..initState(),
       child: Consumer<MovieLocalModel>(
         builder: (context, model, child) {
           return Scaffold(
@@ -30,12 +30,20 @@ class MovieLocalPage extends StatelessWidget {
   // 縦向きの場合
   Widget _buildHorizontal(BuildContext context) {
     return Consumer<MovieLocalModel>(builder: (context, model, child) {
-      List<Text> folder = model.folderBox
-          .getAll()
-          .map(
-            (box) => Text('${box.floderName}'),
-          )
-          .toList();
+      List<String> folderList = [];
+
+      List<DropdownMenuItem<String>> drops = model.folderList.map((e) {
+        return DropdownMenuItem(
+          child: Text('$e'),
+          value: '$e',
+        );
+      }).toList();
+      var dropMap = model.dropMaps.forEach((key, value) {
+        print(value[key]);
+
+         var dropItem = DropItem(key, value);
+        dropItem.
+      });
 
       return GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
@@ -73,51 +81,63 @@ class MovieLocalPage extends StatelessWidget {
                             showDialog(
                               context: context,
                               builder: (context) {
-                                return AlertDialog(
-                                  title: Text('Recordへ記録しますか？'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      DropdownButton(
-                                        items: folder.map((map) {
-                                          return DropdownMenuItem(
-                                            child: map,
-                                            value: map,
+                                return StatefulBuilder(builder:
+                                    (BuildContext context,
+                                        StateSetter setState) {
+                                  return AlertDialog(
+                                    title: Text('Recordへ記録しますか？'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        DropdownButton(
+                                          items: drops,
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              model.isSelectedItem = value;
+                                            });
+                                          },
+                                          //7
+                                          value: model.isSelectedItem ?? '選択する',
+                                        ),
+                                        //Text('$isSelectedItem が選択されました。'),
+                                        Column(children: model.countItems.map((e){
+                                          return Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: Text('${e.title}  :  ${e.counter}',style: TextStyle(fontSize: 18),),
                                           );
-                                        }).toList(),
+                                        }).toList(),),
 
-                                        onChanged: (value) {
-                                          model.isSelectedItem =
-                                              value.toString();
+                                        /*for (int i = 0;
+                                            i < model.countItems.length;
+                                            i++) ...{
+                                          Padding(
+                                            padding: EdgeInsets.all(10.0),
+                                            child: Text(
+                                                '${model.countItems[i].title}  :  ${model.countItems[i].counter}'),
+                                          ),
+
+                                          //Text('${model.countItems[i].counter}'),
+                                        },*/
+                                        //model.outPutText(),
+                                        Padding(padding: EdgeInsets.all(10.0)),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('キャンセル'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
                                         },
-                                        //7
-                                        value: model.isSelectedItem,
                                       ),
-                                      //Text('$isSelectedItem が選択されました。'),
-                                      for (int i = 0;
-                                          i < model.countItems.length;
-                                          i++) ...{
-                                        Text(
-                                            '${model.countItems[i].title}  :  ${model.countItems[i].counter}'),
-                                        //Text('${model.countItems[i].counter}'),
-                                      },
-                                      //model.outPutText(),
-                                      Padding(padding: EdgeInsets.all(10.0)),
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+
+                                        },
+                                      ),
                                     ],
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('キャンセル'),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('OK'),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                );
+                                  );
+                                });
                               },
                             );
                           },
