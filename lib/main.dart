@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:grats_app/objectbox.g.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
@@ -12,7 +13,7 @@ import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
 import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:grats_app/presentation/signup/signup_page.dart';
-import 'package:grats_app/presentation/testpage/stool_page.dart';
+import 'package:grats_app/presentation/stool_page.dart';
 import 'package:provider/provider.dart';
 
 late Store store;
@@ -21,6 +22,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   store = await openStore();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runApp(MyApp());
 }
 
@@ -56,7 +59,7 @@ class LoginCheckPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<IntroductionModel>(
-      create: (_) => IntroductionModel(),
+      create: (_) => IntroductionModel()..initAction(),
       child: Consumer<IntroductionModel>(builder: (context, model, child) {
         return StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
@@ -81,14 +84,14 @@ class LoginCheckPage extends StatelessWidget {
 }
 
 class ThemeColors {
-  static const color = const Color(0xFF00E676);
-  static const accentColor = const Color(0xFFFFAB91);
-  static const cyanSubColor = const Color(0xFFB2EBF2);
-  static const cyanColor = const Color(0xFF80DEEA);
-  static const buttonColor = const Color(0xFFEEEEEE);
-  static const whiteColor = const Color(0xFFFFFFFF);
-  static const backGroundColor = const Color(0xFFEEEEEE);
-  static Map<int, Color> baseColorPallet = {
+  static const color = Color(0xFF00E676);
+  static const accentColor = Color(0xFFFFAB91);
+  static const cyanSubColor = Color(0xFFB2EBF2);
+  static const cyanColor = Color(0xFF80DEEA);
+  static const buttonColor = Color(0xFFEEEEEE);
+  static const whiteColor = Color(0xFFFFFFFF);
+  static const backGroundColor = Color(0xFFEEEEEE);
+  static const Map<int, Color> baseColorPallet = {
     50: Color(0xFFE8F5E9),
     100: Color(0xFFC8E6C9),
     200: Color(0xFFA5D6A7),
@@ -100,7 +103,7 @@ class ThemeColors {
     800: Color(0xFF2E7D32),
     900: Color(0xFF1B5E20),
   };
-  static Map<int, Color> cyanColorPallet = {
+  static const Map<int, Color> cyanColorPallet = {
     50: Color(0xFFE0F7FA),
     100: Color(0xFFB2EBF2),
     200: Color(0xFF80DEEA),
@@ -119,7 +122,7 @@ class ThemeColors {
 }
 
 ThemeData createTheme() {
-  final MaterialColor primeColor =
+  const MaterialColor primeColor =
       MaterialColor(0xFF00E676, ThemeColors.baseColorPallet);
 
   return ThemeData(

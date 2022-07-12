@@ -6,8 +6,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/myuser.dart';
+import 'package:grats_app/domain/objectboxFolder.dart';
+import 'package:grats_app/domain/objectboxitem.dart';
+import 'package:grats_app/main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../domain/myuser.dart';
 
 class MyselfModel extends ChangeNotifier {
@@ -81,8 +85,12 @@ class MyselfModel extends ChangeNotifier {
     notifyListeners();
     print(myUser);
     endLoading();
+    this.folderLength = folderBox.getAll().length.toString();
+    this.itemLength = itemBox.getAll().length.toString();
   }
 
+  String? folderLength;
+  String? itemLength;
   String userName = '';
 
   bool userNameValidate() {
@@ -158,7 +166,6 @@ class MyselfModel extends ChangeNotifier {
   }
 
   Future<void> deleteUser() async {
-
     if (emailController.text == null) {
       throw 'Emailが入力されていません';
     }
@@ -232,4 +239,16 @@ class MyselfModel extends ChangeNotifier {
   void OpenPost(String path) {
     print(path);
   }
+
+  Future<void> launchInWebViewOrVC(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.inAppWebView,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  final folderBox = store.box<objectboxFolder>();
+  final itemBox = store.box<objectboxItem>();
 }

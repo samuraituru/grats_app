@@ -4,6 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
 import 'package:grats_app/domain/item.dart';
+import 'package:grats_app/domain/objectboxFolder.dart';
+import 'package:grats_app/domain/objectboxitem.dart';
+import 'package:grats_app/main.dart';
+import 'package:grats_app/objectbox.g.dart';
 import 'package:grats_app/presentation/movie/browser/movewidget.dart';
 import 'package:grats_app/presentation/movie/browser/movingwidget.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -17,12 +21,16 @@ class MovieBrowserModel extends ChangeNotifier {
     'English Vocabulary',
     'Japanese Vocabulary'
   ];
-  final texteditingcontroller = TextEditingController();
+  final countItemNameController = TextEditingController();
   final scrollController = ScrollController();
+
+  final folderBox = store.box<objectboxFolder>();
+  final itemBox = store.box<objectboxItem>();
+
   WebViewController? webController;
   final Completer<WebViewController> webViewController =
       Completer<WebViewController>();
-  final countItems = <Item>[];
+  List<Item> countItems = <Item>[];
   Item? countItem;
   MoveWidget? testCountItem;
   List<MovingWidget> WidgetList = [];
@@ -30,15 +38,38 @@ class MovieBrowserModel extends ChangeNotifier {
   Cursor? cursor;
   MovingWidget? movingList;
   MoveWidget? testBody;
+  int? folderID;
 
   void initState() {
     if (Platform.isAndroid) {
       WebView.platform = SurfaceAndroidWebView();
     }
+
+    List<DropdownMenuItem<String>> folder = folderBox.getAll().map(
+          (box) {
+        folderList.add(box.floderName!);
+        //print(model.folderList);
+        return DropdownMenuItem(
+          child: Text('${box.floderName}'),
+          value: '${box.floderName}',
+        );
+      },
+    ).toList();
+
+    List<objectboxItem> itemBoxList = folderBox.getAll().map(
+          (box) {
+        return objectboxItem(
+          itemName: box.floderName,
+          itemDescription: box.floderDescription,
+          folderID: box.id,
+        );
+      },
+    ).toList();
+    this.itemBoxList = itemBoxList;
   }
 
-  countItemDelete(int index) {
-    countItems.removeAt(index);
+  Future<void> countItemDelete(int index) async {
+    await countItems.removeAt(index);
     notifyListeners();
   }
 
@@ -69,13 +100,14 @@ class MovieBrowserModel extends ChangeNotifier {
   String title = '';
   String editTitle = '';
 
-  void changeColor(Item countItem) {
-    countItem.color = selectColor;
+  void changeColor(Item countItem,Color color) {
+    countItem.color = color;
     notifyListeners();
   }
 
   void updateText(Item countItem) {
     countItem.title = editTitle;
+    notifyListeners();
   }
 
   void itemCountIncrement(Item countItem) {
@@ -109,14 +141,14 @@ class MovieBrowserModel extends ChangeNotifier {
   }
 
   void countItemCreate() {
-    if (title != null) {
+    if (countItemNameController.text == null || countItemNameController.text == ''){
+      throw '項目名を入力してください';
+    }
       countItems.add(Item(title: title));
-      texteditingcontroller.clear();
+      countItemNameController.clear();
 
       //final bodyWidget = MovingWidget(countItem: countItem);
-      WidgetList.add(movingList!);
       notifyListeners();
-    }
   }
 
   MovingWidget WidgetCreate() {
@@ -186,4 +218,41 @@ class MovieBrowserModel extends ChangeNotifier {
           return Card(child: ListTile(title: Text(_list[index])));
         });
   }
+  void outPutAction() async {
+    if (countItems == null) {
+      throw 'カウントアイテムがありません';
+    }
+    //Dropdownで選択したフォルダ名でobjectboxFolderを取得する
+    final objectboxFolderQuery = await (folderBox
+        .query(objectboxFolder_.floderName.equals(isSelectedItem!)))
+        .build();
+
+    final queryFolder = await objectboxFolderQuery.find();
+
+    //取得したobjectboxFolderからBoxIDを取得し代入する
+    this.folderID = await queryFolder[0].id;
+    objectboxFolderQuery.close();
+
+    //画面上でカウントした項目をitemBoxへ追加する
+    print(folderID);
+    if (folderID != null && countItems != null) {
+      for (Item item in countItems) {
+        var title = item.title;
+        var counter = item.counter.toString();
+        this.outPutItem = objectboxItem(
+          itemName: title,
+          itemDescription: counter,
+          folderID: folderID,
+        );
+        itemBox.put(outPutItem!);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  String? isSelectedItem = '選択する';
+  List<String> folderList = ['選択する'];
+  List<objectboxItem>? itemBoxList;
+  objectboxItem? outPutItem;
 }

@@ -142,10 +142,13 @@ class GroupItemPage extends StatelessWidget {
                         background: GestureDetector(
                           onTap: () => print('tap'),
                           child: Container(
-                            height: 250.0,
-                            child: Image.asset(
-                              'lib/assets/images/forest.jpg',
-                              fit: BoxFit.cover,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  'lib/assets/images/forest_image.png',
+                                ),
+                                fit: BoxFit.fill,
+                              ),
                             ),
                           ),
                         ),
@@ -245,19 +248,41 @@ class GroupItemPage extends StatelessWidget {
                       itemExtent: 200.0,
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
-                        final widgets =  ListTile(
-
-                          onTap: (){
-
-                          },
-                            trailing: IconButton(onPressed: (){
-
-                            }, icon: Icon(Icons.delete_forever)),
+                          final widgets = ListTile(
+                            onTap: () {},
+                            trailing: IconButton(
+                                onPressed: () async {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => AlertDialog(
+                                      content: Text('フォルダを削除しますか？'),
+                                      actions: <Widget>[
+                                        SimpleDialogOption(
+                                          child: Text('Yes'),
+                                          onPressed: () async{
+                                            await model.itemDocDelete(index);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        SimpleDialogOption(
+                                          child: Text('No'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  model.getItem(folder);
+                                },
+                                icon: Icon(Icons.delete_forever)),
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('名前'),
-                                Padding(padding: EdgeInsets.all(8.0),),
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                ),
                                 Container(
                                   width: 200,
                                   padding: const EdgeInsets.only(bottom: 0),
@@ -275,10 +300,12 @@ class GroupItemPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('備考'),
-                                Padding(padding: EdgeInsets.all(6.0),),
+                                Padding(
+                                  padding: EdgeInsets.all(6.0),
+                                ),
                                 Container(
                                   width: 200,
-                                  height:120,
+                                  height: 120,
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(10),
@@ -297,51 +324,60 @@ class GroupItemPage extends StatelessWidget {
                           final List<Widget> test = items
                               .map(
                                 (item) => ListTile(
-                              trailing: IconButton(onPressed: (){
-
-                              }, icon: Icon(Icons.delete_forever)),
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('名前'),
-                                  Padding(padding: EdgeInsets.all(8.0),),
-                                  Container(
-                                    width: 200,
-                                    padding: const EdgeInsets.only(bottom: 0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(14.0),
-                                      child: Text(
-                                        '${model.items![index].itemName}',
-                                        style: TextStyle(fontSize: 20),
+                                  trailing: IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(Icons.delete_forever)),
+                                  title: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('名前'),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              subtitle: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('備考'),
-                                  Padding(padding: EdgeInsets.all(6.0),),
-                                  Container(
-                                    width: 200,
-                                    height:120,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Text(
-                                        model.items![index].itemDescription!,
-                                        style: TextStyle(fontSize: 20),
+                                      Container(
+                                        width: 200,
+                                        padding:
+                                            const EdgeInsets.only(bottom: 0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14.0),
+                                          child: Text(
+                                            '${model.items![index].itemName}',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ).toList();
+                                  subtitle: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('備考'),
+                                      Padding(
+                                        padding: EdgeInsets.all(6.0),
+                                      ),
+                                      Container(
+                                        width: 200,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Text(
+                                            model
+                                                .items![index].itemDescription!,
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                              .toList();
                           return widgets;
 
                           /*Container(

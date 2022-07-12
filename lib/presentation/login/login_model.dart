@@ -8,10 +8,10 @@ class LoginModel extends ChangeNotifier {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Map<int,String> errorCode = {
-    1:'[firebase_auth/invalid-email] The email address is badly formatted.',
-    2:'[firebase_auth/email-already-in-use] The email address is already in use by another account.',
-    3:'[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.',
+  Map<int, String> errorCode = {
+    1: '[firebase_auth/invalid-email] The email address is badly formatted.',
+    2: '[firebase_auth/email-already-in-use] The email address is already in use by another account.',
+    3: '[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.',
   };
 
   MyUser? user;
@@ -20,11 +20,12 @@ class LoginModel extends ChangeNotifier {
 
   bool isLoading = false;
 
-  void changeObscure(){
+  void changeObscure() {
     // アイコンがタップされたら現在と反対の状態をセットする
     isObscure = !isObscure;
     notifyListeners();
   }
+
   void startLoading() {
     isLoading = true;
     notifyListeners();
@@ -57,6 +58,22 @@ class LoginModel extends ChangeNotifier {
       final currentUser = FirebaseAuth.instance.currentUser;
       this.user?.uID = currentUser!.uid;
     }
+  }
 
+  Future sendPasswordResetEmail() async {
+    if (emailController.text == null) {
+      throw 'メールアドレスが入力されていません';
+    }
+
+   final emailText = emailController.text;
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailText);
+      return 'success';
+    } catch (error) {
+      final snackBar = SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(error.toString()),
+      );
+    }
   }
 }

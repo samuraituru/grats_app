@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
-import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/introduction/Introduction_model.dart';
-import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -142,6 +140,7 @@ class IntroductionPage extends StatelessWidget {
                       onPressed: () {
                         model.controller.play();
                         Navigator.of(context).pushReplacementNamed("/signUp");
+                        model.setFirstIntro();
                       },
                       child: const Text(
                         "はじめる",
@@ -185,6 +184,7 @@ class IntroductionPage extends StatelessWidget {
             done: TextButton(
               onPressed: () {
                 Navigator.of(context).pushReplacementNamed("/home");
+                model.setFirstIntro();
               },
               child: const Text(
                 "ゲストで始める",

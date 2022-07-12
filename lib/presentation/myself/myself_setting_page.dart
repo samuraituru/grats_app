@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyselfSetting extends StatelessWidget {
   @override
@@ -22,17 +25,146 @@ class MyselfSetting extends StatelessWidget {
           body: Column(
             children: [
               ListTile(
-                title: Text('プライバシーポリシー'),
-                onTap: () {},
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Icon(Icons.subject, size: 30),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('利用規約', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                onTap: () async{
+                  final termsUrl = Uri.parse(
+                    'https://breezy-rover-006.notion.site/c307b48479df416ea66ba2d4bc9eb0f2',
+                  );
+                  try {
+                    model.launchInWebViewOrVC(termsUrl);
+                    /*Timer(const Duration(seconds: 10), () {
+                      print('Closing WebView after 5 seconds...');
+                      closeInAppWebView();
+                    });*/
+                  } catch (e) {
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(e.toString()),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } finally {}
+                },
+              ),
+              ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Icon(Icons.subject, size: 30),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('プライバシーポリシー', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                onTap: () async {
+                  final privacyUrl = Uri.parse(
+                    'https://breezy-rover-006.notion.site/96eb846aeb994a439d309a404cae0f4d',
+                  );
+                  try {
+                    await model.launchInWebViewOrVC(privacyUrl);
+                  } catch (e) {
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(e.toString()),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } finally {}
+                },
+              ),
+              ListTile(
+                title: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Icon(Icons.help, size: 30),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('通報・お問い合わせ', style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                ),
+                onTap: () async{
+                  final formUrl = Uri.parse(
+                    'https://docs.google.com/forms/d/e/1FAIpQLSenW4B7YZmwUYg-fibvZfgX5xUMoU0oHV9VCckOQBRew_mSRA/viewform?usp=sf_link',
+                  );
+                  try {
+                    model.launchInWebViewOrVC(formUrl);
+                  } catch (e) {
+                    final snackBar = SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(e.toString()),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } finally {}
+                },
               ),
               Visibility(
                 visible: (model.isLogin),
                 child: Column(
                   children: [
                     ListTile(
-                      title: Text('アカウント削除',
-                          style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold)),
+                      title: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Icon(Icons.logout, size: 30),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('ログアウト',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                      onTap: () async {
+                        // 追加の処理
+                        try {
+                          await model.signOut();
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/login", (_) => false);
+                        } catch (e) {
+                          final snackBar = SnackBar(
+                            backgroundColor: Colors.red,
+                            content: Text(e.toString()),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        } finally {}
+                      },
+                    ),
+                    ListTile(
+                      title: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Icon(Icons.person_remove, size: 30),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('アカウント削除',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
                       onTap: () async {
                         showDialog(
                           context: context,
@@ -96,35 +228,15 @@ class MyselfSetting extends StatelessWidget {
                                         backgroundColor: Colors.red,
                                         content: Text(e.toString()),
                                       );
-                                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                    } finally {
-                                    }
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
+                                    } finally {}
                                   },
                                 ),
                               ],
                             );
                           },
                         );
-                      },
-                    ),
-                    ListTile(
-                      title: Text('ログアウト',
-                          style: TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.bold)),
-                      onTap: () async {
-                        // 追加の処理
-                        try {
-                          await model.signOut();
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, "/login", (_) => false);
-                        } catch (e) {
-                          final snackBar = SnackBar(
-                            backgroundColor: Colors.red,
-                            content: Text(e.toString()),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        } finally {
-                        }
                       },
                     ),
                   ],

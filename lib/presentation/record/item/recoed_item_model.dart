@@ -5,8 +5,14 @@ import 'package:grats_app/objectbox.g.dart';
 
 class RecordItemModel extends ChangeNotifier {
   final itemBox = store.box<objectboxItem>();
-  final nameController = TextEditingController();
-  final descriptionController = TextEditingController();
+  final itemNameController = TextEditingController();
+  final itemDescriptionController = TextEditingController();
+
+
+  void controllerClear() {
+    itemNameController.clear();
+    itemDescriptionController.clear();
+  }
 
   objectboxItem? item;
   List<objectboxItem>? items;
@@ -27,21 +33,21 @@ class RecordItemModel extends ChangeNotifier {
   }
 
   void putItem() {
-    if (nameController.text == null || nameController.text == "") {
+    if (itemNameController.text == null || itemNameController.text == "") {
       throw 'アイテム名が入力されていません';
     }
-    if (descriptionController.text == null ||
-        descriptionController.text.isEmpty) {
+    if (itemDescriptionController.text == null ||
+        itemDescriptionController.text.isEmpty) {
       throw '説明が入力されていません';
     }
     final item = objectboxItem(
-        itemName: nameController.text,
-        itemDescription: descriptionController.text,
+        itemName: itemNameController.text,
+        itemDescription: itemDescriptionController.text,
         folderID: folderID);
     itemBox.put(item);
     notifyListeners();
-    nameController.clear();
-    descriptionController.clear();
+    itemNameController.clear();
+    itemDescriptionController.clear();
     initAction(folderID!);
   }
 
@@ -55,7 +61,7 @@ class RecordItemModel extends ChangeNotifier {
       final objectboxItem? item = itemBox.get(userId!);
       this.item = item;
       print('${item?.itemName}');
-      nameController.clear();
+      itemNameController.clear();
     }
     setBox();
   }
@@ -65,7 +71,7 @@ class RecordItemModel extends ChangeNotifier {
   }
 
   void remove() {
-    final int? userId = int.tryParse('${nameController.text}');
+    final int? userId = int.tryParse('${itemNameController.text}');
     itemBox.remove(userId!);
     notifyListeners();
   }

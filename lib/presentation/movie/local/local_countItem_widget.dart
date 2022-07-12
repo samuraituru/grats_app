@@ -32,7 +32,15 @@ class CountItemWidget extends StatelessWidget {
               }
             },
             key: UniqueKey(),
+            background: Container(
+              alignment: Alignment.centerRight,
+              color: Colors.redAccent[700],
+              child: Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+                  child: Icon(Icons.delete, color: Colors.white)),
+            ),
             child: Card(
+              elevation: 3,
               child: ListTile(
                 leading: Container(
                   width: 40,
@@ -70,9 +78,6 @@ class CountItemWidget extends StatelessWidget {
                   ),
                 ),
                 title: Text('${countItem.title}'),
-                /*model.completetextlist == null
-                      ? '${model.countItemList[model.countItemList.length]}'
-                      : '${model.completetextlist[pullindex]}',*/
                 onLongPress: () {
                   print('押された');
                   showDialog(
@@ -127,7 +132,10 @@ class CountItemWidget extends StatelessWidget {
                         },
                       ),
                     ),
-                    Text('${countItem.counter}'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('${countItem.counter}'),
+                    ),
                     //'${model.counterList[pullindex]}'),
                     Container(
                       width: 40,

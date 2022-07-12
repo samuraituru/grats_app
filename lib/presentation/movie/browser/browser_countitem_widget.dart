@@ -65,7 +65,7 @@ class BrowserCountItemWidget extends StatelessWidget {
                                       pickerColor: model.selectColor,
                                       onColorChanged: (Color color) {
                                         model.selectColor = color;
-                                        model.changeColor(countItem);
+                                        model.changeColor(countItem,color);
                                       },
                                     ),
                                   ),

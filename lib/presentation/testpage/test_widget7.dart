@@ -354,7 +354,7 @@ class FloatingView extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: TextField(
-                                  controller: model.texteditingcontroller,
+                                  controller: model.countItemNameController,
                                   onChanged: (String? value) {
                                     model.title = value!;
                                   },

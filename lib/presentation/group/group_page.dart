@@ -45,37 +45,43 @@ class GroupPage extends StatelessWidget {
           final List<Widget> widgets = groups.map((group) {
             return Visibility(
               visible: (group.isBlocks![currentUID] == false),
-              child: Card(
-                elevation: 3,
-                child: ListTile(
-                  onTap: () {
-                    showModalBottomSheet(
-                        backgroundColor: Colors.white.withOpacity(0.8),
-                        enableDrag: true,
-                        isDismissible: false,
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          return GroupPageModal(
-                              group: group, currentUID: currentUID!);
-                        }).whenComplete(() => model.fetchAllGroups());
-                  },
-                  leading: group.imgURL != ''
-                      ? CircleAvatar(
-                          radius: 30,
-                          child: ClipOval(
-                            child: Image.network(
-                              group.imgURL ?? '',
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      showModalBottomSheet(
+                          backgroundColor: Colors.white.withOpacity(0.8),
+                          enableDrag: true,
+                          isDismissible: false,
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return GroupPageModal(
+                                group: group, currentUID: currentUID!);
+                          }).whenComplete(() => model.fetchAllGroups());
+                    },
+                    leading: group.imgURL != ''
+                        ? CircleAvatar(
+                            radius: 30,
+                            child: ClipOval(
+                              child: Image.network(
+                                group.imgURL ?? '',
+                              ),
                             ),
+                          )
+                        : CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.grey,
                           ),
-                        )
-                      : CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.grey,
-                        ),
-                  title: Text('${group.groupName}'),
-                  subtitle: Text('${group.groupDescription}'),
-                  trailing: Icon(Icons.keyboard_arrow_up),
+                    title: Text('${group.groupName}'),
+                    subtitle: Text('${group.groupDescription}'),
+                    trailing: Icon(Icons.keyboard_arrow_up),
+                  ),
                 ),
               ),
             );
@@ -164,7 +170,7 @@ class GroupPage extends StatelessWidget {
                         )
                       : SizedBox()
                 ],
-                elevation: 0.0,
+                //elevation: 0.0,
               ),
             ),
             body: Container(
@@ -469,8 +475,9 @@ class GroupSettingModal extends StatelessWidget {
             child: TextField(
               controller: model.groupReDescController,
               decoration: InputDecoration(
-                hintText:
-                group.groupDescription != null ? '${group.groupDescription}' : 'Unknown',
+                hintText: group.groupDescription != null
+                    ? '${group.groupDescription}'
+                    : 'Unknown',
               ),
             ),
           ),
@@ -489,8 +496,7 @@ class GroupSettingModal extends StatelessWidget {
                   backgroundColor: Colors.red,
                   content: Text(e.toString()),
                 );
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(snackBar);
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             },
             child: Text('グループ情報を更新',
@@ -498,7 +504,7 @@ class GroupSettingModal extends StatelessWidget {
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
           Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.all(25.0),
           ),
           ListTile(
             onTap: () {
@@ -508,27 +514,46 @@ class GroupSettingModal extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(14.0),
                   child: Icon(Icons.share, size: 30),
                 ),
-                Text('Group-Codeを発行',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Group-Codeを発行',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
               ],
             ),
           ),
           ListTile(
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Icon(Icons.help, size: 30),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ],
             ),
             onTap: () {},
           ),
           ListTile(
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('グループから退会する',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.red)),
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Icon(Icons.group_remove, size: 30),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('グループから退会する',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red)),
+                ),
+              ],
             ),
             onTap: () {
               showDialog(
@@ -558,11 +583,19 @@ class GroupSettingModal extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('グループを削除する',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.red)),
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(14.0),
+                  child: Icon(Icons.delete_forever, size: 30),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('グループを削除する',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red)),
+                ),
+              ],
             ),
             onTap: () {
               showDialog(
@@ -582,7 +615,7 @@ class GroupSettingModal extends StatelessWidget {
                             actions: <Widget>[
                               SimpleDialogOption(
                                 child: Text('Yes'),
-                                onPressed: () async{
+                                onPressed: () async {
                                   await model.deleteGroup(group);
                                   Navigator.of(context).pop();
                                   Navigator.of(context).pop();

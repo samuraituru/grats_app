@@ -57,8 +57,9 @@ class GroupItemModel extends ChangeNotifier {
       'folderID': folder.folderID,
     });
   }
-  Future<void> itemDocDelete(Folder folder) async{
-    FirebaseFirestore.instance.collection('Items').doc(folder.folderID).delete();
+  Future<void> itemDocDelete(int index) async{
+   final id = items![index].itemID;
+    FirebaseFirestore.instance.collection('Items').doc(id).delete();
   }
 
 }
