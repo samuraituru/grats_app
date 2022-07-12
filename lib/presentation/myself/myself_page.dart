@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:grats_app/domain/myuser.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
 import 'package:grats_app/presentation/slide_left_route.dart';
-import 'package:grats_app/presentation/testpage/test_widget7.dart';
-
 import 'package:provider/provider.dart';
 
 class MyselfPage extends StatelessWidget {
@@ -56,7 +53,7 @@ class MyselfPage extends StatelessWidget {
                                         ? GestureDetector(
                                             onTap: () async => Navigator.of(
                                                     context)
-                                                .pushReplacementNamed("/login"),
+                                                .pushReplacementNamed("/signUp"),
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
@@ -252,7 +249,7 @@ class MyselfPage extends StatelessWidget {
                                       padding: const EdgeInsets.all(8.0),
                                       child: ConstrainedBox(
                                         constraints: BoxConstraints.expand(
-                                            height: 50.0, width: 200.0),
+                                            height: 60.0, width: 200.0),
                                         child: TextFormField(
                                           //textAlign: TextAlign.center,
                                           enabled: model.isLogin,
@@ -264,7 +261,8 @@ class MyselfPage extends StatelessWidget {
                                             hintText: (() {
                                               if (!model.isLogin) {
                                                 return 'ゲストアカウント';
-                                              } else if (model.myUser.userName ==
+                                              } else if (model
+                                                      .myUser.userName ==
                                                   "") {
                                                 return '名前未設定';
                                               }
@@ -272,7 +270,7 @@ class MyselfPage extends StatelessWidget {
                                             })(),
                                             hintStyle: TextStyle(
                                                 color: ThemeColors.whiteColor),
-                                            enabledBorder: UnderlineInputBorder(
+                                            enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color:
                                                       ThemeColors.whiteColor),
@@ -281,6 +279,11 @@ class MyselfPage extends StatelessWidget {
                                               borderSide: BorderSide(
                                                   color:
                                                       ThemeColors.whiteColor),
+                                            ),
+                                            disabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color:
+                                                  ThemeColors.whiteColor),
                                             ),
                                           ),
                                         ),
@@ -305,53 +308,56 @@ class MyselfPage extends StatelessWidget {
                                           //contentPadding: EdgeInsets.all(20),
                                           hintText: (() {
                                             if (!model.isLogin) {
-                                             return 'ゲストアカウント';
-                                            } else if (model.myUser.userTarget ==
+                                              return 'ゲストアカウント';
+                                            } else if (model
+                                                    .myUser.userTarget ==
                                                 "") {
-                                             return '目標\nひとことコメント';
+                                              return '目標\nひとことコメント';
                                             }
-                                           return model.myUser.userTarget;
+                                            return model.myUser.userTarget;
                                           })(),
-                                          hintStyle: TextStyle(
+                                          hintStyle: const TextStyle(
                                               color: ThemeColors.whiteColor),
-                                          enabledBorder: UnderlineInputBorder(
+                                          enabledBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: ThemeColors.whiteColor),
                                           ),
-                                          focusedBorder: OutlineInputBorder(
+                                          focusedBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: ThemeColors.whiteColor),
+                                          ),
+                                          disabledBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color:
+                                                ThemeColors.whiteColor),
                                           ),
                                         ),
                                       ),
                                     ),
                                     (model.isLogin)
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                model.startLoading();
-                                                // 追加の処理
-                                                try {
-                                                  await model.userInfoUpdate();
-                                                } catch (e) {
-                                                  final snackBar = SnackBar(
-                                                    backgroundColor: Colors.red,
-                                                    content: Text(e.toString()),
-                                                  );
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(snackBar);
-                                                } finally {
-                                                  model.endLoading();
-                                                  await model.fetchMyUser();
-                                                }
-                                              },
-                                              child: Text('プロフィールを更新',
-                                                  style: TextStyle(
-                                                      color: ThemeColors
-                                                          .whiteColor)),
-                                            ),
-                                          )
+                                        ? ElevatedButton(
+                                          onPressed: () async {
+                                            model.startLoading();
+                                            // 追加の処理
+                                            try {
+                                              await model.userInfoUpdate();
+                                            } catch (e) {
+                                              final snackBar = SnackBar(
+                                                backgroundColor: Colors.red,
+                                                content: Text(e.toString()),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                            } finally {
+                                              model.endLoading();
+                                              await model.fetchMyUser();
+                                            }
+                                          },
+                                          child: Text('プロフィールを更新',
+                                              style: TextStyle(
+                                                  color: ThemeColors
+                                                      .whiteColor)),
+                                        )
                                         : SizedBox(),
                                   ],
                                 ),
@@ -372,21 +378,30 @@ class MyselfPage extends StatelessWidget {
                                     : SizedBox()),*/
                           ],
                         ),
-                        ElevatedButton(
+                        /*ElevatedButton(
                             onPressed: () {
                               Navigator.push(
                                   context,
                                   SlideLeftRoute(
                                       exitPage: this, enterPage: TestMovieBrowserPage()));
                             },
-                            child: Text('MyRecordへ')),
+                            child: Text('MyRecordへ')),*/
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                        ),
                         Card(
+                          color: ThemeColors.backGroundColor,
                           child: Column(
-                            children: const [
+                            children: [
                               ListTile(
-                                leading: Icon(Icons.add),
-                                title: Text('現在のレコード数'),
-                                subtitle: Text('Card SubTitle'),
+                                leading: Icon(
+                                  Icons.folder_open,
+                                  size: 40,
+                                ),
+                                title:
+                                    Text('現在の合計レコード数 : ${model.folderLength ?? '0'}'),
+                                subtitle:
+                                    Text('現在の合計アイテム数 : ${model.itemLength?? '0'}'),
                               ),
                             ],
                           ),

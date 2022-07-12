@@ -4,9 +4,11 @@ import 'package:grats_app/domain/item.dart';
 import 'package:grats_app/domain/objectboxFolder.dart';
 import 'package:grats_app/domain/objectboxitem.dart';
 import 'package:grats_app/main.dart';
+import 'package:grats_app/objectbox.g.dart';
 
 class MovieLocalModel extends ChangeNotifier {
-  final texteditingcontroller = TextEditingController();
+  final countItemNameController = TextEditingController();
+  final itemNameController = TextEditingController();
   final scrollController = ScrollController();
   String editTitle = '';
   int counter = 0;
@@ -17,23 +19,22 @@ class MovieLocalModel extends ChangeNotifier {
   List<String> folderList = ['選択する'];
   List<String> dropItem = [];
 
-  var countItems = <Item>[];
+  List<Item> countItems = <Item>[];
 
   void countItemCreate() {
-    if (texteditingcontroller.text != null) {
-      countItems.add(Item(title: texteditingcontroller.text));
-      this.texteditingcontroller.clear();
-      notifyListeners();
-      texteditingcontroller.clear();
+    if (countItemNameController.text == null || countItemNameController.text == '') {
+      throw '項目名を入力してください';
     }
+      countItems.add(Item(title: countItemNameController.text));
+      this.countItemNameController.clear();
+      notifyListeners();
+    countItemNameController.clear();
   }
-  Map<int ,String> dropMaps = {};
-int? boxIDs;
+
   void initState() {
     List<DropdownMenuItem<String>> folder = folderBox.getAll().map(
       (box) {
         folderList.add(box.floderName!);
-        dropMaps[box.id] = '${box.floderName}';
         //print(model.folderList);
         return DropdownMenuItem(
           child: Text('${box.floderName}'),
@@ -41,14 +42,76 @@ int? boxIDs;
         );
       },
     ).toList();
+
+    List<objectboxItem> itemBoxList = folderBox.getAll().map(
+      (box) {
+        return objectboxItem(
+          itemName: box.floderName,
+          itemDescription: box.floderDescription,
+          folderID: box.id,
+        );
+      },
+    ).toList();
+    this.itemBoxList = itemBoxList;
   }
-  void putItem(String title,String counter){
-    final item = objectboxItem(
-        itemName: title,
-        itemDescription: counter,
-        /*folderID: folderID*/);
-    itemBox.put(item);
+
+  int? folderID;
+
+  void outPutAction() async {
+    if (itemNameController.text == null || itemNameController.text == ''){
+      throw 'アイテム名がありません';
+    }
+    if (countItems == null) {
+      throw 'カウントアイテムがありません';
+    }
+    if (isSelectedItem =='選択する'){
+      throw '保存するフォルダを選択してください';
+    }
+    //Dropdownで選択したフォルダ名でobjectboxFolderを取得する
+    final objectboxFolderQuery = await (folderBox
+            .query(objectboxFolder_.floderName.equals(isSelectedItem!)))
+        .build();
+
+    final queryFolder = await objectboxFolderQuery.find();
+
+    //取得したobjectboxFolderからBoxIDを取得し代入する
+    this.folderID = await queryFolder[0].id;
+    objectboxFolderQuery.close();
+
+    //画面上でカウントした項目をitemBoxへ追加する
+    print(folderID);
+    if (folderID != null && countItems != null) {
+        var title = itemNameController.text;
+        String itemDescription = descListAdd();
+        this.outPutItem = objectboxItem(
+          itemName: title,
+          itemDescription: itemDescription,
+          folderID: folderID,
+        );
+        itemBox.put(outPutItem!);
+    }
+
+    notifyListeners();
   }
+  List<String> descriptionList = [];
+
+  String descListAdd() {
+    var descriptionList = countItems.map((countItem) {
+      return '${countItem.title}:${countItem.counter.toString()}\n';
+    }).toList();
+
+    String name = descriptionList.join();
+/*    for (int i = 0; i < countItems.length; i++){
+      descriptionList.add('${countItem.title}${countItem.counter.toString()}\n');
+    }*/
+
+    print(name);
+    return name;
+  }
+
+  objectboxItem? outPutItem;
+
+  List<objectboxItem>? itemBoxList;
 
   void increment(Item countItem) {
     countItem.counter += 1;
@@ -67,16 +130,7 @@ int? boxIDs;
 
   void updateText(Item countItem) {
     countItem.title = editTitle;
-  }
-
-  void colorPicker() {
-    pickerColor:
-    Colors.red; //default color
-    onColorChanged:
-    (Color color) {
-      //on color picked
-      print(color);
-    };
+    notifyListeners();
   }
 
 /*  Widget outPutText() {
@@ -101,13 +155,9 @@ int? boxIDs;
   }*/
 }
 
-DropdownMenuItem DropItem(int key, String value) {
-  void intGet(){
-    int i = 0;
-  }
+DropdownMenuItem DropItem(String e) {
   return DropdownMenuItem(
-    child: Text('$value'),
-    value: '${value}',
+    child: Text('$e'),
+    value: '$e',
   );
-
 }

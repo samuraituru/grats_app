@@ -18,8 +18,8 @@ class RecordItemPage extends StatelessWidget {
         List<Widget> itemsWidget = model.items
             ?.map(
               (item) => ListTile(
-                leading: Text(item.itemName ?? '名前無し'),
-                title: Text(item.itemDescription ?? ''),
+                title: Text(item.itemName ?? '名前無し'),
+                subtitle: Text(item.itemDescription ?? ''),
               ),
             )
             .toList() as List<Widget>;
@@ -37,36 +37,51 @@ class RecordItemPage extends StatelessWidget {
                 },
               ),
               centerTitle: true,
-              title: Text('Record'),
+              title: Text('Item'),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add,color: ThemeColors.whiteColor),
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (BuildContext context) {
+                      builder: (context) {
                         return AlertDialog(
-                          title: Text('Recordを追加'),
+                          title: const Text('アイテムを追加'),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextField(
-                                controller: model.nameController,
-                                decoration: const InputDecoration(
-                                  hintText: " アイテム名を記載",
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 20,
+                                controller: model.itemNameController,
+                                //textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: 'アイテム名を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      //color: ThemeColors.whiteColor,
+                                    ),
                                   ),
                                 ),
                               ),
+                              Padding(padding: EdgeInsets.all(10.0)),
                               TextField(
-                                controller: model.descriptionController,
-                                decoration: const InputDecoration(
-                                  hintText: " 説明を記載",
-                                  border: OutlineInputBorder(),
+                                controller: model.itemDescriptionController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Icon(Icons.folder_open),
+                                  labelText: '説明を記載',
+                                  //fillColor: ThemeColors.backGroundColor,
+                                  filled: true,
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical: 20,
+                                    vertical: 40,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                      //color: ThemeColors.whiteColor,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -74,16 +89,29 @@ class RecordItemPage extends StatelessWidget {
                           ),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('キャンセル'),
+                              child: const Text('キャンセル'),
                               onPressed: () {
                                 Navigator.pop(context);
+                                model.controllerClear();
                               },
                             ),
                             TextButton(
                               child: Text('OK'),
-                              onPressed: () {
-                                model.putItem();
-                                Navigator.of(context).pop();
+                              onPressed: () async {
+                                try {
+                                  model.putItem();
+                                } catch (e) {
+                                  final snackBar = SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(e.toString()),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } finally {
+                                  model.initAction(folderID);
+                                  Navigator.pop(context);
+                                  model.controllerClear();
+                                }
                               },
                             ),
                           ],
@@ -96,9 +124,17 @@ class RecordItemPage extends StatelessWidget {
               elevation: 0.0,
             ),
           ),
-          body: Center(
-            child: ListView(
-              children: itemsWidget,
+          body: Container(
+            color: ThemeColors.backGroundColor,
+            child: Center(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  model.initAction(folderID);
+                },
+                child: ListView(
+                  children: itemsWidget,
+                ),
+              ),
             ),
           ),
         );

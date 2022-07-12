@@ -32,19 +32,13 @@ class MovieLocalPage extends StatelessWidget {
     return Consumer<MovieLocalModel>(builder: (context, model, child) {
       List<String> folderList = [];
 
-      List<DropdownMenuItem<String>> drops = model.folderList.map((e) {
+      List<DropdownMenuItem<String>> folders =
+          model.folderList.map((String folder) {
         return DropdownMenuItem(
-          child: Text('$e'),
-          value: '$e',
+          child: Text(folder),
+          value: folder,
         );
       }).toList();
-      var dropMap = model.dropMaps.forEach((key, value) {
-        print(value[key]);
-
-         var dropItem = DropItem(key, value);
-        dropItem.
-      });
-
       return GestureDetector(
         behavior: HitTestBehavior.opaque, //画面外タップを検知するために必要
         onTap: () => FocusScope.of(context).unfocus(),
@@ -74,7 +68,7 @@ class MovieLocalPage extends StatelessWidget {
                       Container(
                         child: IconButton(
                           icon: Icon(
-                            Icons.addchart_outlined,
+                            Icons.output,
                             color: ThemeColors.whiteColor,
                           ),
                           onPressed: () async {
@@ -86,41 +80,70 @@ class MovieLocalPage extends StatelessWidget {
                                         StateSetter setState) {
                                   return AlertDialog(
                                     title: Text('Recordへ記録しますか？'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        DropdownButton(
-                                          items: drops,
-                                          onChanged: (String? value) {
-                                            setState(() {
-                                              model.isSelectedItem = value;
-                                            });
-                                          },
-                                          //7
-                                          value: model.isSelectedItem ?? '選択する',
-                                        ),
-                                        //Text('$isSelectedItem が選択されました。'),
-                                        Column(children: model.countItems.map((e){
-                                          return Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Text('${e.title}  :  ${e.counter}',style: TextStyle(fontSize: 18),),
-                                          );
-                                        }).toList(),),
-
-                                        /*for (int i = 0;
-                                            i < model.countItems.length;
-                                            i++) ...{
-                                          Padding(
-                                            padding: EdgeInsets.all(10.0),
-                                            child: Text(
-                                                '${model.countItems[i].title}  :  ${model.countItems[i].counter}'),
+                                    content: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          DropdownButton(
+                                            items: folders,
+                                            onChanged: (String? value) {
+                                              setState(() {
+                                                model.isSelectedItem = value;
+                                              });
+                                            },
+                                            //7
+                                            value:
+                                                model.isSelectedItem ?? '選択する',
+                                          ),
+                                          TextField(
+                                            controller: model.itemNameController,
+                                            decoration: InputDecoration(
+                                              prefixIcon: Icon(Icons.folder_open),
+                                              labelText: 'アイテム名を記載',
+                                              //fillColor: ThemeColors.backGroundColor,
+                                              filled: true,
+                                              contentPadding: EdgeInsets.symmetric(
+                                                vertical: 40,
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(10),
+                                                borderSide: BorderSide(
+                                                  //color: ThemeColors.whiteColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            children: model.countItems.map((countItem) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Text(
+                                                  '${countItem.title}  :  ${countItem.counter}',
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                              );
+                                            }).toList(),
                                           ),
 
-                                          //Text('${model.countItems[i].counter}'),
-                                        },*/
-                                        //model.outPutText(),
-                                        Padding(padding: EdgeInsets.all(10.0)),
-                                      ],
+                                          /*for (int i = 0;
+                                              i < model.countItems.length;
+                                              i++) ...{
+                                            Padding(
+                                              padding: EdgeInsets.all(10.0),
+                                              child: Text(
+                                                  '${model.countItems[i].title}  :  ${model.countItems[i].counter}'),
+                                            ),
+
+                                            //Text('${model.countItems[i].counter}'),
+                                          },*/
+                                          //model.outPutText(),
+                                          Padding(
+                                              padding: EdgeInsets.all(10.0)),
+                                        ],
+                                      ),
                                     ),
                                     actions: <Widget>[
                                       TextButton(
@@ -132,7 +155,18 @@ class MovieLocalPage extends StatelessWidget {
                                       TextButton(
                                         child: Text('OK'),
                                         onPressed: () {
-
+                                          try {
+                                            model.outPutAction();
+                                          } catch (e) {
+                                            final snackBar = SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content: Text(e.toString()),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          } finally {
+                                            Navigator.pop(context);
+                                          }
                                         },
                                       ),
                                     ],
@@ -151,12 +185,21 @@ class MovieLocalPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                controller: model.texteditingcontroller,
+                controller: model.countItemNameController,
                 decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.comment),
                   hintText: 'カウントしたい項目を追加',
                   suffixIcon: IconButton(
                     onPressed: () {
-                      model.countItemCreate();
+                      try {
+                        model.countItemCreate();
+                      } catch (e) {
+                        final snackBar = SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(e.toString()),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
                     },
                     icon: Icon(Icons.add),
                   ),
@@ -164,7 +207,7 @@ class MovieLocalPage extends StatelessWidget {
               ),
             ),
             Container(
-              height: 375,
+              height: 400,
               child: SingleChildScrollView(
                 controller: model.scrollController,
                 child: ListView.builder(

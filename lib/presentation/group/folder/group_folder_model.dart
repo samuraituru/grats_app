@@ -42,6 +42,13 @@ class GroupFolderModel extends ChangeNotifier {
   }
 
   Future<void> updateFolder(Folder folder) async {
+    if (folderNameController.text == null && folderNameController.text == ''){
+      throw 'フォルダ名を入力してください';
+    }
+    if (folderDescController.text == null && folderDescController.text == ''){
+      throw '説明を入力してください';
+    }
+
     if (folderNameController.text != null ||
         folderDescController.text != null) {
       final foldersDoc = await FirebaseFirestore.instance

@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_number": "118076168276",
-    "project_id": "grats-app",
+    "project_id": "grats.app",
     "storage_bucket": "grats-app.appspot.com"
   },
   "client": [
@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:118076168276:android:5f68aec21b0f1bf1ec75c1",
         "android_client_info": {
-          "package_name": "com.example.grats_app"
+          "package_name": "grats.app"
         }
       },
       "oauth_client": [

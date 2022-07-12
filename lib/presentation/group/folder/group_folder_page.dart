@@ -27,10 +27,13 @@ class GroupFolderPage extends StatelessWidget {
         final List<Widget> widgets = folders
             .map(
               (folder) => Padding(
-                padding: const EdgeInsets.only(
-                    right: 20, left: 20, bottom: 8, top: 8),
+                padding: const EdgeInsets.all(8.0),
                 child: Card(
                   elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                    color: Colors.yellow[100],
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -65,10 +68,10 @@ class GroupFolderPage extends StatelessWidget {
                       model.fetchFolder(group);
                     },
                     leading: CircleAvatar(
+                      backgroundColor: ThemeColors.whiteColor,
                       child: Icon(Icons.folder_open),
                     ),
-                    title: Text('${folder.folderName}'),
-                    tileColor: Colors.yellow[100],
+                    title: Text('${folder.folderName}',style: TextStyle(fontSize: 20)),
                     subtitle: Text('${folder.folderDescription}'),
                     trailing: IconButton(
                       icon: Icon(Icons.edit),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
 import 'package:grats_app/presentation/login/login_page.dart';
-import 'package:grats_app/presentation/signup/signUp_model.dart';
+import 'package:grats_app/presentation/signup/signup_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
@@ -14,6 +14,7 @@ class SignUpPage extends StatelessWidget {
       create: (_) => SignUpModel(),
       child: Consumer<SignUpModel>(builder: (context, model, child) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             centerTitle: true,
             title: Text('SignUp',

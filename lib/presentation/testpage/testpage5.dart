@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/cursor.dart';
-import 'package:grats_app/domain/group.dart';
-import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
-import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
 import 'package:grats_app/presentation/testpage/test_model5.dart';
 import 'package:provider/provider.dart';

@@ -5,8 +5,6 @@ import 'package:grats_app/presentation/introduction/introduction_page.dart';
 import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:provider/provider.dart';
 
-import '../home/home_page.dart';
-
 class StoolPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
