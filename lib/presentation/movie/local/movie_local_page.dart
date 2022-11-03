@@ -103,7 +103,7 @@ class MovieLocalPage extends StatelessWidget {
                                               //fillColor: ThemeColors.backGroundColor,
                                               filled: true,
                                               contentPadding: EdgeInsets.symmetric(
-                                                vertical: 40,
+                                                vertical: 10,
                                               ),
                                               enabledBorder: OutlineInputBorder(
                                                 borderRadius:
