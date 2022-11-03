@@ -29,8 +29,7 @@ class BrowserCountItemWidget extends StatelessWidget {
                   StateSetter setState) {
               return Dismissible(
                 direction: DismissDirection.horizontal,
-                onDismissed: (DismissDirection direction) async {
-                  setState(() async {
+                onDismissed: (DismissDirection direction) async {              
                     if (direction ==
                         DismissDirection
                             .endToStart ||
@@ -43,8 +42,8 @@ class BrowserCountItemWidget extends StatelessWidget {
                       await model
                           .bodyListdelete(itemIndex);
                       //await model.bodyList.removeAt(index);
-                    }
-                  });
+                    };
+                    setState(() {});
                 },
                 key: UniqueKey(),
                 child: Card(

@@ -47,17 +47,17 @@ class GroupFolderPage extends StatelessWidget {
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) => AlertDialog(
-                          content: Text('フォルダを削除しますか？'),
+                          content: const Text('フォルダを削除しますか？'),
                           actions: <Widget>[
                             SimpleDialogOption(
-                              child: Text('Yes'),
+                              child: const Text('Yes'),
                               onPressed: () {
                                 model.foldersDocDelete(folder);
                                 Navigator.pop(context);
                               },
                             ),
                             SimpleDialogOption(
-                              child: Text('No'),
+                              child: const Text('No'),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
@@ -67,14 +67,14 @@ class GroupFolderPage extends StatelessWidget {
                       );
                       model.fetchFolder(group);
                     },
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       backgroundColor: ThemeColors.whiteColor,
                       child: Icon(Icons.folder_open),
                     ),
-                    title: Text('${folder.folderName}',style: TextStyle(fontSize: 20)),
+                    title: Text('${folder.folderName}',style: const TextStyle(fontSize: 20)),
                     subtitle: Text('${folder.folderDescription}'),
                     trailing: IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -87,31 +87,31 @@ class GroupFolderPage extends StatelessWidget {
                                   TextField(
                                     controller: model.folderNameController,
                                     decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.folder_open),
+                                      prefixIcon: const Icon(Icons.folder_open),
                                       labelText: 'Folder名を記載',
                                       //fillColor: ThemeColors.backGroundColor,
                                       filled: true,
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                             //color: ThemeColors.whiteColor,
                                             ),
                                       ),
                                     ),
                                   ),
-                                  Padding(padding: EdgeInsets.all(10.0)),
+                                  const Padding(padding: EdgeInsets.all(10.0)),
                                   TextField(
                                     controller: model.folderDescController,
                                     decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.folder_open),
+                                      prefixIcon: const Icon(Icons.folder_open),
                                       labelText: '説明を記載',
                                       filled: true,
-                                      contentPadding: EdgeInsets.symmetric(
+                                      contentPadding: const EdgeInsets.symmetric(
                                         vertical: 40,
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                             //color: ThemeColors.whiteColor,
                                             ),
                                       ),
@@ -128,7 +128,7 @@ class GroupFolderPage extends StatelessWidget {
                                   },
                                 ),
                                 TextButton(
-                                  child: Text('OK'),
+                                  child: const Text('OK'),
                                   onPressed: () async {
                                     await model.updateFolder(folder);
                                     await model.fetchFolder(group);
@@ -150,19 +150,19 @@ class GroupFolderPage extends StatelessWidget {
 
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(kToolbarHeight),
+            preferredSize: const Size.fromHeight(kToolbarHeight),
             child: AppBar(
               centerTitle: true,
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
+                icon: const Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              title: Text('Folder'),
+              title: const Text('Folder'),
               actions: [
                 IconButton(
-                  icon: Icon(Icons.add, color: ThemeColors.whiteColor),
+                  icon: const Icon(Icons.add, color: ThemeColors.whiteColor),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -176,32 +176,32 @@ class GroupFolderPage extends StatelessWidget {
                                 controller: model.folderNameController,
                                 //textInputAction: TextInputAction.next,
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.folder_open),
+                                  prefixIcon: const Icon(Icons.folder_open),
                                   labelText: 'Folder名を記載',
                                   //fillColor: ThemeColors.backGroundColor,
                                   filled: true,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         //color: ThemeColors.whiteColor,
                                         ),
                                   ),
                                 ),
                               ),
-                              Padding(padding: EdgeInsets.all(10.0)),
+                              const Padding(padding: EdgeInsets.all(10.0)),
                               TextField(
                                 controller: model.folderDescController,
                                 decoration: InputDecoration(
-                                  prefixIcon: Icon(Icons.folder_open),
+                                  prefixIcon: const Icon(Icons.folder_open),
                                   labelText: '説明を記載',
                                   //fillColor: ThemeColors.backGroundColor,
                                   filled: true,
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                     vertical: 40,
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
+                                    borderSide: const BorderSide(
                                         //color: ThemeColors.whiteColor,
                                         ),
                                   ),
@@ -218,7 +218,7 @@ class GroupFolderPage extends StatelessWidget {
                               },
                             ),
                             TextButton(
-                              child: Text('OK'),
+                              child: const Text('OK'),
                               onPressed: () async {
                                 try {
                                   await model.addFolder(group);

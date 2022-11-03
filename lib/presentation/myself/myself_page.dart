@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
-import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_model.dart';
+import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/slide_left_route.dart';
 import 'package:provider/provider.dart';
 
@@ -14,16 +14,16 @@ class MyselfPage extends StatelessWidget {
         double screenHeight = MediaQuery.of(context).size.height;
         double screenWidth = MediaQuery.of(context).size.width;
         double appbarHeight = AppBar().preferredSize.height;
-        print('screenHeightは${screenHeight}');
-        print('screenWidthは${screenWidth}');
-        print('appbarHeightは${appbarHeight}');
+        print('screenHeightは$screenHeight');
+        print('screenWidthは$screenWidth');
+        print('appbarHeightは$appbarHeight');
 
         //int? tabIndex = DefaultTabController.of(context)?.index;
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             centerTitle: true,
-            title: Text('Mypage'),
+            title: const Text('Mypage'),
           ),
           body: LayoutBuilder(
             builder: ((context, constraints) {
@@ -51,17 +51,18 @@ class MyselfPage extends StatelessWidget {
                                   children: [
                                     !model.isLogin
                                         ? GestureDetector(
-                                            onTap: () async => Navigator.of(
-                                                    context)
-                                                .pushReplacementNamed("/signUp"),
+                                            onTap: () async =>
+                                                Navigator.of(context)
+                                                    .pushReplacementNamed(
+                                                        "/signUp"),
                                             child: Container(
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 color: Colors.blue,
                                               ),
                                               height: 55,
                                               width: 55,
-                                              child: CircleAvatar(
+                                              child: const CircleAvatar(
                                                 backgroundColor:
                                                     ThemeColors.cyanSubColor,
                                                 child: Icon(Icons.login,
@@ -75,12 +76,12 @@ class MyselfPage extends StatelessWidget {
                                             onTap: () async =>
                                                 model.fetchMyUser(),
                                             child: Container(
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                 shape: BoxShape.circle,
                                               ),
                                               height: 55,
                                               width: 55,
-                                              child: CircleAvatar(
+                                              child: const CircleAvatar(
                                                 backgroundColor:
                                                     ThemeColors.cyanSubColor,
                                                 child: Icon(Icons.refresh,
@@ -170,7 +171,8 @@ class MyselfPage extends StatelessWidget {
                                                                   .circle,
                                                               //color: Colors.blue,
                                                             ),
-                                                            child: CircleAvatar(
+                                                            child:
+                                                                const CircleAvatar(
                                                               backgroundColor:
                                                                   ThemeColors
                                                                       .cyanSubColor,
@@ -189,10 +191,8 @@ class MyselfPage extends StatelessWidget {
                                                 }
                                                 //FireStoreの値がNullの場合つまり初期値の場合
                                                 else if (model.myUser.imgURL ==
-                                                        '' ||
-                                                    model.myUser.imgURL ==
-                                                        null) {
-                                                  return CircleAvatar(
+                                                    '') {
+                                                  return const CircleAvatar(
                                                     radius: 30,
                                                     backgroundColor: ThemeColors
                                                         .cyanSubColor,
@@ -203,11 +203,9 @@ class MyselfPage extends StatelessWidget {
                                                 }
                                                 //プロフィールにimgURLがある場合は下記を実行
                                                 return CircleAvatar(
-                                                  radius: 30,
-                                                  child: ClipOval(
-                                                    child: Image.network(
-                                                        model.myUser.imgURL),
-                                                  ),
+                                                  radius: 50,
+                                                  backgroundImage: NetworkImage(
+                                                      model.myUser.imgURL),
                                                 );
                                               })(),
                                             ),
@@ -224,7 +222,7 @@ class MyselfPage extends StatelessWidget {
                                                 enterPage: MyselfSetting()));
                                       },
                                       child: Container(
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: Colors.blue,
                                         ),
@@ -248,15 +246,16 @@ class MyselfPage extends StatelessWidget {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: ConstrainedBox(
-                                        constraints: BoxConstraints.expand(
-                                            height: 60.0, width: 200.0),
+                                        constraints:
+                                            const BoxConstraints.expand(
+                                                height: 60.0, width: 200.0),
                                         child: TextFormField(
                                           //textAlign: TextAlign.center,
                                           enabled: model.isLogin,
                                           controller: model.userNameController,
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
-                                            prefixIcon: Icon(Icons.person,
+                                            prefixIcon: const Icon(Icons.person,
                                                 color: ThemeColors.whiteColor),
                                             hintText: (() {
                                               if (!model.isLogin) {
@@ -268,29 +267,32 @@ class MyselfPage extends StatelessWidget {
                                               }
                                               return model.myUser.userName;
                                             })(),
-                                            hintStyle: TextStyle(
+                                            hintStyle: const TextStyle(
                                                 color: ThemeColors.whiteColor),
-                                            enabledBorder: OutlineInputBorder(
+                                            enabledBorder:
+                                                const OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color:
                                                       ThemeColors.whiteColor),
                                             ),
-                                            focusedBorder: OutlineInputBorder(
+                                            focusedBorder:
+                                                const OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color:
                                                       ThemeColors.whiteColor),
                                             ),
-                                            disabledBorder: OutlineInputBorder(
+                                            disabledBorder:
+                                                const OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color:
-                                                  ThemeColors.whiteColor),
+                                                      ThemeColors.whiteColor),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
                                     ConstrainedBox(
-                                      constraints: BoxConstraints.expand(
+                                      constraints: const BoxConstraints.expand(
                                           height: 80.0, width: 200.0),
                                       child: TextFormField(
                                         enabled: model.isLogin,
@@ -301,7 +303,7 @@ class MyselfPage extends StatelessWidget {
                                         //TextFieldで複数行表示する
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          prefixIcon: Icon(Icons.comment,
+                                          prefixIcon: const Icon(Icons.comment,
                                               color: ThemeColors.whiteColor),
                                           //filled: true,
                                           //fillColor: ThemeColors.whiteColor,
@@ -318,47 +320,49 @@ class MyselfPage extends StatelessWidget {
                                           })(),
                                           hintStyle: const TextStyle(
                                               color: ThemeColors.whiteColor),
-                                          enabledBorder: const OutlineInputBorder(
+                                          enabledBorder:
+                                              const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: ThemeColors.whiteColor),
                                           ),
-                                          focusedBorder: const OutlineInputBorder(
+                                          focusedBorder:
+                                              const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 color: ThemeColors.whiteColor),
                                           ),
-                                          disabledBorder: const OutlineInputBorder(
+                                          disabledBorder:
+                                              const OutlineInputBorder(
                                             borderSide: BorderSide(
-                                                color:
-                                                ThemeColors.whiteColor),
+                                                color: ThemeColors.whiteColor),
                                           ),
                                         ),
                                       ),
                                     ),
                                     (model.isLogin)
                                         ? ElevatedButton(
-                                          onPressed: () async {
-                                            model.startLoading();
-                                            // 追加の処理
-                                            try {
-                                              await model.userInfoUpdate();
-                                            } catch (e) {
-                                              final snackBar = SnackBar(
-                                                backgroundColor: Colors.red,
-                                                content: Text(e.toString()),
-                                              );
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(snackBar);
-                                            } finally {
-                                              model.endLoading();
-                                              await model.fetchMyUser();
-                                            }
-                                          },
-                                          child: Text('プロフィールを更新',
-                                              style: TextStyle(
-                                                  color: ThemeColors
-                                                      .whiteColor)),
-                                        )
-                                        : SizedBox(),
+                                            onPressed: () async {
+                                              model.startLoading();
+                                              // 追加の処理
+                                              try {
+                                                await model.userInfoUpdate();
+                                              } catch (e) {
+                                                final snackBar = SnackBar(
+                                                  backgroundColor: Colors.red,
+                                                  content: Text(e.toString()),
+                                                );
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
+                                              } finally {
+                                                model.endLoading();
+                                                await model.fetchMyUser();
+                                              }
+                                            },
+                                            child: const Text('プロフィールを更新',
+                                                style: TextStyle(
+                                                    color: ThemeColors
+                                                        .whiteColor)),
+                                          )
+                                        : const SizedBox(),
                                   ],
                                 ),
                               ],
@@ -386,22 +390,22 @@ class MyselfPage extends StatelessWidget {
                                       exitPage: this, enterPage: TestMovieBrowserPage()));
                             },
                             child: Text('MyRecordへ')),*/
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
+                        const Padding(
+                          padding: EdgeInsets.all(15.0),
                         ),
                         Card(
                           color: ThemeColors.backGroundColor,
                           child: Column(
                             children: [
                               ListTile(
-                                leading: Icon(
+                                leading: const Icon(
                                   Icons.folder_open,
                                   size: 40,
                                 ),
-                                title:
-                                    Text('現在の合計レコード数 : ${model.folderLength ?? '0'}'),
-                                subtitle:
-                                    Text('現在の合計アイテム数 : ${model.itemLength?? '0'}'),
+                                title: Text(
+                                    '現在の合計レコード数 : ${model.folderLength ?? '0'}'),
+                                subtitle: Text(
+                                    '現在の合計アイテム数 : ${model.itemLength ?? '0'}'),
                               ),
                             ],
                           ),

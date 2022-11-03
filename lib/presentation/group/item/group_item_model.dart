@@ -27,9 +27,7 @@ class GroupItemModel extends ChangeNotifier {
       final itemDescription = data['itemDescription'] as String?;
       final itemID = data['itemID'] as String?;
       return Item2(
-          itemName: itemName,
-          itemDescription: itemDescription,
-          itemID: itemID);
+          itemName: itemName, itemDescription: itemDescription, itemID: itemID);
     }).toList();
 
     this.items = items;
@@ -37,14 +35,14 @@ class GroupItemModel extends ChangeNotifier {
   }
 
   Future<void> setItem(Folder folder) async {
-    if (itemNameController.text == null || itemNameController.text == "") {
+    if (itemNameController.text.isEmpty || itemNameController.text == "") {
       throw 'アイテム名が入力されていません';
     }
-    if (itemDescController.text == null || itemDescController.text == "") {
+    if (itemDescController.text.isEmpty || itemDescController.text == "") {
       throw '説明が入力されていません';
     }
 
-    final itemsDoc = await FirebaseFirestore.instance.collection('Items').doc();
+    final itemsDoc = FirebaseFirestore.instance.collection('Items').doc();
 
     //Folder-IDを取得
     String itemID = itemsDoc.id;
@@ -57,9 +55,9 @@ class GroupItemModel extends ChangeNotifier {
       'folderID': folder.folderID,
     });
   }
-  Future<void> itemDocDelete(int index) async{
-   final id = items![index].itemID;
+
+  Future<void> itemDocDelete(int index) async {
+    final id = items![index].itemID;
     FirebaseFirestore.instance.collection('Items').doc(id).delete();
   }
-
 }

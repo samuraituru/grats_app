@@ -127,7 +127,7 @@ class GroupItemPage extends StatelessWidget {
                   slivers: <Widget>[
                     SliverAppBar(
                       leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios,
+                        icon: const Icon(Icons.arrow_back_ios,
                             color: ThemeColors.whiteColor),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -142,7 +142,7 @@ class GroupItemPage extends StatelessWidget {
                         background: GestureDetector(
                           onTap: () => print('tap'),
                           child: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage(
                                   'lib/assets/images/forest_image.png',
@@ -152,7 +152,7 @@ class GroupItemPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        title: Text('Item',
+                        title: const Text('Item',
                             style: TextStyle(
                                 color: ThemeColors.whiteColor,
                                 fontFamily: 'Courgette',
@@ -160,13 +160,14 @@ class GroupItemPage extends StatelessWidget {
                       ),
                       actions: [
                         IconButton(
-                          icon: Icon(Icons.add, color: ThemeColors.whiteColor),
+                          icon: const Icon(Icons.add,
+                              color: ThemeColors.whiteColor),
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text('アイテムを追加'),
+                                  title: const Text('アイテムを追加'),
                                   content: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -174,34 +175,38 @@ class GroupItemPage extends StatelessWidget {
                                         controller: model.itemNameController,
                                         //textInputAction: TextInputAction.next,
                                         decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.folder_open),
+                                          prefixIcon:
+                                              const Icon(Icons.folder_open),
                                           labelText: 'アイテム名を記載',
                                           //fillColor: ThemeColors.backGroundColor,
                                           filled: true,
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide: BorderSide(
+                                            borderSide: const BorderSide(
                                                 //color: ThemeColors.whiteColor,
                                                 ),
                                           ),
                                         ),
                                       ),
-                                      Padding(padding: EdgeInsets.all(10.0)),
+                                      const Padding(
+                                          padding: EdgeInsets.all(10.0)),
                                       TextField(
                                         controller: model.itemDescController,
                                         decoration: InputDecoration(
-                                          prefixIcon: Icon(Icons.folder_open),
+                                          prefixIcon:
+                                              const Icon(Icons.folder_open),
                                           labelText: '説明を記載',
                                           //fillColor: ThemeColors.backGroundColor,
                                           filled: true,
-                                          contentPadding: EdgeInsets.symmetric(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
                                             vertical: 40,
                                           ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            borderSide: BorderSide(
+                                            borderSide: const BorderSide(
                                                 //color: ThemeColors.whiteColor,
                                                 ),
                                           ),
@@ -211,14 +216,14 @@ class GroupItemPage extends StatelessWidget {
                                   ),
                                   actions: <Widget>[
                                     TextButton(
-                                      child: Text('キャンセル'),
+                                      child: const Text('キャンセル'),
                                       onPressed: () {
                                         Navigator.pop(context);
                                         model.controllerClear();
                                       },
                                     ),
                                     TextButton(
-                                      child: Text('OK'),
+                                      child: const Text('OK'),
                                       onPressed: () async {
                                         try {
                                           await model.setItem(folder);
@@ -254,18 +259,19 @@ class GroupItemPage extends StatelessWidget {
                                 onPressed: () async {
                                   await showDialog(
                                     context: context,
-                                    builder: (BuildContext context) => AlertDialog(
-                                      content: Text('フォルダを削除しますか？'),
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      content: const Text('アイテムを削除しますか？'),
                                       actions: <Widget>[
                                         SimpleDialogOption(
-                                          child: Text('Yes'),
-                                          onPressed: () async{
+                                          child: const Text('Yes'),
+                                          onPressed: () async {
                                             await model.itemDocDelete(index);
                                             Navigator.pop(context);
                                           },
                                         ),
                                         SimpleDialogOption(
-                                          child: Text('No'),
+                                          child: const Text('No'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -275,12 +281,12 @@ class GroupItemPage extends StatelessWidget {
                                   );
                                   model.getItem(folder);
                                 },
-                                icon: Icon(Icons.delete_forever)),
+                                icon: const Icon(Icons.delete_forever)),
                             title: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('名前'),
-                                Padding(
+                                const Text('名前'),
+                                const Padding(
                                   padding: EdgeInsets.all(8.0),
                                 ),
                                 Container(
@@ -289,8 +295,8 @@ class GroupItemPage extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(14.0),
                                     child: Text(
-                                      '${model.items![index].itemName}',
-                                      style: TextStyle(fontSize: 20),
+                                      model.items![index].itemName,
+                                      style: const TextStyle(fontSize: 20),
                                     ),
                                   ),
                                 ),
@@ -299,8 +305,8 @@ class GroupItemPage extends StatelessWidget {
                             subtitle: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('備考'),
-                                Padding(
+                                const Text('備考'),
+                                const Padding(
                                   padding: EdgeInsets.all(6.0),
                                 ),
                                 Container(
@@ -314,7 +320,7 @@ class GroupItemPage extends StatelessWidget {
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
                                       model.items![index].itemDescription!,
-                                      style: TextStyle(fontSize: 20),
+                                      style: const TextStyle(fontSize: 20),
                                     ),
                                   ),
                                 ),
@@ -326,12 +332,12 @@ class GroupItemPage extends StatelessWidget {
                                 (item) => ListTile(
                                   trailing: IconButton(
                                       onPressed: () {},
-                                      icon: Icon(Icons.delete_forever)),
+                                      icon: const Icon(Icons.delete_forever)),
                                   title: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('名前'),
-                                      Padding(
+                                      const Text('名前'),
+                                      const Padding(
                                         padding: EdgeInsets.all(8.0),
                                       ),
                                       Container(
@@ -341,8 +347,9 @@ class GroupItemPage extends StatelessWidget {
                                         child: Padding(
                                           padding: const EdgeInsets.all(14.0),
                                           child: Text(
-                                            '${model.items![index].itemName}',
-                                            style: TextStyle(fontSize: 20),
+                                            model.items![index].itemName,
+                                            style:
+                                                const TextStyle(fontSize: 20),
                                           ),
                                         ),
                                       ),
@@ -351,8 +358,8 @@ class GroupItemPage extends StatelessWidget {
                                   subtitle: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text('備考'),
-                                      Padding(
+                                      const Text('備考'),
+                                      const Padding(
                                         padding: EdgeInsets.all(6.0),
                                       ),
                                       Container(
@@ -369,7 +376,8 @@ class GroupItemPage extends StatelessWidget {
                                           child: Text(
                                             model
                                                 .items![index].itemDescription!,
-                                            style: TextStyle(fontSize: 20),
+                                            style:
+                                                const TextStyle(fontSize: 20),
                                           ),
                                         ),
                                       ),

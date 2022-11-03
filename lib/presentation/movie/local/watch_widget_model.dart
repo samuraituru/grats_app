@@ -26,7 +26,9 @@ class WatchWidgetModel extends ChangeNotifier {
   }
 
   Future _initVideoController() async {
-    await videoPlayerController!.initialize();
+    if (videoPlayerController != null) {
+      await videoPlayerController!.initialize();
+    }
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController!,
       aspectRatio: videoPlayerController!.value.aspectRatio,
