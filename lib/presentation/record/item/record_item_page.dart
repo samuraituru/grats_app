@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/record/item/recoed_item_model.dart';
-import 'package:grats_app/presentation/record/record_page.dart';
-import 'package:grats_app/presentation/slide_right_route.dart';
 import 'package:provider/provider.dart';
 
 class RecordItemPage extends StatelessWidget {
@@ -17,9 +15,56 @@ class RecordItemPage extends StatelessWidget {
       child: Consumer<RecordItemModel>(builder: (context, model, child) {
         List<Widget> itemsWidget = model.items
             ?.map(
-              (item) => ListTile(
-                title: Text(item.itemName ?? '名前無し'),
-                subtitle: Text(item.itemDescription ?? ''),
+              (item) => SizedBox(
+                height: 150,
+                child: Card(
+                  child: ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('名前'),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                        ),
+                        Container(
+                          width: 200,
+                          padding: const EdgeInsets.only(bottom: 0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Text(
+                              '${item.itemName ?? '名前無し'}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('備考'),
+                        Padding(
+                          padding: EdgeInsets.all(6.0),
+                        ),
+                        Container(
+                          width: 200,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              '${item.itemDescription ?? ''}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             )
             .toList() as List<Widget>;
