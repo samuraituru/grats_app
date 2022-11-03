@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,14 +14,16 @@ class WatchWidgetModel extends ChangeNotifier {
   File? video;
   final picker = ImagePicker();
 
-    Future openVideoPlayer() async {
-      Wakelock.enable();
-      final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-      videoPlayerController = VideoPlayerController.file(File(pickedFile!.path));
-      await _initVideoController();
-      videoPlayerController!.play();
-      notifyListeners();
+  Future openVideoPlayer() async {
+    Wakelock.enable();
+    final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      videoPlayerController = VideoPlayerController.file(File(pickedFile.path));
     }
+    await _initVideoController();
+    videoPlayerController!.play();
+    notifyListeners();
+  }
 
   Future _initVideoController() async {
     await videoPlayerController!.initialize();
@@ -34,7 +37,7 @@ class WatchWidgetModel extends ChangeNotifier {
         return Center(
           child: Text(
             errorMessage,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.red,
             ),
           ),
@@ -43,10 +46,13 @@ class WatchWidgetModel extends ChangeNotifier {
     );
   }
 
+  @override
   void dispose() async {
     Wakelock.disable();
     chewieController?.dispose();
-    await videoPlayerController!.dispose();
+    if (videoPlayerController != null) {
+      await videoPlayerController!.dispose();
+    }
     super.dispose();
   }
 }

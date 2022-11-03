@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:grats_app/firebase_options.dart';
 import 'package:grats_app/objectbox.g.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
 import 'package:grats_app/presentation/home/home_page.dart';
@@ -9,8 +10,8 @@ import 'package:grats_app/presentation/introduction/Introduction_model.dart';
 import 'package:grats_app/presentation/introduction/introduction_page.dart';
 import 'package:grats_app/presentation/login/login_page.dart';
 import 'package:grats_app/presentation/movie/movie_page.dart';
-import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/myself/myself_page.dart';
+import 'package:grats_app/presentation/myself/myself_setting_page.dart';
 import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:grats_app/presentation/signup/signup_page.dart';
 import 'package:grats_app/presentation/stool_page.dart';
@@ -20,7 +21,9 @@ late Store store;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   store = await openStore();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -35,23 +38,20 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/group': (BuildContext context) => GroupPage(),
         '/home': (BuildContext context) => HomePage(),
-        '/introduction': (BuildContext context) => IntroductionPage(),
+        '/introduction': (BuildContext context) => const IntroductionPage(),
         '/login': (BuildContext context) => LoginPage(),
         '/movie': (BuildContext context) => MoviePage(),
         '/myself': (BuildContext context) => MyselfPage(),
         '/record': (BuildContext context) => RecordPage(),
         '/signUp': (BuildContext context) => SignUpPage(),
         '/myself/setting': (BuildContext context) => MyselfSetting(),
-
       },
       debugShowCheckedModeBanner: false,
       title: 'Grats App',
-      home: LoginCheckPage(),
+      home: const LoginCheckPage(),
     );
   }
 }
-
-
 
 class LoginCheckPage extends StatelessWidget {
   const LoginCheckPage({Key? key}) : super(key: key);
@@ -129,7 +129,7 @@ ThemeData createTheme() {
     primarySwatch: primeColor,
     primaryColor: ThemeColors.cyanSubColor,
     //fontFamily: 'Shadows_Into_Light',
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       titleTextStyle: TextStyle(
         fontFamily: 'Courgette',
         fontSize: 27,
@@ -139,7 +139,7 @@ ThemeData createTheme() {
 }
 
 class AppBackground extends StatelessWidget {
-  AppBackground({height, width});
+  const AppBackground({height, width});
 
   @override
   Widget build(BuildContext context) {
