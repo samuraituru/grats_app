@@ -5,13 +5,11 @@ import 'package:provider/provider.dart';
 class AnalysisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       home: ChangeNotifierProvider<AnalysisModel>(
         create: (_) => AnalysisModel(),
         child: Consumer<AnalysisModel>(builder: (context, model, child) {
-          return Scaffold(
-          );
+          return const Scaffold();
         }),
       ),
     );

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/domain/folder.dart';
 import 'package:grats_app/domain/group.dart';
-import 'package:grats_app/domain/joingrouplist.dart';
 
 class GroupFolderModel extends ChangeNotifier {
   TextEditingController folderNameController = TextEditingController();
@@ -19,14 +18,14 @@ class GroupFolderModel extends ChangeNotifier {
   }
 
   Future<void> addFolder(Group group) async {
-    if (folderNameController.text == null || folderNameController.text == "") {
+    if (folderNameController.text.isEmpty || folderNameController.text == "") {
       throw 'フォルダ名が入力されていません';
     }
-    if (folderDescController.text == null ||
+    if (folderDescController.text.isEmpty ||
         folderDescController.text.isEmpty) {
       throw '説明が入力されていません';
     }
-    final foldersDoc = await FirebaseFirestore.instance.collection('Folders').doc();
+    final foldersDoc = FirebaseFirestore.instance.collection('Folders').doc();
     //Folder-IDを取得
     String folderID = foldersDoc.id;
     // Firestoreに追加
@@ -42,18 +41,17 @@ class GroupFolderModel extends ChangeNotifier {
   }
 
   Future<void> updateFolder(Folder folder) async {
-    if (folderNameController.text == null && folderNameController.text == ''){
+    if (folderNameController.text.isEmpty && folderNameController.text == '') {
       throw 'フォルダ名を入力してください';
     }
-    if (folderDescController.text == null && folderDescController.text == ''){
+    if (folderDescController.text.isEmpty && folderDescController.text == '') {
       throw '説明を入力してください';
     }
 
-    if (folderNameController.text != null ||
-        folderDescController.text != null) {
-      final foldersDoc = await FirebaseFirestore.instance
-          .collection('Folders')
-          .doc(folder.folderID);
+    if (folderNameController.text.isNotEmpty ||
+        folderDescController.text.isNotEmpty) {
+      final foldersDoc =
+          FirebaseFirestore.instance.collection('Folders').doc(folder.folderID);
 
       // Firestoreの値を更新する
       await foldersDoc.update(
@@ -102,7 +100,10 @@ class GroupFolderModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> foldersDocDelete(Folder folder) async{
-    FirebaseFirestore.instance.collection('Folders').doc(folder.folderID).delete();
+  Future<void> foldersDocDelete(Folder folder) async {
+    FirebaseFirestore.instance
+        .collection('Folders')
+        .doc(folder.folderID)
+        .delete();
   }
 }

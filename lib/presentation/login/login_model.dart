@@ -37,18 +37,18 @@ class LoginModel extends ChangeNotifier {
   }
 
   void setEmail(String text) {
-    this.email = text;
+    email = text;
     notifyListeners();
   }
 
   void setPassword(String text) {
-    this.password = password;
+    password = password;
     notifyListeners();
   }
 
   Future login() async {
-    this.email = emailController.text;
-    this.password = passwordController.text;
+    email = emailController.text;
+    password = passwordController.text;
 
     if (email != null && password != null) {
       // ログイン
@@ -56,16 +56,16 @@ class LoginModel extends ChangeNotifier {
           .signInWithEmailAndPassword(email: email!, password: password!);
 
       final currentUser = FirebaseAuth.instance.currentUser;
-      this.user?.uID = currentUser!.uid;
+      user?.uID = currentUser!.uid;
     }
   }
 
   Future sendPasswordResetEmail() async {
-    if (emailController.text == null) {
+    if (emailController.text.isEmpty) {
       throw 'メールアドレスが入力されていません';
     }
 
-   final emailText = emailController.text;
+    final emailText = emailController.text;
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailText);
       return 'success';

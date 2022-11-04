@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
@@ -26,13 +24,13 @@ class IntroductionPage extends StatelessWidget {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('見たい動画から気になる項目を\nカウントしてみよう',
+                    const Text('見たい動画から気になる項目を\nカウントしてみよう',
                         style: TextStyle(
                             color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
+                    const Padding(
+                      padding: EdgeInsets.all(20.0),
                     ),
                     Lottie.asset(
                       'lib/assets/images/movie_image.json',
@@ -54,13 +52,13 @@ class IntroductionPage extends StatelessWidget {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('分析の結果をレコードに残そう',
+                    const Text('分析の結果をレコードに残そう',
                         style: TextStyle(
                             color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
+                    const Padding(
+                      padding: EdgeInsets.all(20.0),
                     ),
                     Lottie.asset(
                       'lib/assets/images/record_image.json',
@@ -82,13 +80,13 @@ class IntroductionPage extends StatelessWidget {
                     child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('グループ機能を使って\n情報を共有しよう',
+                    const Text('グループ機能を使って\n情報を共有しよう',
                         style: TextStyle(
                             color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
+                    const Padding(
+                      padding: EdgeInsets.all(20.0),
                     ),
                     Lottie.asset(
                       'lib/assets/images/group_image.json',
@@ -113,13 +111,13 @@ class IntroductionPage extends StatelessWidget {
                     Align(
                         alignment: Alignment.bottomCenter,
                         child: buildConfetti(model)),
-                    Text('Gratsをはじめましょう♪♪♪',
+                    const Text('Gratsをはじめましょう♪♪♪',
                         style: TextStyle(
                             color: ThemeColors.whiteColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold)),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
+                    const Padding(
+                      padding: EdgeInsets.all(20.0),
                     ),
                     Lottie.asset(
                       'lib/assets/images/startup_image.json',
@@ -150,7 +148,7 @@ class IntroductionPage extends StatelessWidget {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: ThemeColors.whiteColor, //ボタンの背景色
+                        backgroundColor: ThemeColors.whiteColor, //ボタンの背景色
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -165,7 +163,7 @@ class IntroductionPage extends StatelessWidget {
             globalBackgroundColor: ThemeColors.color,
             pages: listPagesViewModel,
             onDone: () {
-              model.setFirstIntro();//Introductionが終わると既に見たことを示すFalseを格納する
+              model.setFirstIntro(); //Introductionが終わると既に見たことを示すFalseを格納する
             },
             showSkipButton: true,
             back: const Icon(Icons.arrow_back),
@@ -222,9 +220,9 @@ class IntroductionPage extends StatelessWidget {
       // 紙吹雪の出る瞬間の5フレーム分の速度の最大(数が大きほど紙吹雪は遠くに飛んでいきます。)
       minBlastForce: 5,
       // 紙吹雪の出る瞬間の5フレーム分の速度の最小
-      colors: [Colors.green, Colors.pink, Colors.orange],
-      maximumSize: Size(20, 20),
-      minimumSize: Size(10, 10),
+      colors: const [Colors.green, Colors.pink, Colors.orange],
+      maximumSize: const Size(20, 20),
+      minimumSize: const Size(10, 10),
       gravity: 0.4,
       // 紙の落ちる速さ(0~1で0だとちょーゆっくり)
       particleDrag: 0.001,

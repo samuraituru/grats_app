@@ -33,7 +33,7 @@ class GroupFolderPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                    color: Colors.yellow[100],
+                  color: Colors.yellow[100],
                   child: ListTile(
                     onTap: () {
                       Navigator.push(
@@ -71,7 +71,8 @@ class GroupFolderPage extends StatelessWidget {
                       backgroundColor: ThemeColors.whiteColor,
                       child: Icon(Icons.folder_open),
                     ),
-                    title: Text('${folder.folderName}',style: const TextStyle(fontSize: 20)),
+                    title: Text('${folder.folderName}',
+                        style: const TextStyle(fontSize: 20)),
                     subtitle: Text('${folder.folderDescription}'),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit),
@@ -106,7 +107,8 @@ class GroupFolderPage extends StatelessWidget {
                                       prefixIcon: const Icon(Icons.folder_open),
                                       labelText: '説明を記載',
                                       filled: true,
-                                      contentPadding: const EdgeInsets.symmetric(
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
                                         vertical: 40,
                                       ),
                                       enabledBorder: OutlineInputBorder(
@@ -154,7 +156,8 @@ class GroupFolderPage extends StatelessWidget {
             child: AppBar(
               centerTitle: true,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
+                icon: const Icon(Icons.arrow_back_ios,
+                    color: ThemeColors.whiteColor),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

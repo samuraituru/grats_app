@@ -1,5 +1,4 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
 import 'package:grats_app/presentation/group/group_page.dart';
@@ -10,12 +9,10 @@ import 'package:grats_app/presentation/record/record_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({
-    Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return ChangeNotifierProvider<HomeModel>(
       create: (_) => HomeModel()..listenAuth(),
       child: Consumer<HomeModel>(builder: (context, model, child) {
@@ -24,19 +21,19 @@ class HomePage extends StatelessWidget {
               icon: Icon(Icons.home),
               title: 'Home',
             ),*/
-          TabItem(
+          const TabItem(
             icon: Icon(Icons.groups_rounded),
             title: 'Group',
           ),
-          TabItem(
+          const TabItem(
             icon: Icon(Icons.edit),
             title: 'Record',
           ),
-          TabItem(
+          const TabItem(
             icon: Icon(Icons.movie_creation_outlined),
             title: 'Movie',
           ),
-          TabItem(
+          const TabItem(
             icon: Icon(Icons.person_rounded),
             title: 'MyPage',
           ),
@@ -69,7 +66,7 @@ class HomePage extends StatelessWidget {
         _tabPage(
           currentIndex,
           0,
-          GroupPage(isLogin:model.isLogin),
+          GroupPage(isLogin: model.isLogin),
         ),
         _tabPage(
           currentIndex,

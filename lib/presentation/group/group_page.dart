@@ -1,13 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grats_app/main.dart';
+import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
 import 'package:grats_app/presentation/group/group_blockList_page.dart';
+import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:grats_app/presentation/group/group_page_alerttabview.dart';
 import 'package:grats_app/presentation/slide_right_route.dart';
-import 'package:grats_app/presentation/group/folder/group_folder_page.dart';
-import 'package:grats_app/presentation/group/group_model.dart';
 import 'package:nil/nil.dart';
 import 'package:provider/provider.dart';
+
 import '../../domain/group.dart';
 
 class GroupPage extends StatelessWidget {
@@ -31,7 +31,7 @@ class GroupPage extends StatelessWidget {
               width: 100,
               height: 100,
               color: Colors.white,
-              child: Center(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
             );
@@ -74,13 +74,13 @@ class GroupPage extends StatelessWidget {
                               ),
                             ),
                           )
-                        : CircleAvatar(
+                        : const CircleAvatar(
                             radius: 30,
                             backgroundColor: Colors.grey,
                           ),
                     title: Text('${group.groupName}'),
                     subtitle: Text('${group.groupDescription}'),
-                    trailing: Icon(Icons.keyboard_arrow_up),
+                    trailing: const Icon(Icons.keyboard_arrow_up),
                   ),
                 ),
               ),
@@ -88,29 +88,30 @@ class GroupPage extends StatelessWidget {
           }).toList();
           return Scaffold(
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
+              preferredSize: const Size.fromHeight(kToolbarHeight),
               child: AppBar(
                 centerTitle: true,
                 leading: (isLogin!)
                     ? IconButton(
-                        icon:
-                            Icon(Icons.list_alt, color: ThemeColors.whiteColor),
+                        icon: const Icon(Icons.list_alt,
+                            color: ThemeColors.whiteColor),
                         onPressed: () async {
                           await Navigator.push(context,
                               SlideRightRoute(page: GroupBloclListPage()));
                           model.fetchAllGroups();
                         })
                     : nil,
-                title: Text('Group'),
+                title: const Text('Group'),
                 actions: [
                   (isLogin!)
                       ? IconButton(
-                          icon: Icon(Icons.add, color: ThemeColors.whiteColor),
+                          icon: const Icon(Icons.add,
+                              color: ThemeColors.whiteColor),
                           onPressed: () async {
                             await showDialog(
                               context: context,
                               builder: (context) {
-                                return AlertTabView();
+                                return const AlertTabView();
                                 /*return AlertDialog(
                             //insetPadding: EdgeInsets.zero,
                             content: Container(
@@ -168,7 +169,7 @@ class GroupPage extends StatelessWidget {
                             model.fetchAllGroups();
                           },
                         )
-                      : SizedBox()
+                      : const SizedBox()
                 ],
                 //elevation: 0.0,
               ),
@@ -185,7 +186,7 @@ class GroupPage extends StatelessWidget {
                         ? ListView(
                             children: widgets,
                           )
-                        : Text(
+                        : const Text(
                             'ゲストアカウントのため使用できません',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )),
@@ -233,39 +234,39 @@ class GroupPageModal extends StatelessWidget {
                               return GroupSettingModal(group: group);
                             });
                       },
-                      icon: Icon(Icons.settings)),
+                      icon: const Icon(Icons.settings)),
                   group.isBlocks![currentUID] == false
                       ? ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
-                            primary: Colors.grey,
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.grey,
                           ),
                           onPressed: () {
                             model.blockButtonEnable(group, currentUID);
                             MySnackBar.show(
                                 context: context, message: 'blockしました');
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.block,
                           ),
                         )
                       : ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            shape: CircleBorder(),
-                            primary: Colors.white,
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.white,
                           ),
                           onPressed: () {
                             model.blockButtonDisable(group, currentUID);
                             MySnackBar.show(
                                 context: context, message: 'block解除しました');
                           },
-                          child: Icon(Icons.block, color: Colors.red),
+                          child: const Icon(Icons.block, color: Colors.red),
                         ),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(100.0),
+            const Padding(
+              padding: EdgeInsets.all(100.0),
             ),
             GestureDetector(
               onTap: () async {
@@ -307,13 +308,13 @@ class GroupPageModal extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(15.0),
               child: Text('${group.groupName}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 24,
                   )),
             ),
-            Card(),
+            const Card(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -323,7 +324,7 @@ class GroupPageModal extends StatelessWidget {
                     TextButton.icon(
                       onPressed: () {},
                       style: TextButton.styleFrom(
-                        primary: Colors.black,
+                        foregroundColor: Colors.black,
                       ),
                       icon: const Icon(Icons.group, size: 30),
                       label:
@@ -334,7 +335,7 @@ class GroupPageModal extends StatelessWidget {
                         radius: 18,
                         backgroundColor: Colors.grey,
                         child: Text('${group.memberIDs?.length}',
-                            style: TextStyle(color: Colors.white)),
+                            style: const TextStyle(color: Colors.white)),
                       ),
                     ),
                   ],
@@ -348,7 +349,7 @@ class GroupPageModal extends StatelessWidget {
                                 GroupFolderPage(group: group)));
                   },
                   style: TextButton.styleFrom(
-                    primary: Colors.black,
+                    foregroundColor: Colors.black,
                   ),
                   icon: const Icon(Icons.folder_open, size: 30),
                   label: const Text('Folder', style: TextStyle(fontSize: 18)),
@@ -370,7 +371,7 @@ Color TextColor() {
 class MySnackBar extends StatelessWidget {
   final String message;
 
-  MySnackBar({required this.message});
+  const MySnackBar({required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +393,7 @@ class MySnackBar extends StatelessWidget {
             Icons.check,
             color: mainColor,
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Text(message, style: TextStyle(color: mainColor)),
@@ -419,11 +420,11 @@ class MySnackBar extends StatelessWidget {
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(
+          const Icon(
             Icons.error,
             color: Colors.white,
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Text(message),
@@ -452,10 +453,10 @@ class GroupSettingModal extends StatelessWidget {
       create: (_) => GroupModel(),
       child: Consumer<GroupModel>(builder: (context, model, child) {
         return Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(80.0),
+          const Padding(
+            padding: EdgeInsets.all(80.0),
           ),
-          Text('グループ名'),
+          const Text('グループ名'),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: TextField(
@@ -466,10 +467,10 @@ class GroupSettingModal extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
+          const Padding(
+            padding: EdgeInsets.all(20.0),
           ),
-          Text('説明'),
+          const Text('説明'),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: TextField(
@@ -481,8 +482,8 @@ class GroupSettingModal extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
+          const Padding(
+            padding: EdgeInsets.all(12.0),
           ),
           TextButton(
             onPressed: () async {
@@ -499,12 +500,12 @@ class GroupSettingModal extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
             },
-            child: Text('グループ情報を更新',
+            child: const Text('グループ情報を更新',
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
           ),
-          Padding(
-            padding: const EdgeInsets.all(25.0),
+          const Padding(
+            padding: EdgeInsets.all(25.0),
           ),
           ListTile(
             onTap: () {
@@ -512,13 +513,13 @@ class GroupSettingModal extends StatelessWidget {
             },
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: EdgeInsets.all(14.0),
                   child: Icon(Icons.share, size: 30),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text('Group-Codeを発行',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
@@ -527,14 +528,15 @@ class GroupSettingModal extends StatelessWidget {
           ),
           ListTile(
             title: Row(
-              children: [
+              children: const [
                 Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: EdgeInsets.all(14.0),
                   child: Icon(Icons.help, size: 30),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
+                  padding: EdgeInsets.all(8.0),
+                  child:
+                      Text('通報', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -542,13 +544,13 @@ class GroupSettingModal extends StatelessWidget {
           ),
           ListTile(
             title: Row(
-              children: [
+              children: const [
                 Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: EdgeInsets.all(14.0),
                   child: Icon(Icons.group_remove, size: 30),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text('グループから退会する',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.red)),
@@ -560,10 +562,10 @@ class GroupSettingModal extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
                   //title: new Text('AlertDialog'),
-                  content: Text('グループから退会しますか？'),
+                  content: const Text('グループから退会しますか？'),
                   actions: <Widget>[
                     SimpleDialogOption(
-                      child: Text('Yes'),
+                      child: const Text('Yes'),
                       onPressed: () async {
                         await model.groupWithdraw(group);
                         Navigator.of(context).pop();
@@ -572,7 +574,7 @@ class GroupSettingModal extends StatelessWidget {
                       },
                     ),
                     SimpleDialogOption(
-                      child: Text('No'),
+                      child: const Text('No'),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -584,13 +586,13 @@ class GroupSettingModal extends StatelessWidget {
           ),
           ListTile(
             title: Row(
-              children: [
+              children: const [
                 Padding(
-                  padding: const EdgeInsets.all(14.0),
+                  padding: EdgeInsets.all(14.0),
                   child: Icon(Icons.delete_forever, size: 30),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0),
                   child: Text('グループを削除する',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.red)),
@@ -602,19 +604,19 @@ class GroupSettingModal extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
                   //title: new Text('AlertDialog'),
-                  content: Text('グループを削除しますか？'),
+                  content: const Text('グループを削除しますか？'),
                   actions: <Widget>[
                     SimpleDialogOption(
-                      child: Text('Yes'),
+                      child: const Text('Yes'),
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
                             //title: new Text('AlertDialog'),
-                            content: Text('一度削除したグループは元に戻せませんがよろしいですか？'),
+                            content: const Text('一度削除したグループは元に戻せませんがよろしいですか？'),
                             actions: <Widget>[
                               SimpleDialogOption(
-                                child: Text('Yes'),
+                                child: const Text('Yes'),
                                 onPressed: () async {
                                   await model.deleteGroup(group);
                                   Navigator.of(context).pop();
@@ -624,7 +626,7 @@ class GroupSettingModal extends StatelessWidget {
                                 },
                               ),
                               SimpleDialogOption(
-                                child: Text('No'),
+                                child: const Text('No'),
                                 onPressed: () {
                                   Navigator.pop(context);
                                   Navigator.pop(context);
@@ -636,7 +638,7 @@ class GroupSettingModal extends StatelessWidget {
                       },
                     ),
                     SimpleDialogOption(
-                      child: Text('No'),
+                      child: const Text('No'),
                       onPressed: () {
                         Navigator.pop(context);
                       },

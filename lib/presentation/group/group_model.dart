@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grats_app/domain/group.dart';
 import 'package:grats_app/domain/myuser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,25 +30,24 @@ class GroupModel extends ChangeNotifier {
 
   Map<String, dynamic> isBlocksTrue(String currentUID) {
     //ブロックするため、Trueをセットする
-    isBlocks['$currentUID'] = true;
+    isBlocks[currentUID] = true;
     return isBlocks;
   }
 
   Map<String, dynamic> isBlocksFalse(String currentUID) {
     //ブロックするため、Trueをセットする
-    isBlocks['$currentUID'] = false;
+    isBlocks[currentUID] = false;
     return isBlocks;
   }
 
   Future<void> blockButtonEnable(Group group, String currentUID) async {
-    if (currentUID == null || currentUID == "") {
+    if (currentUID.isEmpty || currentUID == "") {
       throw 'loginされていません';
     }
-    group.isBlocks!['$currentUID'] = true;
+    group.isBlocks![currentUID] = true;
 
-    final groupsDoc = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc(group.groupID);
+    final groupsDoc =
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     await groupsDoc.update(
       {
         'isBlocks': isBlocksTrue(currentUID),
@@ -58,14 +57,13 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> blockButtonDisable(Group group, String currentUID) async {
-    if (currentUID == null || currentUID == "") {
+    if (currentUID.isEmpty || currentUID == "") {
       throw 'loginされていません';
     }
-    group.isBlocks!['$currentUID'] = false;
+    group.isBlocks![currentUID] = false;
 
-    final groupsDoc = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc(group.groupID);
+    final groupsDoc =
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     await groupsDoc.update(
       {
         'isBlocks': isBlocksFalse(currentUID),
@@ -100,8 +98,8 @@ class GroupModel extends ChangeNotifier {
   DocumentSnapshot? groupsSnapshot;
 
   Future<void> fetchAllGroups() async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.currentUID = currentuser?.uid.toString();
+    User? currentuser = FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
     if (currentUID == null || currentUID == "") {
       throw 'loginされていません';
     }
@@ -110,7 +108,7 @@ class GroupModel extends ChangeNotifier {
         .where("memberIDs", arrayContains: currentUID)
         .get();
     print(joinGroupsDoc);
-    if (joinGroupsDoc != null) {
+    if (joinGroupsDoc.docs.isNotEmpty) {
       final List<Group> joins =
           joinGroupsDoc.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -130,7 +128,7 @@ class GroupModel extends ChangeNotifier {
           imgURL: imgURL ?? '',
         );
       }).toList();
-      this.groups = joins;
+      groups = joins;
       notifyListeners();
     }
   }
@@ -150,7 +148,7 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<NetworkImage> getImage(group) async {
-    NetworkImage networkImage = await NetworkImage(group);
+    NetworkImage networkImage = NetworkImage(group);
     return networkImage;
   }
 
@@ -172,15 +170,14 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> addGroup() async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.currentUID = currentuser?.uid.toString();
+    User? currentuser = FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
     print(currentUID);
 
     //GroupのDocumentReferenceを取得
     //DocのIDは自動採番される
-    final groupsDoc =
-        await FirebaseFirestore.instance.collection('Groups').doc();
-    print('グループドキュメントは${groupsDoc}');
+    final groupsDoc = FirebaseFirestore.instance.collection('Groups').doc();
+    print('グループドキュメントは$groupsDoc');
 
     // FireStorageへアップロード
     String? imgURL;
@@ -192,7 +189,7 @@ class GroupModel extends ChangeNotifier {
     }
 
     //GroupのIDを取得
-    this.groupID = groupsDoc.id;
+    groupID = groupsDoc.id;
 
     //FirestoreにGroups情報を追加
     await groupsDoc.set(
@@ -210,7 +207,7 @@ class GroupModel extends ChangeNotifier {
 
   Map<String, dynamic> isBlocksAdd(String currentUID) {
     //初期値はブロックしていないため、Falseをセットする
-    isBlocks['${currentUID}'] = false;
+    isBlocks[currentUID] = false;
     return isBlocks;
   }
 
@@ -233,12 +230,10 @@ class GroupModel extends ChangeNotifier {
       imageFile = File(pickedFile.path);
     }
 
-
     notifyListeners();
   }
 
   Future<void> imageUpData(Group group) async {
-
     //GalleryからImageを取得
     final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
 
@@ -248,7 +243,7 @@ class GroupModel extends ChangeNotifier {
     }
 
     final groupsDoc =
-        await FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     String? imgURL;
     if (imageFile != null) {
       final task = await FirebaseStorage.instance
@@ -272,9 +267,9 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> modalFinishActions() async {
-    if (groupNameController.text != null && groupNameController.text != '') {
+    if (groupNameController.text.isNotEmpty && groupNameController.text != '') {
       await addGroup();
-    } else if (groupCordController.text != null) {
+    } else if (groupCordController.text.isNotEmpty) {
       await groupCodeJoin();
     }
   }
@@ -282,39 +277,39 @@ class GroupModel extends ChangeNotifier {
   String? groupCord;
 
   Future<void> groupCodeJoin() async {
-    if (groupCordController.text == null || groupCordController.text == "") {
+    if (groupCordController.text.isEmpty || groupCordController.text == "") {
       throw 'グループコードが入力されていません';
     }
     groupCord = groupCordController.text;
 
     //groupCordからGroupのDocumentReferenceを取得
     final groupCordDoc =
-        await FirebaseFirestore.instance.collection('Groups').doc(groupCord!);
+        FirebaseFirestore.instance.collection('Groups').doc(groupCord!);
 
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.currentUID = currentuser?.uid.toString();
+    User? currentuser = FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
 
-    if (currentUID != null)
-      //groupCordDocのmemberIDsへ自分のuIDを追記する
+    if (currentUID != null) {
       await groupCordDoc.update(
         {
           'memberIDs': listAdd(currentUID!), //memberIDsに自身のUIDを追加
           'isBlocks': isBlocksAdd(currentUID!),
         },
       );
+    }
     notifyListeners();
   }
 
   Future<void> fetchBlockList() async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
-    this.currentUID = currentuser?.uid.toString();
+    User? currentuser = FirebaseAuth.instance.currentUser;
+    currentUID = currentuser?.uid.toString();
 
     final QuerySnapshot blockGroupsDoc = await FirebaseFirestore.instance
         .collection('Groups')
-        .where("isBlocks.${currentUID}", isEqualTo: true)
+        .where("isBlocks.$currentUID", isEqualTo: true)
         .get();
 
-    if (blockGroupsDoc != null) {
+    if (blockGroupsDoc.docs.isNotEmpty) {
       final List<Group> joins =
           blockGroupsDoc.docs.map((DocumentSnapshot document) {
         Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -334,27 +329,26 @@ class GroupModel extends ChangeNotifier {
           imgURL: imgURL ?? '',
         );
       }).toList();
-      this.blockGroups = joins;
+      blockGroups = joins;
       notifyListeners();
     }
   }
 
   Future<void> groupNameUpdate(Group group) async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
+    User? currentuser = FirebaseAuth.instance.currentUser;
     currentUID = currentuser?.uid.toString();
 
-    if (groupRenameController.text == null ||
+    if (groupRenameController.text.isEmpty ||
         groupRenameController.text == "") {
       throw 'グループ名が入力されていません';
     }
-    if (groupReDescController.text == null ||
+    if (groupReDescController.text.isEmpty ||
         groupReDescController.text == "") {
       throw '説明が入力されていません';
     }
 
-    final groupsDoc = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc(group.groupID);
+    final groupsDoc =
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     await groupsDoc.update(
       {
         'groupName': groupRenameController.text,
@@ -365,12 +359,11 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> groupWithdraw(Group group) async {
-    User? currentuser = await FirebaseAuth.instance.currentUser;
+    User? currentuser = FirebaseAuth.instance.currentUser;
     currentUID = currentuser?.uid.toString();
 
-    final groupsDoc = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc(group.groupID);
+    final groupsDoc =
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     await groupsDoc.update(
       {
         'memberIDs': removeMyID(group, currentUID!), //memberIDsに自身のUIDを追加
@@ -391,10 +384,9 @@ class GroupModel extends ChangeNotifier {
     return isBlocks;
   }
 
-  Future<void> deleteGroup(Group group) async{
-    final groupsDoc = await FirebaseFirestore.instance
-        .collection('Groups')
-        .doc(group.groupID);
+  Future<void> deleteGroup(Group group) async {
+    final groupsDoc =
+        FirebaseFirestore.instance.collection('Groups').doc(group.groupID);
     await groupsDoc.delete();
   }
 }

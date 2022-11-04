@@ -27,18 +27,18 @@ class GroupBloclListPage extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
                     //title: new Text('AlertDialog'),
-                    content: Text('ブロックを解除しますか？'),
+                    content: const Text('ブロックを解除しますか？'),
                     actions: <Widget>[
                       SimpleDialogOption(
-                        child: Text('Yes'),
+                        child: const Text('Yes'),
                         onPressed: () {
-                          model.blockButtonDisable(group,currentUID!);
+                          model.blockButtonDisable(group, currentUID!);
                           model.fetchBlockList();
                           Navigator.pop(context);
                         },
                       ),
                       SimpleDialogOption(
-                        child: Text('No'),
+                        child: const Text('No'),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -56,14 +56,14 @@ class GroupBloclListPage extends StatelessWidget {
                         ),
                       ),
                     )
-                  : CircleAvatar(
+                  : const CircleAvatar(
                       radius: 30,
                       backgroundColor: Colors.grey,
                     ),
               title: Text('${group.groupName}'),
               subtitle: Text('${group.groupDescription}'),
               trailing: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 onPressed: () {},
               ),
             ),
@@ -73,10 +73,10 @@ class GroupBloclListPage extends StatelessWidget {
           appBar: AppBar(
               centerTitle: true,
               automaticallyImplyLeading: false,
-              title: Text('BlockList'),
+              title: const Text('BlockList'),
               actions: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_forward_ios,
                     color: ThemeColors.whiteColor,
                   ),

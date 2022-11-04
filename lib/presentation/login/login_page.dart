@@ -15,11 +15,12 @@ class LoginPage extends StatelessWidget {
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios, color: ThemeColors.whiteColor),
+              icon: const Icon(Icons.arrow_back_ios,
+                  color: ThemeColors.whiteColor),
               onPressed: () =>
                   Navigator.of(context).pushReplacementNamed('/signUp'),
             ),
-            title: Text(
+            title: const Text(
               'Login',
               style: TextStyle(color: ThemeColors.whiteColor),
             ),
@@ -32,7 +33,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.all(50.0),
                       child: Text('LogIn Now',
                           style: TextStyle(
@@ -49,24 +50,23 @@ class LoginPage extends StatelessWidget {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 0,
                               blurRadius: 4,
-                              offset: Offset(0, 2),
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
                         child: TextField(
-
                           onChanged: (text) {
                             model.setEmail(text);
                           },
                           controller: model.emailController,
                           decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.mail),
+                            prefixIcon: const Icon(Icons.mail),
                             labelText: 'メールアドレス',
                             fillColor: ThemeColors.backGroundColor,
                             filled: true,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: ThemeColors.whiteColor,
                               ),
                             ),
@@ -83,7 +83,7 @@ class LoginPage extends StatelessWidget {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 0,
                               blurRadius: 4,
-                              offset: Offset(0, 2),
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
@@ -100,7 +100,7 @@ class LoginPage extends StatelessWidget {
                           controller: model.passwordController,
                           decoration: InputDecoration(
                             labelText: 'パスワード',
-                            prefixIcon: Icon(Icons.lock_open),
+                            prefixIcon: const Icon(Icons.lock_open),
                             suffixIcon: IconButton(
                               // 文字の表示・非表示でアイコンを変える
                               icon: Icon(model.isObscure
@@ -115,7 +115,7 @@ class LoginPage extends StatelessWidget {
                             filled: true,
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 color: ThemeColors.whiteColor,
                               ),
                             ),
@@ -125,10 +125,10 @@ class LoginPage extends StatelessWidget {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
                         elevation: 8,
-                        fixedSize: Size(200.0, 50.0),
-                        primary: Colors.black,
-                        onPrimary: Colors.white,
+                        backgroundColor: Colors.black,
+                        fixedSize: const Size(200.0, 50.0),
                         shape: const StadiumBorder(),
                         side: const BorderSide(color: Colors.grey),
                       ),
@@ -171,7 +171,7 @@ class LoginPage extends StatelessWidget {
                           model.endLoading();
                         }
                       },
-                      child: Text(
+                      child: const Text(
                         'LogIn',
                         style: TextStyle(fontSize: 20),
                       ),
@@ -185,17 +185,17 @@ class LoginPage extends StatelessWidget {
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
-                                return EmailResetModal();
+                                return const EmailResetModal();
                               });
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(14.0),
                           child: Text('パスワードを忘れましたか？'),
                         )),
                     if (model.isLoading)
                       Container(
                         color: ThemeColors.whiteColor,
-                        child: Center(
+                        child: const Center(
                           child: CircularProgressIndicator(),
                         ),
                       ),
@@ -216,110 +216,105 @@ class EmailResetModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<LoginModel>(
-        create: (_) => LoginModel(),
-    child: Consumer<LoginModel>(builder: (context, model, child) {
-            return Column(
-              children: [
-                Padding(padding: EdgeInsets.all(100.0),),
-                Icon(Icons.mail,size: 90,color: ThemeColors.whiteColor),
-                Padding(
-                  padding: EdgeInsets.all(40.0),
-                  child: Text('パスワード再設定メール送信',
-                      style: TextStyle(
-                        color: ThemeColors.whiteColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 0,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+      create: (_) => LoginModel(),
+      child: Consumer<LoginModel>(builder: (context, model, child) {
+        return Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(100.0),
+            ),
+            const Icon(Icons.mail, size: 90, color: ThemeColors.whiteColor),
+            const Padding(
+              padding: EdgeInsets.all(40.0),
+              child: Text('パスワード再設定メール送信',
+                  style: TextStyle(
+                    color: ThemeColors.whiteColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(40.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      spreadRadius: 0,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
                     ),
-                    child: TextField(
-                      onChanged: (text) {
-                        model.setEmail(text);
-                      },
-                      controller: model.emailController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.mail),
-                        labelText: 'メールアドレス',
-                        fillColor: ThemeColors.backGroundColor,
-                        filled: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: ThemeColors.whiteColor,
-                          ),
-                        ),
+                  ],
+                ),
+                child: TextField(
+                  onChanged: (text) {
+                    model.setEmail(text);
+                  },
+                  controller: model.emailController,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.mail),
+                    labelText: 'メールアドレス',
+                    fillColor: ThemeColors.backGroundColor,
+                    filled: true,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                        color: ThemeColors.whiteColor,
                       ),
                     ),
                   ),
                 ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 8,
-                    fixedSize: Size(200.0, 50.0),
-                    primary: Colors.black,
-                    onPrimary: Colors.white,
-                    shape: const StadiumBorder(),
-                    side: const BorderSide(color: Colors.grey),
-                  ),
-                  onPressed: () async {
-                      String _result = await model.sendPasswordResetEmail();
-                      // 成功時は戻る
-                      if (_result == 'success') {
-                        Navigator.pop(context);
-                      } else if (_result == 'ERROR_INVALID_EMAIL') {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.red,
-                          content:
-                          Text("無効なメールアドレスです"),
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(snackBar);
-                      } else if (_result == 'ERROR_USER_NOT_FOUND') {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.red,
-                          content:
-                          Text("メールアドレスが登録されていません"),
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(snackBar);
-                      } else {
-                        final snackBar = SnackBar(
-                          backgroundColor: Colors.red,
-                          content:
-                          Text("メール送信に失敗しました"),
-                        );
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(snackBar);
-                      }
-                  },
-                  child: Text(
-                    'メール送信',
-                    style: TextStyle(fontSize: 14),
-                  ),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                elevation: 8,
+                backgroundColor: Colors.black,
+                fixedSize: const Size(200.0, 50.0),
+                shape: const StadiumBorder(),
+                side: const BorderSide(color: Colors.grey),
+              ),
+              onPressed: () async {
+                String _result = await model.sendPasswordResetEmail();
+                // 成功時は戻る
+                if (_result == 'success') {
+                  Navigator.pop(context);
+                } else if (_result == 'ERROR_INVALID_EMAIL') {
+                  final snackBar = const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text("無効なメールアドレスです"),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else if (_result == 'ERROR_USER_NOT_FOUND') {
+                  final snackBar = const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text("メールアドレスが登録されていません"),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else {
+                  final snackBar = const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text("メール送信に失敗しました"),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+              child: const Text(
+                'メール送信',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            if (model.isLoading)
+              Container(
+                color: ThemeColors.whiteColor,
+                child: const Center(
+                  child: CircularProgressIndicator(),
                 ),
-                if (model.isLoading)
-                  Container(
-                    color: ThemeColors.whiteColor,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-              ],
-            );
-          }
-        ),
+              ),
+          ],
+        );
+      }),
     );
   }
 }

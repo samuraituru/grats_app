@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeModel extends ChangeNotifier {
   int currentIndex = 0;
@@ -10,11 +9,9 @@ class HomeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-bool isLogin = false;
-  listenAuth(){
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) {
+  bool isLogin = false;
+  listenAuth() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
         isLogin = false;
