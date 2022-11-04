@@ -1,4 +1,4 @@
-package com.example.grats_app
+package grats.app
 
 import io.flutter.embedding.android.FlutterActivity
 
