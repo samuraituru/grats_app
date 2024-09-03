@@ -50,3 +50,6 @@ app.*.map.json
 
 # key 
 key.jks
+
+# FVM Version Cache
+.fvm/
