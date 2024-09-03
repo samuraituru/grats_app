@@ -53,3 +53,13 @@ key.jks
 
 # FVM Version Cache
 .fvm/
+
+# Firebase
+/firebase_options.dart
+lib/firebase_options.dart
+
+# iOS
+/ios/build/
+/ios/Podfile.lock
+**/ios/Flutter/DartDefines.xcconfig
+**/ios/GoogleService-Info.plist
